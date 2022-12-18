@@ -1,5 +1,6 @@
 package control.fxml;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -173,20 +174,20 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void addApplication(ActionEvent event) {
 		try {
-			this.mainControl.addInterface();
+			this.mainControl.addApplication();
 		}
 		catch(Exception e) {
-			
+			this.showException(e);
 		}
 	}
 	
 	@FXML
 	public void deleteApplication(ActionEvent event) {
 		try {
-			this.mainControl.deleteInterface();
+			this.mainControl.deleteApplication();
 		}
 		catch(Exception e) {
-			
+			this.showException(e);
 		}
 	}
 	
@@ -201,7 +202,7 @@ public class ModelFXMLControl implements Initializable{
 	}
 	
 	@FXML
-	public void importApplications(ActionEvent event) {
+	public void importApplications(ActionEvent event) throws IOException {
 		this.mainControl.importApplications();
 	}
 	
@@ -246,10 +247,10 @@ public class ModelFXMLControl implements Initializable{
 		}
 		e.printStackTrace();
 	}
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
-		this.mainControl = MainControl.getInstance(this);
+		this.mainControl = MainControl.getMainControl(this);
         this.model.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 Tab modelTab = newValue;
@@ -270,7 +271,7 @@ public class ModelFXMLControl implements Initializable{
             }
             else {
                 this.elementView.unbind();
-                this.elementView.bind((ObservableValue)newValue.getElementView());
+                this.elementView.bind((ObservableValue<ElementView>)newValue.selectedElementProperty());
                 this.showModelView();
             }
         });
