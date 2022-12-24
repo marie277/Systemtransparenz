@@ -22,6 +22,10 @@ public class ImageExportControl {
 	private File imageLocation;
 	private ModelView modelView;
 	
+	public ImageExportControl(ModelView modelView) {
+        this.modelView = modelView;
+    }
+	
 	public void saveImage() throws IOException {
 		File file = this.imageLocation;
 		FileChooser fileChooser = new FileChooser();
@@ -86,6 +90,10 @@ public class ImageExportControl {
 		return dimensions;
 	}
 
+	public void setImageLocation(File imageLocation) {
+        this.imageLocation = imageLocation;
+    }
+	
 	public File getImageLocation() {
 		return (this.imageLocation == null) ? new File("") : this.imageLocation;
 	}

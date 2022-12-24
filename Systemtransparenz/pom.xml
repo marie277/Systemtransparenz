@@ -7,6 +7,14 @@
   <organization>
   <name>Prokopowicz</name>
   </organization>
+  <dependencies>
+  	<dependency>
+	    <groupId>org.postgresql</groupId>
+	    <artifactId>postgresql</artifactId>
+	    <version>42.5.1</version>
+	</dependency>
+	</dependencies>
+  
   <build>
     <plugins>
       <plugin>

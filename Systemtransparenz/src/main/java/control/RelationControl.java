@@ -117,15 +117,15 @@ public class RelationControl extends ElementControl {
 		return this.relationView;
 	}
 	
-	public void addPartOfRelation(final ApplicationView applicationView) {
-		final ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
+	public void addPartOfRelation(ApplicationView applicationView) {
+		ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
 		this.relationView.getRelationModel().getApplications().add(applicationInRelation);
-		final RelationLineView relationLineView = new RelationLineView(applicationInRelation);
+		RelationLineView relationLineView = new RelationLineView(applicationInRelation);
 		this.relationView.getRelationNodes().add(relationLineView);
 		relationLineView.getRelationLine().endXProperty().bind((ObservableValue<? extends Number>)this.relationView.getElementRegion().layoutXProperty().add((ObservableNumberValue)this.relationView.getElementRegion().prefWidthProperty().divide(2.0)));
 		relationLineView.getRelationLine().endYProperty().bind((ObservableValue<? extends Number>)this.relationView.getElementRegion().layoutYProperty().add((ObservableNumberValue)this.relationView.getElementRegion().prefHeightProperty().divide(2.0)));
 		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-			for(final RelationLineView rLV : this.relationView.getRelationNodes()) {
+			for(RelationLineView rLV : this.relationView.getRelationNodes()) {
 				if(rLV.getApplicationInRelation().equals(applicationInRelation)) {
 					rLV.calculateCenterPoint();
 				}
@@ -159,7 +159,7 @@ public class RelationControl extends ElementControl {
 		relationLineView.getRelationLine().endYProperty().unbind();
 		relationLineView.getRelationLine().startXProperty().unbind();
 		relationLineView.getRelationLine().startYProperty().unbind();
-		for(final Node n : relationLineView.getNodes()) {
+		for(Node n : relationLineView.getNodes()) {
 			n.setVisible(false);
 		}
 		if(this.relationView.getModelView() != null) {

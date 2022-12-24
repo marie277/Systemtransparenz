@@ -7,11 +7,11 @@ import javafx.beans.property.StringProperty;
 
 public class ApplicationModel {
 	
-	private IntegerProperty id;
-	private int applicationID;
+	/*private IntegerProperty id;
+	private int applicationID;*/
 	private StringProperty name;
 	private String applicationName;
-	private StringProperty description;
+	/*private StringProperty description;
 	private String applicationDescription;
 	private IntegerProperty category;
 	private int categoryID;
@@ -22,9 +22,9 @@ public class ApplicationModel {
 	private IntegerProperty admin;
 	private int adminID;
 	private IntegerProperty applicationManager;
-	private int applicationManagerID;
+	private int applicationManagerID;*/
 
-	public ApplicationModel(int applicationID, String applicationName, String applicationDescription, int categoryID, int departmentID, int producerID, int adminID, int applicationManagerID) {
+	/*public ApplicationModel(int applicationID, String applicationName, String applicationDescription, int categoryID, int departmentID, int producerID, int adminID, int applicationManagerID) {
 		this.applicationID = applicationID;
 		this.applicationName = applicationName;
 		this.applicationDescription = applicationDescription;
@@ -33,27 +33,33 @@ public class ApplicationModel {
 		this.producerID = producerID;
 		this.adminID = adminID;
 		this.applicationManagerID = applicationManagerID;
+	}*/
+	
+	public ApplicationModel(String applicationName) {
+		this.applicationName = applicationName;
 	}
-
+	
+	public String getApplicationName() {
+		return (String)((this.name == null) ? this.applicationName : this.name.get());
+	}
+	
 	public void setApplicationName(String applicationName) {
-		this.nameProperty().set(applicationName);
+		if (this.name != null) {
+            this.name.set((String)applicationName);
+        }
+        else {
+            this.applicationName = applicationName;
+        }
 	}
 
 	public StringProperty nameProperty() {
-		if(name == null) {
-			name = new SimpleStringProperty("");
+		if(this.name == null) {
+			this.name = (StringProperty)new SimpleStringProperty((Object)this, "applicationName", this.applicationName);
 		}
-		return name;
-	}
-
-	public String getApplicationName() {
-		if(name != null) {
-			return name.get();
-		}
-		return "";
+		return this.name;
 	}
 	
-	public int getID() {
+	/*public int getID() {
 		if(id != null) {
 			return id.get();
 		}
@@ -178,5 +184,6 @@ public class ApplicationModel {
 		}
 		return applicationManager;
 	}
+	*/
 
 }

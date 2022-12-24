@@ -23,7 +23,8 @@ public class ApplicationControl extends ElementControl {
 	}
 
 	public static ApplicationView importXMLElement(Element item, ModelView modelView) {
-		ApplicationView applicationView = new ApplicationView(new ApplicationModel(0, "", null, 0, 0, 0, 0, 0), modelView);
+		//ApplicationView applicationView = new ApplicationView(new ApplicationModel(0, "", null, 0, 0, 0, 0, 0), modelView);
+		ApplicationView applicationView = new ApplicationView(new ApplicationModel(""), modelView);
 		applicationView.getApplicationControl().renameApplication(item.getAttribute("Anwendungsname"));
 		modelView.addElement(applicationView);
 		NodeList nodeList = item.getElementsByTagName("Element");
@@ -49,10 +50,6 @@ public class ApplicationControl extends ElementControl {
 	@Override
 	public void refresh() {
 		this.applicationView.setWidthHeight(this.applicationView.getText().getLayoutBounds().getWidth()*1.2, this.applicationView.getText().getLayoutBounds().getHeight()*1.2);
-	}
-	
-	public void select(final boolean isSelected) {
-		this.applicationView.isSelected(isSelected);
 	}
 	
 	public ApplicationView getApplicationView() {

@@ -34,7 +34,7 @@ import view.RelationView;
 
 public class MainControl {
 	private static MainControl mainControl;
-	private static ModelFXMLControl modelFXMLControl;
+	public static ModelFXMLControl modelFXMLControl;
 	private ObservableList<ApplicationModel> applications;
 	private RelationView relationView;
 	private ApplicationView applicationView;
@@ -122,11 +122,11 @@ public class MainControl {
 		Tab tab = new Tab(modelView.getModelName(), scrollPane);
 		tab.textProperty().bind((ObservableValue<String>)modelView.modelName());
 		MainControl.modelFXMLControl.getTabPane().getTabs().add(tab);
-		final TextInputDialog input = new TextInputDialog("Neues Modell");
+		TextInputDialog input = new TextInputDialog("Neues Modell");
 		input.setTitle("Modellnamen festlegen");
 		input.setHeaderText("Bitte geben Sie den Namen des Modells an.");
 		input.setContentText("Hier Modellnamen einfügen.");
-		final Optional<String> result = (Optional<String>)input.showAndWait();
+		Optional<String> result = (Optional<String>)input.showAndWait();
 		result.ifPresent(name -> modelView.setModelName(name));
 	}
 
@@ -234,14 +234,14 @@ public class MainControl {
 
 	public void deleteRelation() throws IllegalAccessException {
 		RelationView relationView = (RelationView)MainControl.modelFXMLControl.getModelView().getElementView();
-		boolean relationClass = MainControl.modelFXMLControl.getModelView().getElementView().getClass().equals(RelationView.class);
-		if(relationView == null || !relationClass) {
+		boolean rightClass = MainControl.modelFXMLControl.getModelView().getElementView().getClass().equals(RelationView.class);
+		if(relationView == null || !rightClass) {
 			throw new IllegalAccessException("Achtung! Es wurde keine Beziehung ausgewählt.");
 		}
 		MainControl.modelFXMLControl.getModelView().getModelControl().removeRelationView(relationView);
 	}
 
-	public void addApplication() throws IOException {
+	/*public void addApplication() throws IOException {
 		Stage addApplicationStage = new Stage();
 		addApplicationStage.initModality(Modality.APPLICATION_MODAL);
 		addApplicationStage.setTitle("Anwendung hinzufügen");
@@ -251,12 +251,39 @@ public class MainControl {
 		addApplicationStage.centerOnScreen();
 		addApplicationStage.show();
 		return;
-	}
+	}*/
+	
+	public void addApplication() throws IllegalArgumentException {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Anwendung erstellen");
+        dialog.setHeaderText("Wählen Sie eine Bezeichnung für Ihre Anwendung.");
+        dialog.setContentText("Hier die Bezeichnung für Ihre Anwendung einfügen.");
+        Optional<String> result = (Optional<String>)dialog.showAndWait();
+        result.ifPresent(neueBezeichung -> this.addApplication(neueBezeichung));
+    }
+    
+    public void addApplication(double x, final double y) {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Anwendung erstellen");
+        dialog.setHeaderText("Wählen Sie eine Bezeichnung für Ihre Anwendung.");
+        dialog.setContentText("Hier die Bezeichnung für Ihre Anwendung einfügen.");
+        Optional<String> result = (Optional<String>)dialog.showAndWait();
+        result.ifPresent(neueBezeichung -> this.addApplication(neueBezeichung, x, y));
+    }
+    
+    private void addApplication(String neueBezeichung) throws IllegalArgumentException {
+        MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(neueBezeichung);
+    }
+    
+    private void addApplication(String neueBezeichung, double x, double y) throws IllegalArgumentException {
+        this.addApplication(neueBezeichung);
+        MainControl.modelFXMLControl.getModelView().getApplications().getLast().move(x, y);
+    }
 
 	public void deleteApplication() throws IllegalAccessException {
 		ApplicationView applicationView = (ApplicationView)MainControl.modelFXMLControl.getModelView().getElementView();
-		boolean applicationClass = MainControl.modelFXMLControl.getModelView().getElementView().getClass().equals(ApplicationView.class);
-		if(applicationView == null || !applicationClass) {
+		boolean rightApplication = MainControl.modelFXMLControl.getModelView().getElementView().getClass().equals(ApplicationView.class);
+		if(applicationView == null || !rightApplication) {
 			throw new IllegalAccessException("Achtung! Es wurde keine Anwendung ausgewählt.");
 		}
 		MainControl.modelFXMLControl.getModelView().getModelControl().removeApplicationView(applicationView);
@@ -271,12 +298,18 @@ public class MainControl {
 	}
 
 	public void renameModel() {
-		TextInputDialog modelNameInput = new TextInputDialog(this.getModelView().getModelName());
+		TextInputDialog modelNameInput = new TextInputDialog();
 		modelNameInput.setTitle("Modell umbenennen");
 		modelNameInput.setHeaderText("Geben Sie einen neuen Namen ein:");
 		modelNameInput.setContentText("Hier Namen eingeben");
-		String newModelName = modelNameInput.getResult();
-		this.getModelView().setModelName(newModelName);
+		Optional<String> newModelName = modelNameInput.showAndWait();
+		newModelName.ifPresent(e -> this.getModelView().setModelName(e));
 	}
+
+	/*public void createNewApplication(String applicationName) {
+		// TODO Auto-generated method stub
+		//System.out.print(applicationName);
+		MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationName);
+	}*/
 
 }

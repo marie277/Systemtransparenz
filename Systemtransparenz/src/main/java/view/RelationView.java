@@ -95,7 +95,7 @@ public class RelationView extends ElementView{
 			});
 		}
 		MoveControl.makeRegionMoveable(this.getElementRegion(), (Region)this.getModelView(), (Move)this);
-		this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("application/relation.css").toExternalForm());
+		//this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("application/relation.css").toExternalForm());
 		this.selected = false;
 	}
 
@@ -180,7 +180,7 @@ public class RelationView extends ElementView{
 		}
 	}
 	
-	public void addPartOfRelation(final ApplicationView applicationView) {
+	public void addPartOfRelation(ApplicationView applicationView) {
 		this.relationControl.addPartOfRelation(applicationView);
 	}
 	

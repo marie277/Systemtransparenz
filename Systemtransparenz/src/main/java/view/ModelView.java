@@ -143,13 +143,13 @@ public class ModelView extends Pane implements Zoom {
         }
 		elementView.setModelView(this);
 		if(elementView.getClass().equals(RelationView.class)) {
-			final RelationView relationView = (RelationView)elementView;
-			for(final RelationLineView rLV : relationView.getRelationNodes()) {
+			RelationView relationView = (RelationView)elementView;
+			for(RelationLineView rLV : relationView.getRelationNodes()) {
 				this.getChildren().addAll(0, (Collection<? extends Node>)rLV.getNodes());
 			}
 		}
         this.getChildren().add(this.getChildren().size(), elementView.getElementRegion());
-        this.zoomControl.addObject((Zoom)elementView);
+        this.zoomControl.addObject(elementView);
         this.fileExportControl.setSaved(false);
 	}
 

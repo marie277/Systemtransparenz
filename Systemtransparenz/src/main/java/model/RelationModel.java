@@ -19,10 +19,10 @@ public class RelationModel {
 		RelationModel.idGenerator = 0;
 	}
 	
-	public RelationModel(final ApplicationInRelation firstApplication, final ApplicationInRelation secondApplication) {
+	public RelationModel(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication) {
 		int newID = RelationModel.idGenerator++;
         this.id = new ReadOnlyIntegerWrapper((Object)this, "id", newID);
-        this.interfaceText = "Schnittstelle";
+        this.interfaceText = "Verknüpft mit";
         (this.applicationsInRelation = new LinkedList<ApplicationInRelation>()).add(firstApplication);
         this.applicationsInRelation.add(secondApplication);
 	}
@@ -31,7 +31,6 @@ public class RelationModel {
 		return this.applicationsInRelation;
 	}
 	
-
 	public String getInterfaceText() {
 		if(this.interfaceName == null) {
 			return this.interfaceText;
@@ -41,7 +40,7 @@ public class RelationModel {
 		}
 	}
 	
-	public void setInterfaceText(final String interfaceText) {
+	public void setInterfaceText(String interfaceText) {
 		if(this.interfaceName != null) {
 			this.interfaceName.set(interfaceText);
 		}

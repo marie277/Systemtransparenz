@@ -23,7 +23,7 @@ public class ApplicationBorderPane extends BorderPane {
 		super(node);
 	}
 	
-	public final boolean isSelected() {
+	public boolean isSelected() {
 		return this.selected != null && this.selected.get();
 	}
 	

@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Collection;
+
 import control.ApplicationControl;
 import control.ElementControl;
 import control.edit.ApplicationBorderPane;
@@ -9,6 +11,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
@@ -23,41 +27,50 @@ public class ApplicationView extends ElementView {
 	private BooleanProperty selectedProperty;
 	private boolean isSelected;
 	private Text text;
+	private ApplicationBorderPane applicationBorderPaneLabel;
 
 	public ApplicationView(ApplicationModel applicationModel, ModelView modelView) {
+		
 		this.applicationModel = applicationModel;
-		this.modelView = modelView;
-		this.applicationControl = new ApplicationControl(this);
-		this.applicationBorderPane = new ApplicationBorderPane();
-		this.applicationBorderPane.setId("Anwendung");
-		this.applicationBorderPane.getStyleClass().add("Anwendung");
-		this.applicationBorderPane.setPrefSize(10.0, 10.0);
-		(this.text = new Text("")).setOnMouseClicked(e -> {
-			if(modelView != null) {
-				modelView.deselectElements();
-				modelView.setElementView(this);
-			}
-			this.applicationControl.isSelected(true);
-			e.consume();
-		});
-		this.text.setOnMousePressed(e -> {
-			if(modelView != null) {
-				modelView.deselectElements();
-				modelView.setElementView(this);
-			}
-			this.applicationControl.isSelected(true);
-			e.consume();
-		});
-		this.text.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.nameProperty());
-		this.text.textProperty().addListener((observable, oldValue, newValue) -> {
-			this.applicationBorderPane.setPrefSize(this.text.getLayoutBounds().getWidth()*1.2, this.text.getLayoutBounds().getHeight()*1.2);
-		});
-		this.applicationBorderPane.setPrefSize(this.text.getLayoutBounds().getWidth()*1.2, this.text.getLayoutBounds().getHeight()*1.2);
-		MoveControl.makeRegionMoveable((Region)this.applicationBorderPane, (Region)this.getModelView(), (Move)this);
-		this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("application/application.css").toExternalForm());
-		this.applicationBorderPane.selectedProperty().bind((ObservableValue<? extends Boolean>)this.selectedProperty());
-		this.applicationBorderPane.setPadding(new Insets(3.0));
-		this.isSelected = false;
+        this.modelView = modelView;
+        this.applicationControl = new ApplicationControl(this);
+        this.applicationBorderPane = new ApplicationBorderPane();
+        this.applicationBorderPane.setId("applicationBorderPane");
+        this.applicationBorderPane.getStyleClass().add((String)"applicationBorderPane");
+        (this.text = new Text("")).setOnMouseClicked(e -> {
+            if (modelView != null) {
+            	modelView.deselectElements();
+                modelView.setElementView(this);
+            }
+            this.applicationControl.isSelected(true);
+            e.consume();
+        });
+        this.applicationBorderPane.setPrefSize(10.0, 10.0);
+        this.text.setOnMousePressed(e -> {
+            if (modelView != null) {
+            	modelView.deselectElements();
+                modelView.setElementView(this);
+            }
+            this.applicationControl.isSelected(true);
+            e.consume();
+        });
+        this.text.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.nameProperty());
+        this.text.textProperty().addListener((o, oldVal, newVal) -> {
+            this.applicationBorderPane.setPrefWidth(this.text.getLayoutBounds().getWidth() * 1.2);
+            this.applicationBorderPane.setPrefHeight(this.text.getLayoutBounds().getHeight() * 1.2);
+        });
+        (this.applicationBorderPaneLabel = new ApplicationBorderPane((Node)this.text)).setPadding(new Insets(2.0));
+        this.applicationBorderPaneLabel.setId("applicationBorderPaneLabel");
+        this.applicationBorderPane.setCenter((Node)this.applicationBorderPaneLabel);
+        this.applicationBorderPane.setPrefWidth(this.text.getLayoutBounds().getWidth() * 1.2);
+        this.applicationBorderPane.setPrefHeight(this.text.getLayoutBounds().getHeight() * 1.2);
+        MoveControl.makeRegionMoveable((Region)this.applicationBorderPane, (Region)this.getModelView(), (Move)this);
+        //this.applicationBorderPane.getStylesheets().add((String)this.getClass().getResource("application.css").toExternalForm());
+        this.applicationBorderPane.setStyle("-fx-background-color: white");
+        this.applicationBorderPane.setStyle("-fx-border-color: black");
+        this.applicationBorderPane.selectedProperty().bind(this.selectedProperty());
+        this.applicationBorderPane.setPadding(new Insets(3.0));
+        this.isSelected = false;
 	}
 
 	private BooleanProperty selectedProperty() {
@@ -101,7 +114,7 @@ public class ApplicationView extends ElementView {
 		return this.applicationBorderPane;
 	}
 	
-	public void setApplicationBorderPane(final ApplicationBorderPane applicationBorderPane) {
+	public void setApplicationBorderPane(ApplicationBorderPane applicationBorderPane) {
 		this.applicationBorderPane = applicationBorderPane;
 	}
 
@@ -153,7 +166,7 @@ public class ApplicationView extends ElementView {
 			return false;
 		}
 		ApplicationView applicationView = (ApplicationView)object;
-		return this.getApplicationModel().equals(applicationView.getApplicationModel())&&this.getModelView().equals(applicationView.getModelView())&&this.selected()==applicationView.selected();
+		return this.getApplicationModel().equals(applicationView.getApplicationModel()) && this.getModelView().equals(applicationView.getModelView()) && this.selected() == applicationView.selected();
 	}
 	
 }

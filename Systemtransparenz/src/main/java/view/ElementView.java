@@ -3,10 +3,12 @@ package view;
 import java.util.LinkedList;
 
 import control.ElementControl;
+import control.edit.Move;
+import control.edit.Zoom;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Region;
 
-public abstract class ElementView {
+public abstract class ElementView implements Zoom, Move {
 
 	protected ModelView modelView;
 	private LinkedList<ElementView> elements;

@@ -37,11 +37,11 @@ public class ApplicationInRelation {
             }
         }
         ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
-        applicationInRelation.setTypeOfRelation(Boolean.parseBoolean(item.getAttribute("BeziehungsteilnehmerTyp")));
+        //applicationInRelation.setTypeOfRelation(Boolean.parseBoolean(item.getAttribute("BeziehungsteilnehmerTyp")));
         return applicationInRelation;
 	}
 	
-	private void setTypeOfRelation(boolean typeOfRelation) {
+	/*void setTypeOfRelation(boolean typeOfRelation) {
 		if(this.relationType != null) {
 			this.relationType.set(typeOfRelation);
 		}
@@ -49,23 +49,23 @@ public class ApplicationInRelation {
 			this.typeOfRelation = typeOfRelation;
 		}
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
-	}
+	}*/
 	
 	public Element createXMLElement(Document doc) {
 		Element element = doc.createElement("Beziehungsteilnehmer");
 	    element.setAttribute("BeziehungsteilnehmerAnwendung", this.getApplicationView().getApplicationModel().getApplicationName());
-	    element.setAttribute("BeziehungsteilnehmerTyp", new StringBuilder().append(this.isRelationType()).toString());
+	    //element.setAttribute("BeziehungsteilnehmerTyp", new StringBuilder().append(this.isRelationType()).toString());
 	    return element;
 	}
 	
-	private boolean isRelationType() {
+	/*private boolean isRelationType() {
 		if(this.relationType == null) {
 			return this.typeOfRelation;
 		}
 		else {
 			return this.relationType.get();
 		}
-	}
+	}*/
 	
 	static {
 		ApplicationInRelation.idGenerator = 0;
@@ -92,12 +92,12 @@ public class ApplicationInRelation {
 	}
 	
 	 @Override
-    public boolean equals(final Object object) {
+    public boolean equals(Object object) {
         if (!super.equals(object)) {
             return false;
         }
-        final ApplicationInRelation applicationInRelation = (ApplicationInRelation)object;
-        return this.getApplicationView().equals(applicationInRelation.getApplicationView()) && this.isRelationType() == applicationInRelation.isRelationType() && this.getId() == applicationInRelation.getId();
+        ApplicationInRelation applicationInRelation = (ApplicationInRelation)object;
+        return this.getApplicationView().equals(applicationInRelation.getApplicationView()) && /*this.isRelationType() == applicationInRelation.isRelationType() &&*/ this.getId() == applicationInRelation.getId();
     }
 	
 }

@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 
 import control.edit.Zoom;
 import model.ApplicationInRelation;
+import model.ApplicationModel;
 import model.RelationModel;
 import view.ApplicationView;
 import view.ModelView;
@@ -78,7 +79,7 @@ public class ModelControl {
 			model.setAttribute("Modellname", this.modelView.getModelName());
 			model.setAttribute("Modellweite", new StringBuilder().append(this.modelView.getPrefWidth()).toString());
 			model.setAttribute("Modellhoehe", new StringBuilder().append(this.modelView.getPrefHeight()).toString());
-			model.setAttribute("SpeicherortBild", this.modelView.getImageExportControl().getImageLocation().getAbsolutePath());
+			//model.setAttribute("SpeicherortBild", this.modelView.getImageExportControl().getImageLocation().getAbsolutePath());
 			model.setAttribute("Zoom", new StringBuilder().append(this.modelView.getZoomControl().getZoomCounter()).toString());
 			Element applications = doc.createElement("Anwendungen");
 			for(ApplicationView aV: this.modelView.getApplications()) {
@@ -121,7 +122,7 @@ public class ModelControl {
 		return this.modelView;
 	}
 	
-	public void createRelationView(ApplicationInRelation firstApplication, final ApplicationInRelation secondApplication) {
+	public void createRelationView(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication) {
 		RelationView relationView = new RelationView(new RelationModel(firstApplication, secondApplication), this.modelView);
 		this.modelView.addElement(relationView);
 	}
@@ -131,7 +132,7 @@ public class ModelControl {
 		this.modelView.addElement(relationView);
 	}
 	
-	public boolean removeApplicationFromRelation(final ApplicationInRelation applicationInRelation, final RelationView relationView){
+	public boolean removeApplicationFromRelation(ApplicationInRelation applicationInRelation, RelationView relationView){
 		boolean isPartOfRelation = relationView.getRelationModel().getApplications().contains(applicationInRelation);
 		int numberOfApplications = relationView.getRelationModel().getApplications().size();
 		
@@ -143,13 +144,22 @@ public class ModelControl {
 	}
 	
 	@Override
-	public boolean equals(final Object object) {
+	public boolean equals(Object object) {
 		return super.equals(object) && this.modelView.equals(((ModelControl) object).getModelView());
 	}
 
-	public void removeApplication(final ApplicationView applicationView) {
-		// TODO Auto-generated method stub
+	public void removeApplication(ApplicationView applicationView) {
 		this.modelView.removeElement(applicationView);
+	}
+
+	public void addApplication(String applicationName) {
+		for (ApplicationView aV : this.modelView.getApplications()) {
+            if (aV.getApplicationModel().getApplicationName().equals(applicationName)) {
+                throw new IllegalArgumentException("Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
+            }
+        }
+        ApplicationView aV = new ApplicationView(new ApplicationModel(applicationName), this.modelView);
+        this.modelView.addElement(aV);;
 	}
 
 }

@@ -29,7 +29,7 @@ public class RelationLineView {
 		this.relationLine.startYProperty().bind((ObservableValue<? extends Number>)this.applicationInRelation.getApplicationView().getElementRegion().layoutYProperty().add((ObservableNumberValue)this.applicationInRelation.getApplicationView().getElementRegion().prefHeightProperty().divide(2.0)));
 		this.calculateCenterPoint();
 		(this.relationNodes = new LinkedList<Node>()).add((Node)this.relationLine);
-		for(final Node node : this.relationNodes) {
+		for(Node node : this.relationNodes) {
 			node.setOnMouseClicked(e -> {
 				this.setSelected(true);
 				e.consume();
