@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -11,26 +13,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<ScrollPane fx:id="scroll_pane" fx:controller="control.fxml.RelationFXMLControl" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="scroll_pane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.RelationFXMLControl">
    <content>
       <BorderPane fx:id="border_pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <left>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <TableView prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn fx:id="available_applications" prefWidth="199.0" text="Verfügbare Anwendungen" />
-                                </columns>
-                              </TableView>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
+                  <TableView prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="available_applications" prefWidth="199.0" text="Verfügbare Anwendungen" />
+                    </columns>
+                  </TableView>
                </children>
             </AnchorPane>
          </left>
@@ -46,16 +39,26 @@
                <children>
                   <VBox alignment="CENTER" layoutX="50.0" layoutY="9.0" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="select" mnemonicParsing="false" text="Auswählen" onAction="#select">
+                        <Button fx:id="select" mnemonicParsing="false" onAction="#select" text="Auswählen">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>
                         </Button>
-                        <Button fx:id="remove" mnemonicParsing="false" text="Entfernen" onAction="#remove">
+                        <Button fx:id="remove" mnemonicParsing="false" onAction="#remove" text="Entfernen">
                            <VBox.margin>
                               <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
+                        <Label text="Beziehungstyp:">
+                           <VBox.margin>
+                              <Insets top="30.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ComboBox fx:id="relationtype" prefWidth="150.0">
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </ComboBox>
                      </children>
                   </VBox>
                </children>
@@ -66,12 +69,12 @@
                <children>
                   <HBox layoutX="100.0" prefHeight="100.0" prefWidth="400.0">
                      <children>
-                        <Button fx:id="cancel" mnemonicParsing="false" text="Abbrechen" onAction="#cancel">
+                        <Button fx:id="cancel" mnemonicParsing="false" onAction="#cancel" text="Abbrechen">
                            <HBox.margin>
                               <Insets left="50.0" top="25.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="submit" mnemonicParsing="false" text="Weiter" onAction="#submit">
+                        <Button fx:id="submit" mnemonicParsing="false" onAction="#submit" text="Bestätigen">
                            <HBox.margin>
                               <Insets left="200.0" top="25.0" />
                            </HBox.margin>
@@ -84,19 +87,11 @@
          <right>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane prefHeight="200.0" prefWidth="200.0">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <TableView prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn fx:id="selected_applications" prefWidth="199.0" text="Ausgewählte Anwendungen" />
-                                </columns>
-                              </TableView>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
+                  <TableView prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn fx:id="selected_applications" prefWidth="199.0" text="Ausgewählte Anwendungen" />
+                    </columns>
+                  </TableView>
                </children>
             </AnchorPane>
          </right>

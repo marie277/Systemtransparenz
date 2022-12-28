@@ -199,8 +199,8 @@ public class MainControl {
 	public void importApplications() throws IOException {
 		Stage applicationImport = new Stage();
     	applicationImport.setTitle("Anwendungen importieren");
-    	Parent parent = FXMLLoader.load(Main.class.getResource("dataImport.fxml"));
-    	final Scene scene = new Scene(parent);
+    	Parent parent = FXMLLoader.load(Main.class.getResource("connection.fxml"));
+    	Scene scene = new Scene(parent);
     	applicationImport.setScene(scene);
     	applicationImport.centerOnScreen();
     	applicationImport.show();
@@ -271,7 +271,7 @@ public class MainControl {
         result.ifPresent(neueBezeichung -> this.addApplication(neueBezeichung, x, y));
     }
     
-    private void addApplication(String neueBezeichung) throws IllegalArgumentException {
+    public void addApplication(String neueBezeichung) throws IllegalArgumentException {
         MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(neueBezeichung);
     }
     
@@ -305,6 +305,10 @@ public class MainControl {
 		Optional<String> newModelName = modelNameInput.showAndWait();
 		newModelName.ifPresent(e -> this.getModelView().setModelName(e));
 	}
+	
+	public ElementView getSelectedElementView() {
+        return MainControl.modelFXMLControl.getModelView().getElementView();
+    }
 
 	/*public void createNewApplication(String applicationName) {
 		// TODO Auto-generated method stub

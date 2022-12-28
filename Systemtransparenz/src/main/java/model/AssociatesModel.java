@@ -11,7 +11,7 @@ import view.ApplicationView;
 public class AssociatesModel {
 	
 	private Text applicationName;
-    private ComboBox<String> relationType;
+    //private ComboBox<String> relationType;
     
     public AssociatesModel(Text applicationName/*, ComboBox<String> relationType*/) {
         this.applicationName = applicationName;

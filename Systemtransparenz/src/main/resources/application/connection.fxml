@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fx:id="scroll_pane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.DatabaseFXMLControl">
+   <content>
+		<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+		   <bottom>
+		      <AnchorPane prefHeight="81.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		         <children>
+		            <HBox prefHeight="100.0" prefWidth="600.0">
+		               <children>
+		                  <Button fx:id="cancel" mnemonicParsing="false" onAction="#cancel" text="Abbrechen">
+                           <HBox.margin>
+                              <Insets left="120.0" top="25.0" />
+                           </HBox.margin>
+		                  </Button>
+                        <Button fx:id="load" mnemonicParsing="false" onAction="#load" text="Laden">
+                           <HBox.margin>
+                              <Insets left="100.0" top="25.0" />
+                           </HBox.margin>
+                        </Button>
+		                  <Button fx:id="submit" mnemonicParsing="false" onAction="#submit" text="Bestätigen">
+		                     <HBox.margin>
+		                        <Insets left="100.0" top="25.0" />
+		                     </HBox.margin>
+		                  </Button>
+		               </children>
+		            </HBox>
+		         </children>
+		      </AnchorPane>
+		   </bottom>
+		   <top>
+		      <AnchorPane prefHeight="82.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		         <children>
+		            <Text layoutX="3.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitte geben Sie hier die gewünschte Datenbankverbindung ein." />
+		         </children>
+		      </AnchorPane>
+		   </top>
+         <left>
+		      <AnchorPane prefHeight="117.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		         <children>
+		            <VBox fx:id="vbox" prefHeight="200.0" prefWidth="600.0">
+		               <children>
+		                  <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Benutzername:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="username" prefHeight="25.0" prefWidth="200.0" text="postgres">
+		                           <HBox.margin>
+		                              <Insets left="50.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		                  <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Passwort:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="password" prefHeight="25.0" prefWidth="201.0">
+		                           <HBox.margin>
+		                              <Insets left="78.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		                  <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Host:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="host" prefHeight="25.0" prefWidth="200.0" text="localhost">
+		                           <HBox.margin>
+		                              <Insets left="100.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		                  <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Port:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="port" prefHeight="25.0" prefWidth="200.0" text="5432">
+		                           <HBox.margin>
+		                              <Insets left="102.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		                  <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Datenbank:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="database" prefHeight="25.0" prefWidth="200.0">
+		                           <HBox.margin>
+		                              <Insets left="65.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		                   <HBox prefHeight="100.0" prefWidth="200.0">
+		                     <children>
+		                        <Label text="Tabelle:">
+		                           <HBox.margin>
+		                              <Insets left="10.0" />
+		                           </HBox.margin>
+		                        </Label>
+		                        <TextField fx:id="table" prefHeight="25.0" prefWidth="200.0">
+		                           <HBox.margin>
+		                              <Insets left="85.0" />
+		                           </HBox.margin>
+		                        </TextField>
+		                     </children>
+		                  </HBox>
+		               </children>
+		            </VBox>
+		         </children>
+		      </AnchorPane>
+         </left>
+         <right>
+            <AnchorPane prefHeight="218.0" prefWidth="293.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox layoutX="-139.0" prefHeight="200.0" prefWidth="239.0">
+                     <children>
+                        <Label text="Vorschau:" />
+                        <TableView prefHeight="183.0" prefWidth="190.0">
+                          <columns>
+                            <TableColumn fx:id="applications" prefWidth="238.0" text="Anwendung" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </right>
+		</BorderPane>
+	</content>
+</ScrollPane>

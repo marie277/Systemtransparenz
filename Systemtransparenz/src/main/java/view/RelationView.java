@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;

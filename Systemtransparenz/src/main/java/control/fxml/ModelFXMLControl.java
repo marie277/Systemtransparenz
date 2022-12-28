@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import application.Main;
 import control.MainControl;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -18,8 +22,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.BorderPane;
+import view.ApplicationView;
 import view.ElementView;
 import view.ModelView;
+import view.RelationView;
 
 public class ModelFXMLControl implements Initializable{
 
@@ -65,6 +72,8 @@ public class ModelFXMLControl implements Initializable{
 	private Button remove_realtion;
 	@FXML
 	private TabPane model;
+	@FXML
+	private ScrollPane details;
 	
 	private MainControl mainControl;
 	private ObjectProperty<ModelView> modelView;
@@ -225,6 +234,38 @@ public class ModelFXMLControl implements Initializable{
 		setDisable(false);
 	}
 	
+	private void editSelectedElementView(ElementView elementView) throws IOException {
+        if (elementView == null) {
+            this.details.setContent((Node)new BorderPane());
+        }
+        else if (elementView.getClass().equals(ApplicationView.class)) {
+            Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
+            this.details.setContent((Node)parent);
+        }
+        else if (elementView.getClass().equals(RelationView.class)) {
+            Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
+            this.details.setContent((Node)parent);
+        }
+        this.disableButtons();
+        if (elementView != null) {
+            this.enableButtons(elementView);
+        }
+    }
+   
+	private void enableButtons(ElementView elementView) {
+		if (elementView.getClass().equals(ApplicationView.class)) {
+            this.delete_application.setDisable(false);
+        }
+        else if (elementView.getClass().equals(RelationView.class)) {
+            this.delete_relation.setDisable(false);
+        }
+	}
+
+	private void disableButtons() {
+		this.delete_application.setDisable(true);
+		this.delete_relation.setDisable(true);
+	}
+
 	private void setDisable(boolean b) {
 		this.save_model.setDisable(b);
 		this.save_model_as.setDisable(b);
@@ -275,8 +316,16 @@ public class ModelFXMLControl implements Initializable{
                 this.showModelView();
             }
         });
-      
+        this.elementView.addListener((observable, oldValue, newValue) -> {
+            try {
+                this.editSelectedElementView(newValue);
+            }
+            catch (Exception e) {
+                this.showException(e);
+            }
+        });
         this.showEmptyTabPane();
+        this.disableButtons();
 	}
 
 }

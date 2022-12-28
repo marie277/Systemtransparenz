@@ -162,4 +162,17 @@ public class ModelControl {
         this.modelView.addElement(aV);;
 	}
 
+	public void renameApplication(ApplicationView applicationView, String applicationName) {
+		for (ApplicationView aV : this.modelView.getApplications()) {
+            if (aV.getApplicationModel().getApplicationName().equals(applicationName) && !aV.equals(applicationView)) {
+                throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
+            }
+        }
+        applicationView.getApplicationControl().renameApplication(applicationName);
+	}
+
+	public void editRelationType(RelationView relationView, String selectedItem) {
+		relationView.getRelationControl().setRelationText(selectedItem);
+	}
+
 }

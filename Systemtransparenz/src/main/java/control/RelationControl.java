@@ -93,23 +93,23 @@ public class RelationControl extends ElementControl {
 	}
 	
 	@Override
-	public void zoom(final double factor) {
+	public void zoom(double factor) {
 		super.zoom(factor);
 		Font f = this.relationView.getInterfaceText().getFont();
 		this.relationView.getInterfaceText().setFont(new Font(f.getName(), f.getSize() * factor));
 		this.refresh();
 	}
 	
-	public void setSelected(final boolean selected) {
+	public void setSelected(boolean selected) {
 		this.relationView.setSelected(selected);
 	}
 	
-	public void move(final double x, final double y) {
+	public void move(double x, double y) {
 		this.setWidthHeight(x, y);
 	}
 	
 	@Override
-	public boolean equals(final Object object) {
+	public boolean equals(Object object) {
 		return super.equals(object) && this.getRelationView().equals(((RelationControl)object).getRelationView());
 	}
 	

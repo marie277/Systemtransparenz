@@ -33,7 +33,7 @@ public class ApplicationControl extends ElementControl {
 		return applicationView;
 	}
 
-	private void renameApplication(String applicationName) {
+	public void renameApplication(String applicationName) {
 		this.applicationView.getApplicationModel().setApplicationName(applicationName);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
