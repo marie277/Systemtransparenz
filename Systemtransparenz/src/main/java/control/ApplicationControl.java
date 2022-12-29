@@ -27,9 +27,9 @@ public class ApplicationControl extends ElementControl {
 		ApplicationView applicationView = new ApplicationView(new ApplicationModel(""), modelView);
 		applicationView.getApplicationControl().renameApplication(item.getAttribute("Anwendungsname"));
 		modelView.addElement(applicationView);
-		NodeList nodeList = item.getElementsByTagName("Element");
+		NodeList nodeList = item.getElementsByTagName("XML-Element");
 		Element element = (Element)nodeList.item(0);
-		ElementControl.importXMLSettings((Element)element.getElementsByTagName("XML-Element").item(0), applicationView);
+		ElementControl.importXMLSettings((Element)element.getElementsByTagName("Element").item(0), applicationView);
 		return applicationView;
 	}
 

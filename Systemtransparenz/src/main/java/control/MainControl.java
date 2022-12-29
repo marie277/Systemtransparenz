@@ -55,8 +55,8 @@ public class MainControl {
 	}
 
 	public void importModelView(ModelView modelView) {
-		final ScrollPane scrollPane = new ScrollPane(modelView);
-		final Tab modelTab = new Tab(modelView.getModelName(), scrollPane);
+		ScrollPane scrollPane = new ScrollPane(modelView);
+		Tab modelTab = new Tab(modelView.getModelName(), scrollPane);
 		modelTab.textProperty().bind((ObservableValue<String>)modelView.modelName());
 		TabPane modelTabPane = MainControl.modelFXMLControl.getTabPane();
 		modelTabPane.getTabs().add(modelTab);

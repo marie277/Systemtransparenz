@@ -89,8 +89,8 @@ public class FileExportControl {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			OutputStream outputStream = new BufferedOutputStream(fileOutputStream);
 			StreamResult streamResult = new StreamResult(outputStream);
-			final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			final Transformer transformer = transformerFactory.newTransformer();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty("omit-xml-declaration", "yes");
             transformer.setOutputProperty("encoding", "UTF-8");
             transformer.setOutputProperty("indent", "yes");

@@ -53,7 +53,7 @@ public class ModelControl {
 		ModelView modelView = new ModelView();
 		String modelName = item.getAttribute("Modellname");
 		modelView.setModelName(modelName);
-		double modelHeight = Double.parseDouble(item.getAttribute("Modellhöhe"));
+		double modelHeight = Double.parseDouble(item.getAttribute("Modellhoehe"));
 		modelView.setPrefHeight(modelHeight);
 		modelView.setMinHeight(modelHeight);
 		double modelWidth = Double.parseDouble(item.getAttribute("Modellweite"));
@@ -62,12 +62,12 @@ public class ModelControl {
 		File imageLocation = new File(item.getAttribute("SpeicherortBild"));
 		modelView.getFileExportControl().setFileLocation(imageLocation);
 		NodeList applications = item.getElementsByTagName("Anwendung");
-		for(int i=0; i<applications.getLength(); i++) {
+		for(int i=0; i<applications.getLength(); ++i) {
 			ApplicationControl.importXMLElement((Element)applications.item(i), modelView);
 		}
 		NodeList relations = item.getElementsByTagName("Beziehung");
-		for(int i=0; i<relations.getLength(); i++) {
-			ApplicationControl.importXMLElement((Element)relations.item(i), modelView);
+		for(int i=0; i<relations.getLength(); ++i) {
+			RelationControl.importXMLElement((Element)relations.item(i), modelView);
 		}
 		return modelView;
 	}

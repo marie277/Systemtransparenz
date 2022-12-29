@@ -54,14 +54,14 @@ public class RelationControl extends ElementControl {
 
 	public Element createXMLElement(Document doc) {
 		Element relation = doc.createElement("Beziehung");
-		relation.setAttribute("Schnittstelle", this.relationView.getRelationModel().getInterfaceText());
+		relation.setAttribute("Beziehungstyp", this.relationView.getRelationModel().getInterfaceText());
 		Element applicationInRelation = doc.createElement("Beziehungsteilnehmer");
 		for(RelationLineView rLV : this.relationView.getRelationNodes()) {
 			applicationInRelation.appendChild(rLV.createXMLElement(doc));
 		}
 		relation.appendChild(applicationInRelation);
-		Element element = super.createXMLElement(doc);
-		relation.appendChild(element);
+		/*Element element = super.createXMLElement(doc);
+		relation.appendChild(element);*/
 		return relation;
 	}
 
@@ -213,18 +213,18 @@ public class RelationControl extends ElementControl {
 	}
 	
 	public static void importXMLElement(Element element, ModelView modelView) {
-		NodeList relationNodes = element.getElementsByTagName("Beziehungspfeil");
+		NodeList relationNodes = element.getElementsByTagName("Beziehungslinie");
 		LinkedList<RelationLineView> relationLineViews = new LinkedList<RelationLineView>();
-		for(int i = 0; i < relationNodes.getLength(); i++) {
+		for(int i = 0; i < relationNodes.getLength(); ++i) {
 			relationLineViews.add(RelationLineView.importRelationFromXML((Element) relationNodes.item(i), modelView));
 		}
 		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation());
-		for(int j = 2; j < relationLineViews.size(); j++) {
+		for(int j = 2; j < relationLineViews.size(); ++j) {
 			relationModel.getApplications().add(relationLineViews.get(j).getApplicationInRelation());
 		}
 		RelationView relationView = new RelationView(relationModel, modelView);
-		relationView.getRelationControl().setRelationText(element.getAttribute("Schnittstelle"));
-		ElementControl.importXMLSettings((Element)element.getElementsByTagName("XML-Element").item(0), relationView);
+		relationView.getRelationControl().setRelationText(element.getAttribute("Beziehungstyp"));
+		//ElementControl.importXMLSettings((Element)element.getElementsByTagName("Element").item(0), relationView);
 		modelView.addElement(relationView);
 	}
 

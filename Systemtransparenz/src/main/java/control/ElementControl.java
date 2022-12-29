@@ -58,8 +58,9 @@ public abstract class ElementControl {
 	}
 
 	public static void importXMLSettings(Element item, ElementView elementView) {
+		elementView.setSize(Double.parseDouble(item.getAttribute("Weite")), Double.parseDouble(item.getAttribute("Hoehe")));
 		elementView.setWidthHeight(Double.parseDouble(item.getAttribute("X-Koordinate")), Double.parseDouble(item.getAttribute("Y-Koordinate")));
-		elementView.setSize(Double.parseDouble(item.getAttribute("Weite")), Double.parseDouble(item.getAttribute("Höhe")));
+		
 	}
 
 	public Element createXMLElement(Document doc) {
@@ -79,11 +80,11 @@ public abstract class ElementControl {
 		element.setAttribute("X-Koordinate", new StringBuilder().append(this.elementView.getElementRegion().getLayoutX()).toString());
 		element.setAttribute("Y-Koordinate", new StringBuilder().append(this.elementView.getElementRegion().getLayoutY()).toString());
 		element.setAttribute("Weite", new StringBuilder().append(this.elementView.getElementRegion().getWidth()).toString());
-		element.setAttribute("Höhe", new StringBuilder().append(this.elementView.getElementRegion().getHeight()).toString());
+		element.setAttribute("Hoehe", new StringBuilder().append(this.elementView.getElementRegion().getHeight()).toString());
 		return element;
 	}
 	
-	public void zoom(final double factor) {
+	public void zoom(double factor) {
 		this.elementView.setSize(this.elementView.getWidth()*factor, this.elementView.getHeight()*factor);
 		this.elementView.setWidthHeight(this.elementView.getWidthHeight().getX()*factor, this.elementView.getWidthHeight().getY()*factor);
 		this.elementView.getModelView().getFileExportControl().setSaved(false);
@@ -91,14 +92,14 @@ public abstract class ElementControl {
 		this.elementView.setDifferenceHeight(this.elementView.getDifferenceHeight() * factor);
 	}
 	
-	public void isMoved(final double x, final double y) {
+	public void isMoved(double x, double y) {
 		this.elementView.setWidthHeight(x + this.elementView.getDifferenceWidth(), y + this.elementView.getDifferenceHeight());
 		for(ElementView eV : this.elementView.getElements()) {
 			eV.isMoved(this.elementView.getWidthHeight().getX(), this.elementView.getWidthHeight().getY());
 		}
 	}
 	
-	public boolean equals(final Object object) {
+	public boolean equals(Object object) {
 		if(!super.equals(object)  ) {
 			return false;
 		}

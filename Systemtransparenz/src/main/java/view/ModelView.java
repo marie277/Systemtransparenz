@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.Node;
 
 public class ModelView extends Pane implements Zoom {
+	
 	private LinkedList<ApplicationView> applications;
 	private LinkedList<RelationView> relations;
 	private ModelControl modelControl;
@@ -24,7 +25,6 @@ public class ModelView extends Pane implements Zoom {
 	private FileExportControl fileExportControl;
 	private ZoomControl zoomControl;
 	private ImageExportControl imageExportControl;
-
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ModelView() {
@@ -32,6 +32,7 @@ public class ModelView extends Pane implements Zoom {
 		this.modelName = (StringProperty)new SimpleStringProperty((Object)this, "modelName", "Neues Modell");
 		this.elementView = (ObjectProperty<ElementView>)new SimpleObjectProperty((Object)this, "elementView", (Object)null);
 		this.fileExportControl = new FileExportControl(this);
+		this.imageExportControl = new ImageExportControl(this);
 		this.modelControl = new ModelControl(this);
 		this.applications = new LinkedList<ApplicationView>();
 		this.relations = new LinkedList<RelationView>();

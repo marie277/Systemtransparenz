@@ -55,35 +55,19 @@ public class ImageExportControl {
 	private Dimension2D imageDimensions() {
 		Dimension2D dimensions = new Dimension2D(0.0, 0.0);
 		for(ApplicationView applicationView : this.modelView.getApplications()) {
-			double applicationPositionX = applicationView.getWidthHeight().getX();
-			double applicationWidth = applicationView.getWidth();
-			double dimensionsWidth = dimensions.getWidth();
-			boolean applicationWider = applicationPositionX + applicationWidth > dimensionsWidth;
-			double applicationPositionY = applicationView.getWidthHeight().getY();
-			double applicationHeight = applicationView.getWidth();
-			double dimensionsHeight = dimensions.getHeight();
-			boolean applicationHigher = applicationPositionY + applicationHeight > dimensionsHeight;
-			if(applicationWider) {
-				dimensions = new Dimension2D(applicationPositionX + applicationWidth, dimensionsHeight);
+			if(applicationView.getWidthHeight().getX() + applicationView.getWidth() > dimensions.getWidth()) {
+				dimensions = new Dimension2D(applicationView.getWidthHeight().getX() + applicationView.getWidth(), dimensions.getHeight());
 			}
-			if(applicationHigher) {
-				dimensions = new Dimension2D(dimensionsWidth, applicationPositionY + applicationHeight);
+			if(applicationView.getWidthHeight().getY() + applicationView.getHeight() > dimensions.getHeight()) {
+				dimensions = new Dimension2D(dimensions.getWidth(), applicationView.getWidthHeight().getY() + applicationView.getHeight());
 			}
 		}
 		for(RelationView relationView : this.modelView.getRelations()) {
-			double relationPositionX = relationView.getWidthHeight().getX();
-			double relationWidth = relationView.getWidth();
-			double dimensionsWidth = dimensions.getWidth();
-			boolean relationWider = relationPositionX + relationWidth > dimensionsWidth;
-			double relationPositionY = relationView.getWidthHeight().getY();
-			double relationHeight = relationView.getWidth();
-			double dimensionsHeight = dimensions.getHeight();
-			boolean relationHigher = relationPositionY + relationHeight > dimensionsHeight;
-			if(relationWider) {
-				dimensions = new Dimension2D(relationPositionX + relationWidth, dimensionsHeight);
+			if(relationView.getWidthHeight().getX() + relationView.getWidth() > dimensions.getWidth()) {
+				dimensions = new Dimension2D(relationView.getWidthHeight().getX() + relationView.getWidth(), dimensions.getHeight());
 			}
-			if(relationHigher) {
-				dimensions = new Dimension2D(dimensionsWidth, relationPositionY + relationHeight);
+			if(relationView.getWidthHeight().getY() + relationView.getHeight() > dimensions.getHeight()) {
+				dimensions = new Dimension2D(dimensions.getWidth(), relationView.getWidthHeight().getY() + relationView.getHeight());
 			}
 		}
 		dimensions = new Dimension2D(dimensions.getWidth()+20.0, dimensions.getHeight()+20.0);
