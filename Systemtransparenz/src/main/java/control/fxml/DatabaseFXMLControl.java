@@ -1,6 +1,5 @@
 package control.fxml;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,16 +9,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import application.Main;
 import control.MainControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -27,8 +22,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
-import view.ApplicationView;
 
+//Klasse zur Steuerung des Imports von Anwendungen aus einer Datenbank, implementiert Interface Initializable
 public class DatabaseFXMLControl implements Initializable {
 	
 	private static DatabaseFXMLControl databaseFXMLControl;
@@ -39,11 +34,11 @@ public class DatabaseFXMLControl implements Initializable {
 	private int portNumber;
 	private String dataBase;
 	private String tableName;
-	private LinkedList<ApplicationModel> returnValues;
+	private LinkedList<ApplicationModel> applications;
 	private ObservableList<ApplicationModel> applicationsList;
 	
 	@FXML
-	private ScrollPane scroll_pane;
+	private ScrollPane scrollPane;
 	@FXML
 	private TextField username;
 	@FXML
@@ -57,7 +52,7 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private TextField table;
 	@FXML
-    private TableColumn<ApplicationModel, String> applications;
+    private TableColumn<ApplicationModel, String> applicationsColumn;
 	@FXML
 	private Button cancel;
 	@FXML
@@ -65,10 +60,12 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
+	//Konstruktor
 	public DatabaseFXMLControl() {
 		
 	}
 	
+	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
 	public static DatabaseFXMLControl getDatabaseFXMLControl(){
         if (databaseFXMLControl == null) {
         	databaseFXMLControl = new DatabaseFXMLControl();
@@ -76,58 +73,46 @@ public class DatabaseFXMLControl implements Initializable {
         return databaseFXMLControl;
     }
 	
+	//Methode zum Schließen des Import-Fensters
 	@FXML
-    void cancel(ActionEvent event) {
-        this.scroll_pane.getScene().getWindow().hide();
+    private void cancel(ActionEvent event) {
+        this.scrollPane.getScene().getWindow().hide();
     }
 	
+	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
 	@FXML
-	void load(ActionEvent event) {
+	private void load(ActionEvent event) {
 		this.initializePostgresqlDatabase();
-		//this.importApplications();
-		this.applications.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
+		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
         for (ApplicationModel aM : this.importApplications()) {
             applicationsList.add(aM);
-            
         }
-        this.applications.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
+        this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
 	}
     
+	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
 	@FXML
-    void submit(ActionEvent event) {
-        if (this.importApplications().size() != 0) {
-        	for(ApplicationModel aM : this.applicationsList) {
-        		MainControl.getMainControl().addApplication(aM.getApplicationName());
-        	}
-        	
-        }
-        else {
-            this.showException(new Exception("Es sind keine Anwendungen in der ausgewählten Tabelle vorhanden."));
-        }
+    private void submit(ActionEvent event) {
+		try {
+	        if (this.importApplications().size() != 0) {
+	        	for(ApplicationModel aM : this.applicationsList) {
+	        		MainControl.getMainControl().addApplication(aM.getApplicationName());
+	        	}
+	        }
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			if (!e.getClass().equals(NullPointerException.class)) {
+	            Alert alertError = new Alert(Alert.AlertType.ERROR);
+	            alertError.setTitle("Fehler!");
+	            alertError.setHeaderText("Es sind keine Anwendungen in der ausgewählten Tabelle vorhanden.");
+	            alertError.show();
+	        }
+		}
     }
-    /*@FXML
-    void submit(ActionEvent event) {
-        this.initializePostgresqlDatabase();
-        this.getApplications();
-        if (this.importApplications().size() != 0) {
-            try {
-                this.scroll_pane.setContent((Node)this.loadNextFXMLFile());
-            }
-            catch (IOException e) {
-                this.showException(e);
-            }
-        }
-        else {
-            this.showException(new Exception("Es konnte keine Datenbank-Verbindung hergestellt werden."));
-        }
-    }*/
     
-    /*private Parent loadNextFXMLFile() throws IOException {
-        Parent nextFXMLFile = (Parent)FXMLLoader.load(Main.class.getResource("dataImport.fxml"));
-        return nextFXMLFile;
-    }*/
-    
+	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
     public void initializePostgresqlDatabase() {
     	this.hostUrl = this.host.getText();
     	this.portNumber = Integer.parseInt(this.port.getText());
@@ -139,50 +124,43 @@ public class DatabaseFXMLControl implements Initializable {
             DriverManager.registerDriver(new org.postgresql.Driver());
             connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
             System.out.println("DB connected");
-        } catch (SQLException | IllegalArgumentException ex) {
-            ex.printStackTrace(System.err);
-        } finally {
-            if (connection == null) {
-                System.exit(-1);
-            }
+        } catch(Exception e){
+        	e.printStackTrace();
+        	if (!e.getClass().equals(IllegalArgumentException.class)) {
+                Alert alertError = new Alert(Alert.AlertType.ERROR);
+                alertError.setTitle("Fehler!");
+                alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");
+                alertError.show();
+            }  
         }
     }
     
-    private void showException(Exception e) {
-        if (!e.getClass().equals(NullPointerException.class)) {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Fehler!");
-            error.setHeaderText(e.getMessage());
-            error.show();
-        }
-        e.printStackTrace();
-    }
-    
+    //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
-		// TODO Auto-generated method stub
 		try {
 			this.tableName = this.table.getText();
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM " + tableName);
-            ResultSet sqlReturnValues = stmt.executeQuery();
-
-            returnValues = new LinkedList<>();
-
-            while (sqlReturnValues.next()){
-                returnValues.add(new ApplicationModel(sqlReturnValues.getString(2)));
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + tableName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            applications = new LinkedList<>();
+            while (resultSet.next()){
+                applications.add(new ApplicationModel(resultSet.getString(2)));
             }
-            for(ApplicationModel aM : returnValues) {
-            	System.out.print(aM.getApplicationName());
+            return applications;
+        } catch(Exception e) {
+        	e.printStackTrace();
+			if (!e.getClass().equals(SQLException.class)) {
+                Alert alertError = new Alert(Alert.AlertType.ERROR);
+                alertError.setTitle("Fehler!");
+                alertError.setHeaderText("Es konnte keine Anwendungen importiert werden.");
+                alertError.show();
             }
-            return returnValues;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
+		}
 		return null;
 	}
     
+    //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		// TODO Auto-generated method stub
 		
 	}
 

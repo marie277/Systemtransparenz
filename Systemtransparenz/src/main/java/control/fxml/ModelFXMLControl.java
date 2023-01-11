@@ -8,12 +8,10 @@ import application.Main;
 import control.MainControl;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -28,48 +26,49 @@ import view.ElementView;
 import view.ModelView;
 import view.RelationView;
 
+//Klasse zur Steuerung der Erstellung und Bearbeitung eines Modells, implementiert Interface Initializable
 public class ModelFXMLControl implements Initializable{
 
 	@FXML
-	private MenuItem create_model;
+	private MenuItem createModel;
 	@FXML
-	private MenuItem open_model;
+	private MenuItem openModel;
 	@FXML
-	private MenuItem save_model;
+	private MenuItem saveModel;
 	@FXML
-	private MenuItem save_model_as;
+	private MenuItem saveModelAs;
 	@FXML
-	private MenuItem rename_model;
+	private MenuItem renameModel;
 	@FXML
-	private MenuItem close_model;
+	private MenuItem closeModel;
 	@FXML
-	private MenuItem save_image;
+	private MenuItem saveImage;
 	@FXML
 	private MenuItem quit;
 	@FXML
-	private MenuItem import_applications;
+	private MenuItem importApplications;
 	@FXML
-	private MenuItem add_relation;
+	private MenuItem addRelation;
 	@FXML
-	private MenuItem delete_relation;
+	private MenuItem deleteRelation;
 	@FXML
-	private MenuItem add_application;
+	private MenuItem addApplication;
 	@FXML
-	private MenuItem delete_application;
+	private MenuItem deleteApplication;
 	@FXML
-	private MenuItem zoom_in;
+	private MenuItem zoomIn;
 	@FXML
-	private MenuItem zoom_out;
+	private MenuItem zoomOut;
 	@FXML
-	private MenuItem open_help;
+	private MenuItem openHelp;
 	@FXML
-	private Button create_application;
+	private Button createApplication;
 	@FXML
-	private Button remove_application;
+	private Button removeApplication;
 	@FXML
-	private Button create_relation;
+	private Button createRelation;
 	@FXML
-	private Button remove_realtion;
+	private Button removeRelation;
 	@FXML
 	private TabPane model;
 	@FXML
@@ -79,216 +78,235 @@ public class ModelFXMLControl implements Initializable{
 	private ObjectProperty<ModelView> modelView;
 	private ObjectProperty<ElementView> elementView;
 	
+	//Methode zum Verlassen der Anwendung
 	@FXML
-	public void quit(final ActionEvent event) {
+	public void quit(ActionEvent event) {
 		this.mainControl.quit();
 	}
 	
+	//Methode zum Ändern eines Modell-Namens
 	@FXML
 	public void renameModel(ActionEvent event) {
 		this.mainControl.renameModel();
 	}
 	
+	//Methode zum Öffnen eines Modells
 	@FXML
 	public void openModel(ActionEvent event) {
 		try {
 			this.mainControl.openModel();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Erstellen eines Modells
 	@FXML
 	public void createModel(ActionEvent event) {
 		this.mainControl.createModel();
 	}
 	
+	//Methode zum Schließen eines Modells
 	@FXML
 	public void closeModel(ActionEvent event) {
 		this.mainControl.closeModel();
 	}
 	
+	//Methode zum Speichern eines Modells
 	@FXML
 	public void saveModel(ActionEvent event) {
 		try {
 			this.mainControl.saveModel();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Speichern eines Modells unter Auswahl des Pfads
 	@FXML
 	public void saveModelAs(ActionEvent event) {
 		try {
 			this.mainControl.saveModelAs();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
-	
+	//Methode zum Speichern eines Modells als Bild-Datei
 	@FXML
 	public void saveImage(ActionEvent event) {
 		try {
 			this.mainControl.saveImage();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Öffnen des Fensters für den Anwendungs-Import
 	@FXML
 	public void openApplicationImport(ActionEvent event) {
 		try {
 			this.mainControl.importApplications();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Öffnen des Fensters für die Hilfestellung
 	@FXML
 	public void openHelp(ActionEvent event) {
 		try {
 			this.mainControl.openHelp();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Öffnen des Fensters für das Anlegen einer Beziehung
 	@FXML
 	public void addRelation(ActionEvent event) {
 		try {
 			this.mainControl.addRelation();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Entfernen einer ausgewählten Beziehung
 	@FXML
 	public void deleteRelation(ActionEvent event) {
 		try {
 			this.mainControl.deleteRelation();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Anlegen einer neuen Anwendung
 	@FXML
 	public void addApplication(ActionEvent event) {
 		try {
 			this.mainControl.addApplication();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Löschen einer ausgewählten Anwendung
 	@FXML
 	public void deleteApplication(ActionEvent event) {
 		try {
 			this.mainControl.deleteApplication();
-		}
-		catch(Exception e) {
-			this.showException(e);
+		} catch(Exception e) {
+			e.printStackTrace();
+			if(!e.getClass().equals(NullPointerException.class)) {
+				Alert alertError = new Alert(Alert.AlertType.ERROR);
+				alertError.setTitle("Fehler!");
+				alertError.setHeaderText(e.getMessage());
+				alertError.show();
+			}
 		}
 	}
 	
+	//Methode zum Vergrößern der Modell-Ansicht
 	@FXML
 	public void zoomIn(ActionEvent event) {
 		this.mainControl.zoomIn();
 	}
 	
+	//Methode zum Verkleinern der Modell-Ansicht
 	@FXML
 	public void zoomOut(ActionEvent event) {
 		this.mainControl.zoomOut();
 	}
 	
+	//Methode zum Öffnen des Fensters für den Anwendungs-Import
 	@FXML
-	public void importApplications(ActionEvent event) throws IOException {
+	public void importApplications(ActionEvent event) throws IOException, IllegalAccessException {
 		this.mainControl.importApplications();
 	}
 	
+	//Getter-Methode für die Fläche des aktuellen Modells 
 	public TabPane getTabPane(){
 		return this.model;
 	}
 	
+	//Getter-Methode für die Modell-Ansicht
 	public ModelView getModelView() {
 		return this.modelView.get();
 	}
-	
-	private void showEmptyTabPane() {
-		this.model.setContextMenu(null);
-		setDisable(true);
-	}
-	
-	private void showModelView() {
-		ContextMenu menu = new ContextMenu();
-		this.model.setContextMenu(menu);
-		setDisable(false);
-	}
-	
-	private void editSelectedElementView(ElementView elementView) throws IOException {
-        if (elementView == null) {
-            this.details.setContent((Node)new BorderPane());
-        }
-        else if (elementView.getClass().equals(ApplicationView.class)) {
-            Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
-            this.details.setContent((Node)parent);
-        }
-        else if (elementView.getClass().equals(RelationView.class)) {
-            Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
-            this.details.setContent((Node)parent);
-        }
-        this.disableButtons();
-        if (elementView != null) {
-            this.enableButtons(elementView);
-        }
-    }
-   
-	private void enableButtons(ElementView elementView) {
-		if (elementView.getClass().equals(ApplicationView.class)) {
-            this.delete_application.setDisable(false);
-        }
-        else if (elementView.getClass().equals(RelationView.class)) {
-            this.delete_relation.setDisable(false);
-        }
-	}
 
-	private void disableButtons() {
-		this.delete_application.setDisable(true);
-		this.delete_relation.setDisable(true);
-	}
-
+	//Methode zum Deaktivieren von Menüpunkten
 	private void setDisable(boolean b) {
-		this.save_model.setDisable(b);
-		this.save_model_as.setDisable(b);
-		this.rename_model.setDisable(b);
-		this.close_model.setDisable(b);
-		this.save_image.setDisable(b);
-		this.import_applications.setDisable(b);
-		this.add_relation.setDisable(b);
-		this.delete_relation.setDisable(b);
-		this.add_application.setDisable(b);
-		this.delete_application.setDisable(b);
+		this.saveModel.setDisable(b);
+		this.saveModelAs.setDisable(b);
+		this.renameModel.setDisable(b);
+		this.closeModel.setDisable(b);
+		this.saveImage.setDisable(b);
+		this.importApplications.setDisable(b);
+		this.addRelation.setDisable(b);
+		this.deleteRelation.setDisable(b);
+		this.addApplication.setDisable(b);
+		this.deleteApplication.setDisable(b);
+		this.zoomIn.setDisable(b);
+		this.zoomOut.setDisable(b);
 	}
 	
-	private void showException(Exception e) {
-		if(!e.getClass().equals(NullPointerException.class)) {
-			final Alert error = new Alert(Alert.AlertType.ERROR);
-			error.setTitle("Fehler!");
-			error.setHeaderText(e.getMessage());
-			error.show();
-		}
-		e.printStackTrace();
-	}
-	
+	//Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.mainControl = MainControl.getMainControl(this);
@@ -303,29 +321,48 @@ public class ModelFXMLControl implements Initializable{
                 this.modelView.set(null);
             }
         });
-        this.elementView = (ObjectProperty<ElementView>)new SimpleObjectProperty<ElementView>((Object)this, "selektierteKomponente", (ElementView)null);
-        (this.modelView = (ObjectProperty<ModelView>)new SimpleObjectProperty<ModelView>((Object)this, "aktivesProjekt", (ModelView)null)).addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
-                this.elementView.unbind();
-                this.elementView.set(null);
-                this.showEmptyTabPane();
+        this.modelView = new SimpleObjectProperty<ModelView>(this, "selected", null);
+        this.modelView.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+            	this.elementView.unbind();
+                this.elementView.bind(newValue.getSelectedElementProperty());
+                ContextMenu menu = new ContextMenu();
+        		this.model.setContextMenu(menu);
+        		this.setDisable(false);
             }
             else {
                 this.elementView.unbind();
-                this.elementView.bind((ObservableValue<ElementView>)newValue.selectedElementProperty());
-                this.showModelView();
+                this.elementView.set(null);
+                this.model.setContextMenu(null);
+        		this.setDisable(true);
             }
         });
+        this.elementView = new SimpleObjectProperty<ElementView>(this, "selected", null);
         this.elementView.addListener((observable, oldValue, newValue) -> {
             try {
-                this.editSelectedElementView(newValue);
-            }
-            catch (Exception e) {
-                this.showException(e);
+                if (newValue == null) {
+                    this.details.setContent(new BorderPane());
+                }
+                else if (newValue.getClass().equals(ApplicationView.class)) {
+                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
+                    this.details.setContent(parent);
+                }
+                else if (newValue.getClass().equals(RelationView.class)) {
+                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
+                    this.details.setContent(parent);
+                }
+            } catch (Exception e) {
+            	e.printStackTrace();
+    			if(!e.getClass().equals(NullPointerException.class)) {
+    				Alert alertError = new Alert(Alert.AlertType.ERROR);
+    				alertError.setTitle("Fehler!");
+    				alertError.setHeaderText(e.getMessage());
+    				alertError.show();
+    			}
             }
         });
-        this.showEmptyTabPane();
-        this.disableButtons();
+        this.model.setContextMenu(null);
+		this.setDisable(true);
 	}
 
 }

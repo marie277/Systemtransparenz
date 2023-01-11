@@ -1,61 +1,39 @@
 package control.edit;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.BooleanPropertyBase;
-import javafx.css.PseudoClass;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
+//Klasse zur Präsentation einer Anwendung als gegliederte Fläche, beerbt Klasse BorderPane
 public class ApplicationBorderPane extends BorderPane {
 
-	protected static final PseudoClass SELECTED;
 	private BooleanProperty selected;
-
-	static {
-		SELECTED = PseudoClass.getPseudoClass("selected");
-	}
 	
+	//Konstruktor
 	public ApplicationBorderPane() {
 		
 	}
 	
+	//Zweiter Konstruktor
 	public ApplicationBorderPane(Node node) {
 		super(node);
 	}
 	
-	public boolean isSelected() {
-		return this.selected != null && this.selected.get();
-	}
-	
-	public void setSelected(boolean selected) {
-		this.selectedProperty().set(selected);
-	}
-	
-	public BooleanProperty selectedProperty() {
+	//Getter-Methode für das Property der Auswahl
+	public BooleanProperty getSelectedProperty() {
 		if(this.selected == null) {
-			this.selected = (BooleanProperty)new BooleanPropertyBase() {
-                protected void invalidated() {
-                    ApplicationBorderPane.this.pseudoClassStateChanged(ApplicationBorderPane.SELECTED, this.get());
-                }
-                
-                public String getName() {
-                    return "selected";
-                }
-                
-                public Object getBean() {
-                    return this;
-                }
-            };
+			this.selected = new SimpleBooleanProperty(this, "selected", false);
 		}
 		return this.selected;
 	}
 	
 	public boolean equals(Object object) {
-		if (!super.equals(object)) {
+        if (!super.equals(object)) {
             return false;
         }
         ApplicationBorderPane applicationBorderPane = (ApplicationBorderPane)object;
-        return this.selected == null || this.selected.equals(applicationBorderPane.selectedProperty());
-	}
+        return this.selected == null || this.selected.equals(applicationBorderPane.getSelectedProperty());
+    }
 
 }

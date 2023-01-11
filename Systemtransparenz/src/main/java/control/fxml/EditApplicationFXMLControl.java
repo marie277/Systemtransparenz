@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import view.ApplicationView;
 
+//Klasse zur Steuerung der Bearbeitung einer ausgewählten Anwendung, implementiert Interface Initializable
 public class EditApplicationFXMLControl implements Initializable {
 	
 	private ApplicationView applicationView;
@@ -20,35 +21,31 @@ public class EditApplicationFXMLControl implements Initializable {
     @FXML
     private Button submit;
     
+    //Methode zur Bearbeitung einer ausgewählten Anwendung
     @FXML
-    void editApplication(ActionEvent event) {
+    private void editApplication(ActionEvent event) {
+    	String applicationNameView = this.applicationView.getApplicationModel().getApplicationName();
         try {
-            if (!this.applicationName.getText().equals(this.applicationView.getApplicationModel().getApplicationName())) {
-                this.renameApplication();
+            if (!this.applicationName.getText().equals(applicationNameView)) {
+                this.applicationView.getModelView().getModelControl().renameApplication(this.applicationView, this.applicationName.getText());
             }
         }
         catch (Exception e) {
-            this.showException(e);
+        	e.printStackTrace();
+        	if (!e.getClass().equals(NullPointerException.class)) {
+                Alert alertEerror = new Alert(Alert.AlertType.ERROR);
+                alertEerror.setTitle("Fehler!");
+                alertEerror.setHeaderText(e.getMessage());
+                alertEerror.show();
+            }
         }
     }
     
-    private void renameApplication() throws IllegalArgumentException {
-        this.applicationView.getModelView().getModelControl().renameApplication(this.applicationView, this.applicationName.getText());
-    }
-    
-    private void showException(Exception e) {
-        if (!e.getClass().equals(NullPointerException.class)) {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Fehler!");
-            error.setHeaderText(e.getMessage());
-            error.show();
-        }
-        e.printStackTrace();
-    }
-
+    //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
         this.applicationView = (ApplicationView) MainControl.getMainControl().getSelectedElementView();
-        this.applicationName.setText(this.applicationView.getApplicationModel().getApplicationName());
+        String applicationNameView = this.applicationView.getApplicationModel().getApplicationName();
+        this.applicationName.setText(applicationNameView);
 	}
 }

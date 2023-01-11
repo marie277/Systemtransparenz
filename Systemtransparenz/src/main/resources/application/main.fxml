@@ -23,36 +23,36 @@
       <menus>
         <Menu fx:id="data" mnemonicParsing="false" text="Datei">
           <items>
-            <MenuItem fx:id="create_model" mnemonicParsing="false" onAction="#createModel" text="Modell anlegen" />
-            <MenuItem fx:id="open_model" mnemonicParsing="false" onAction="#openModel" text="Modell öffnen" />
+            <MenuItem fx:id="createModel" mnemonicParsing="false" onAction="#createModel" text="Modell anlegen" />
+            <MenuItem fx:id="openModel" mnemonicParsing="false" onAction="#openModel" text="Modell öffnen" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="save_model" mnemonicParsing="false" onAction="#saveModel" text="Speichern" />
-            <MenuItem fx:id="save_model_as" mnemonicParsing="false" onAction="#saveModelAs" text="Speichern als..." />
-            <MenuItem fx:id="rename_model" mnemonicParsing="false" onAction="#renameModel" text="Modell umbenennen" />
-            <MenuItem fx:id="close_model" mnemonicParsing="false" onAction="#closeModel" text="Modell schließen" />
+            <MenuItem fx:id="saveModel" mnemonicParsing="false" onAction="#saveModel" text="Speichern" />
+            <MenuItem fx:id="saveModelAs" mnemonicParsing="false" onAction="#saveModelAs" text="Speichern als..." />
+            <MenuItem fx:id="renameModel" mnemonicParsing="false" onAction="#renameModel" text="Modell umbenennen" />
+            <MenuItem fx:id="closeModel" mnemonicParsing="false" onAction="#closeModel" text="Modell schließen" />
  			<SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="save_image" mnemonicParsing="false" onAction="#saveImage" text="Bild speichern" />
+            <MenuItem fx:id="saveImage" mnemonicParsing="false" onAction="#saveImage" text="Bild speichern" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="quit" mnemonicParsing="false" onAction="#quit" text="Beenden" />
           </items>
         </Menu>
         <Menu fx:id="edit" mnemonicParsing="false" text="Bearbeiten">
           <items>
-                  <MenuItem fx:id="import_applications" mnemonicParsing="false" onAction="#importApplications" text="Anwendungen importieren" />
+                  <MenuItem fx:id="importApplications" mnemonicParsing="false" onAction="#importApplications" text="Anwendungen importieren" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="add_relation" mnemonicParsing="false" onAction="#addRelation" text="Relation anlegen" />
-            <MenuItem fx:id="delete_relation" mnemonicParsing="false" onAction="#deleteRelation" text="Relation entfernen" />
+            <MenuItem fx:id="addRelation" mnemonicParsing="false" onAction="#addRelation" text="Relation anlegen" />
+            <MenuItem fx:id="deleteRelation" mnemonicParsing="false" onAction="#deleteRelation" text="Relation entfernen" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="add_application" mnemonicParsing="false" onAction="#addApplication" text="Anwendung anlegen" />
-            <MenuItem fx:id="delete_application" mnemonicParsing="false" onAction="#deleteApplication" text="Anwendung entfernen" />
+            <MenuItem fx:id="addApplication" mnemonicParsing="false" onAction="#addApplication" text="Anwendung anlegen" />
+            <MenuItem fx:id="deleteApplication" mnemonicParsing="false" onAction="#deleteApplication" text="Anwendung entfernen" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="zoom_in" mnemonicParsing="false" onAction="#zoomIn" text="Ansicht vergrößern" />
-            <MenuItem fx:id="zoom_out" mnemonicParsing="false" onAction="#zoomOut" text="Ansicht verkleinern" />
+            <MenuItem fx:id="zoomIn" mnemonicParsing="false" onAction="#zoomIn" text="Ansicht vergrößern" />
+            <MenuItem fx:id="zoomOut" mnemonicParsing="false" onAction="#zoomOut" text="Ansicht verkleinern" />
           </items>
         </Menu>
         <Menu fx:id="help" mnemonicParsing="false" text="Hilfe">
           <items>
-            <MenuItem fx:id="open_help" mnemonicParsing="false" onAction="#openHelp" text="Tutorial" />
+            <MenuItem fx:id="openHelp" mnemonicParsing="false" onAction="#openHelp" text="Tutorial" />
           </items>
         </Menu>
       </menus>
@@ -77,12 +77,12 @@
                                         <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                                       </textFill>
                                     </Label>
-                                          <Button fx:id="create_application" alignment="TOP_LEFT" contentDisplay="TOP" mnemonicParsing="false" onAction="#addApplication" text="Anlegen">
+                                          <Button fx:id="createApplication" alignment="TOP_LEFT" contentDisplay="TOP" mnemonicParsing="false" onAction="#addApplication" text="Anlegen">
                                              <VBox.margin>
                                                 <Insets left="22.0" top="40.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <Button fx:id="remove_application" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#deleteApplication" text="Entfernen">
+                                          <Button fx:id="removeApplication" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#deleteApplication" text="Entfernen">
                                              <VBox.margin>
                                                 <Insets left="19.0" top="40.0" />
                                              </VBox.margin>
@@ -103,12 +103,12 @@
                                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
                                              </textFill>
                                           </Label>
-                                          <Button fx:id="create_relation" mnemonicParsing="false" onAction="#addRelation" text="Anlegen">
+                                          <Button fx:id="createRelation" mnemonicParsing="false" onAction="#addRelation" text="Anlegen">
                                              <VBox.margin>
                                                 <Insets left="22.0" top="40.0" />
                                              </VBox.margin>
                                           </Button>
-                                          <Button fx:id="remove_relation" mnemonicParsing="false" onAction="#deleteRelation" text="Entfernen">
+                                          <Button fx:id="removeRelation" mnemonicParsing="false" onAction="#deleteRelation" text="Entfernen">
                                              <VBox.margin>
                                                 <Insets left="19.0" top="40.0" />
                                              </VBox.margin>
@@ -123,7 +123,7 @@
               </AnchorPane>
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="600" prefWidth="800">
               <children>
-                    <ScrollPane prefHeight="900" prefWidth="1200">
+                    <ScrollPane prefHeight="840" prefWidth="1128">
                            <content>
                               <TabPane fx:id="model" tabClosingPolicy="UNAVAILABLE" />
                            </content>
@@ -132,7 +132,7 @@
             </AnchorPane>
               <AnchorPane prefHeight="551.0" prefWidth="158.0">
                 <children>
-                        <ScrollPane fx:id="details" prefHeight="900.0" prefWidth="200.0">
+                        <ScrollPane fx:id="details" prefHeight="840.0" prefWidth="200.0">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="899.0" prefWidth="200.0">
                                  <children>

@@ -4,44 +4,44 @@ import java.util.LinkedList;
 
 import control.MainControl;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import view.ApplicationView;
 
+//Klasse zur Speicherung der Daten der beiden Anwendungen, welche zu einer Beziehung gehören
 public class AssociatesModel {
 	
 	private Text applicationName;
-    //private ComboBox<String> relationType;
     
-    public AssociatesModel(Text applicationName/*, ComboBox<String> relationType*/) {
+	//Konstruktor
+    public AssociatesModel(Text applicationName) {
         this.applicationName = applicationName;
-        //this.relationType = relationType;
     }
     
+    //Getter-Methode für die an einer Beziehung beteiligten Anwendungen
     public ApplicationInRelation getApplicationInRelation() throws Exception {
-        ApplicationView aV = this.getApplicationView();
-        if (aV == null) {
-            throw new Exception("Achtung! Es sind keine Anwendungen vorhanden.");
-        }
-        ApplicationInRelation applicationInRelation = new ApplicationInRelation(aV);
-        //applicationInRelation.setTypeOfRelation(((String)this.relationType.getSelectionModel().getSelectedItem()).equals("Verknüpft mit"));
-        return applicationInRelation;
-    }
-    
-    private ApplicationView getApplicationView() {
-        ObservableList<ApplicationModel> applications = MainControl.getMainControl().getSelectedApplications();
+        ApplicationView applicationView = null;
         ApplicationModel applicationModel = null;
-        for (ApplicationModel aM : applications) {
-            if (aM.getApplicationName().equals(this.applicationName.getText())) {
-                applicationModel = aM;
+        ObservableList<ApplicationModel> applications = MainControl.getMainControl().getSelectedApplications();
+        for (ApplicationModel applicationModelAss : applications) {
+            if (applicationModelAss.getApplicationName().equals(this.applicationName.getText())) {
+                applicationModel = applicationModelAss;
+                
             }
         }
         LinkedList<ApplicationView> applicationViews = MainControl.getMainControl().getModelView().getApplications();
-        for (ApplicationView aV : applicationViews) {
-            if (aV.getApplicationModel().equals(applicationModel)) {
-                return aV;
+        for (ApplicationView applicationViewAss : applicationViews) {
+            if (applicationViewAss.getApplicationModel().equals(applicationModel)) {
+                applicationView = applicationViewAss;
             }
         }
-        return null;
+        ApplicationInRelation applicationInRelation;
+        if (applicationView != null) {
+        	applicationInRelation = new ApplicationInRelation(applicationView);
+        }
+        else {
+        	throw new Exception("Achtung! Es sind keine Anwendungen vorhanden.");
+        }
+        return applicationInRelation;
     }
+
 }

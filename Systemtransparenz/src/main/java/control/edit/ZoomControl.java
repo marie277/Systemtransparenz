@@ -2,24 +2,24 @@ package control.edit;
 
 import java.util.LinkedList;
 
+//Klasse zur Steuerung der Ansichtsvergrößerung von Elementen
 public class ZoomControl {
 
-	private LinkedList<Zoom> objects;
 	private int zoomCounter;
+	private LinkedList<Zoom> objects;
 	
+	//Konstruktor
 	public ZoomControl() {
 		this.zoomCounter = 0;
 		this.objects = new LinkedList<Zoom>();
 	}
 	
+	//Getter-Methode für den Zähler der Ansichts-Vergrößerungen bzw. -Verkleinerungen
 	public int getZoomCounter() {
 		return this.zoomCounter;
 	}
 
-	public void setZoomCounter(int zoomCounter) {
-		this.zoomCounter = zoomCounter;
-	}
-
+	//Methode zum Berücksichtigen eines Elements bei der Ansichts-Vergrößerung bzw. -Verkleinerung
 	public void addObject(Zoom zoom) {
 		this.objects.add(zoom);
 		double factor;
@@ -34,8 +34,9 @@ public class ZoomControl {
 		}
 	}
 
+	//Methode zum Entfernen eines berücksichtigten Elements bei der Ansichts-Vergrößerung bzw. -Verkleinerung
 	public void removeObject(Zoom zoom) {
-		this.objects.add(zoom);
+		this.objects.remove(zoom);
 		double factor;
 		if(this.zoomCounter>=1) {
 			factor = 0.8;
@@ -47,22 +48,22 @@ public class ZoomControl {
 			zoom.zoom(factor);
 		}
 	}
-
-	private void zoom(double factor) {
-		for(Zoom zoom: this.objects) {
-			zoom.zoom(factor);
-		}
-	}
 	
+	//Methode zur Durchführung einer Ansichts-Vergrößerung
 	public void zoomIn() {
 		this.zoomCounter++;
-		this.zoom(1.2);
+		for(Zoom zoom: this.objects) {
+			zoom.zoom(1.2);
+		}
 	}
 
+	//Methode zur Durchführung einer Ansichts-Verkleinerung
 	public void zoomOut() {
 		if(this.zoomCounter>=-10) {
 			this.zoomCounter--;
-			this.zoom(0.8);
+			for(Zoom zoom: this.objects) {
+				zoom.zoom(0.8);
+			}
 		}
 	}
 

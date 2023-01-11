@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="scroll_pane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.DatabaseFXMLControl">
+<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.DatabaseFXMLControl">
    <content>
 		<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
 		   <bottom>
@@ -150,7 +150,7 @@
                         <Label text="Vorschau:" />
                         <TableView prefHeight="183.0" prefWidth="190.0">
                           <columns>
-                            <TableColumn fx:id="applications" prefWidth="238.0" text="Anwendung" />
+                            <TableColumn fx:id="applicationsColumn" prefWidth="238.0" text="Anwendung" />
                           </columns>
                         </TableView>
                      </children>

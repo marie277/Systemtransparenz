@@ -2,75 +2,83 @@ package model;
 
 import java.util.LinkedList;
 
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+//Klasse zur Speicherung der Daten einer Anwendung
 public class RelationModel {
 
-	private String interfaceText;
-	private StringProperty interfaceName;
-	private static int idGenerator;
-	private ReadOnlyIntegerWrapper id;
+	private String relationText;
+	private StringProperty relationName;
+	private static int number = 0;
+	private IntegerProperty id;
 	private LinkedList<ApplicationInRelation> applicationsInRelation;
 	
-	static {
-		RelationModel.idGenerator = 0;
-	}
-	
+	//Konstruktor
 	public RelationModel(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication) {
-		int newID = RelationModel.idGenerator++;
-        this.id = new ReadOnlyIntegerWrapper((Object)this, "id", newID);
-        this.interfaceText = "Verknüpft mit";
-        (this.applicationsInRelation = new LinkedList<ApplicationInRelation>()).add(firstApplication);
+		this.applicationsInRelation = new LinkedList<ApplicationInRelation>();
+        this.applicationsInRelation.add(firstApplication);
         this.applicationsInRelation.add(secondApplication);
+		this.relationText = "Verknüpft mit";
+		int relationId = RelationModel.number++;
+        this.id = new SimpleIntegerProperty(this, "id", relationId); 
 	}
 
+	//Getter-Methode für die in einer Beziehung enthaltenen Anwendungen
 	public LinkedList<ApplicationInRelation> getApplications() {
 		return this.applicationsInRelation;
 	}
 	
-	public String getInterfaceText() {
-		if(this.interfaceName == null) {
-			return this.interfaceText;
+	//Getter-Methode für den Beziehungstext, welcher dem Beziehungstypen entspricht
+	public String getRelationText() {
+		if(this.relationName != null) {
+			return this.relationName.get();
 		}
 		else {
-			return this.interfaceName.get();
+			return this.relationText;
 		}
 	}
 	
-	public void setInterfaceText(String interfaceText) {
-		if(this.interfaceName != null) {
-			this.interfaceName.set(interfaceText);
+	//Setter-Methode für den Beziehungstext
+	public void setRelationText(String relationText) {
+		if(this.relationName != null) {
+			this.relationName.set(relationText);
 		}
 		else {
-			this.interfaceText = interfaceText;
+			this.relationText = relationText;
 		}
 	}
 	
-	public StringProperty interfaceNameProperty() {
-		if(this.interfaceName == null) {
-			this.interfaceName = (StringProperty)new SimpleStringProperty((Object)this, "Interface", this.interfaceText);
+	//Getter-Methode für das Property des Beziehungstexts
+	public StringProperty getRelationNameProperty() {
+		if(this.relationName == null) {
+			this.relationName = new SimpleStringProperty(this, "Relation", this.relationText);
 		}
-		return this.interfaceName;
+		return this.relationName;
 	}
 	
+	//Getter-Methode für die ID der beziehung
 	public int getId() {
 		return this.id.get();
 	}
 	
-	public ReadOnlyIntegerProperty idProperty() {
-		return this.id.getReadOnlyProperty();
+	//Getter-Methode für das Property der ID
+	public IntegerProperty getIdProperty() {
+		return this.id;
 	}
 	
+	//Methode zum Vergleich, ob eine Beziehung mit der hier gespeicherten übereinstimmt
 	@Override
 	public boolean equals(Object object) {
-		if(!super.equals(object)) {
+		RelationModel relationModel = (RelationModel)object;
+		if(super.equals(object) && this.getId() == relationModel.getId() && this.getRelationText().equals(relationModel.getRelationText()) && this.getApplications().equals(relationModel.getApplications())) {
+			return true;
+		}
+		else {
 			return false;
 		}
-		RelationModel rM = (RelationModel)object;
-		return this.getId() == rM.getId() && this.getInterfaceText().equals(rM.getInterfaceText()) && this.getApplications().equals(rM.getApplications());
 	}
-
+	
 }

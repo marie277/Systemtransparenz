@@ -6,7 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 
+//Main-Klasse
 public class Main extends Application {
+	
+	//Methode zum Starten der Anwendung
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -21,6 +24,7 @@ public class Main extends Application {
 		}
 	}
 	
+	//Main-Methode
 	public static void main(String[] args) {
 		launch(args);
 	}

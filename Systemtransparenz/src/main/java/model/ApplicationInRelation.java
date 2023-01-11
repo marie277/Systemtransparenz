@@ -3,101 +3,73 @@ package model;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import view.ApplicationView;
 import view.ModelView;
 
+//Klasse zur Speicherung der Daten einer Anwendung, welche Teil einer Beziehung ist
 public class ApplicationInRelation {
 	
-	private static int idGenerator;
 	private ApplicationView applicationView;
-	private BooleanProperty relationType;
-	private boolean typeOfRelation;
-	private ReadOnlyIntegerWrapper id;
+	private static int number = 0;
+	private IntegerProperty id;
 	
+	//Konstruktor
 	public ApplicationInRelation(ApplicationView applicationView) {
 		this.applicationView = applicationView;
-		int applicationId = ApplicationInRelation.idGenerator++;
-		this.id = new ReadOnlyIntegerWrapper((Object)this, "id", applicationId);
+		int applicationId = ApplicationInRelation.number++;
+		this.id = new SimpleIntegerProperty(this, "id", applicationId);
 	}
 	
+	//Getter-Methode für die zugehörige Anwendungs-Ansicht
 	public ApplicationView getApplicationView() {
 		return this.applicationView;
 	}
 	
-	public static ApplicationInRelation importApplicationFromRelationFromXML(Element item, ModelView modelView) {
+	//Methode zum Hinzufügen einer an einer Beziehung beteiligten Anwendung aus einem XML-Dokument, welches als Modell dargestellt wird
+	public static ApplicationInRelation importFromXML(Element item, ModelView modelView) {
 		ApplicationView applicationView = null;
-        for (ApplicationView aV : modelView.getApplications()) {
-            if (aV.getApplicationModel().getApplicationName().equals(item.getAttribute("BeziehungsteilnehmerAnwendung"))) {
-                applicationView = aV;
+		ApplicationInRelation applicationInRelation = null;
+        for (ApplicationView applicationViewRel : modelView.getApplications()) {
+        	String applicationName = applicationViewRel.getApplicationModel().getApplicationName();
+            if (applicationName.equals(item.getAttribute("BeziehungsteilnehmerAnwendung"))) {
+                applicationView = applicationViewRel;
                 break;
             }
         }
-        ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
-        applicationInRelation.setTypeOfRelation(Boolean.parseBoolean(item.getAttribute("BeziehungsteilnehmerTyp")));
+        applicationInRelation = new ApplicationInRelation(applicationView);
         return applicationInRelation;
 	}
 	
-	void setTypeOfRelation(boolean typeOfRelation) {
-		if(this.relationType != null) {
-			this.relationType.set(typeOfRelation);
-		}
-		else {
-			this.typeOfRelation = typeOfRelation;
-		}
-		this.applicationView.getModelView().getFileExportControl().setSaved(false);
-	}
-	
+	//Methode zur Erstellung einer Anwendung als Teil einer Beziehung als XML-Element, welches in einer Datei exportiert werden kann
 	public Element createXMLElement(Document doc) {
 		Element element = doc.createElement("Beziehungsteilnehmer");
-	    element.setAttribute("BeziehungsteilnehmerAnwendung", this.getApplicationView().getApplicationModel().getApplicationName());
-	    element.setAttribute("BeziehungsteilnehmerTyp", new StringBuilder().append(this.isRelationType()).toString());
+		String applicationName = this.getApplicationView().getApplicationModel().getApplicationName();
+	    element.setAttribute("BeziehungsteilnehmerAnwendung", applicationName);
 	    return element;
 	}
 	
-	private boolean isRelationType() {
-		if(this.relationType == null) {
-			return this.typeOfRelation;
-		}
-		else {
-			return this.relationType.get();
-		}
-	}
-	
-	static {
-		ApplicationInRelation.idGenerator = 0;
-	}
-	
-	
+	//Setter-Methode für die zugehörige Anwendungs-Ansicht
 	public void setApplicationView(ApplicationView applicationView) {
 		this.applicationView = applicationView;
 	}
 	
-	public BooleanProperty relationTypeProperty() {
-		if(this.relationType != null) {
-			this.relationType = (BooleanProperty)new SimpleBooleanProperty((Object)this, "typeOfRelation", this.typeOfRelation);
-		}
-		return this.relationType;
+	//Getter-Methode für die zugehörige ID
+	public IntegerProperty getIdProperty() {
+		return this.id;
 	}
 	
-	public final int getId() {
-		return this.id.get();
-	}
-	
-	public ReadOnlyIntegerProperty idProperty() {
-		return this.id.getReadOnlyProperty();
-	}
-	
-	 @Override
+	//Methode zum Vergleich, ob eine an einer Beziehung beteiligte Anwendung mit der hier gespeicherten übereinstimmt
+	@Override
     public boolean equals(Object object) {
-        if (!super.equals(object)) {
-            return false;
+		ApplicationInRelation applicationInRelation = (ApplicationInRelation)object;
+        if (super.equals(object) && this.getApplicationView().equals(applicationInRelation.getApplicationView()) && this.getIdProperty() == applicationInRelation.getIdProperty()) {
+            return true;
         }
-        ApplicationInRelation applicationInRelation = (ApplicationInRelation)object;
-        return this.getApplicationView().equals(applicationInRelation.getApplicationView()) && /*this.isRelationType() == applicationInRelation.isRelationType() &&*/ this.getId() == applicationInRelation.getId();
+        else {
+        	return false;
+        }
     }
 	
 }
