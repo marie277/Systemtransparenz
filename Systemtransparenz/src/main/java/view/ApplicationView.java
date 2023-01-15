@@ -36,22 +36,6 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.getStyleClass().add("applicationBorderPane");
         this.applicationBorderPane.setPrefSize(40.0, 40.0);
         this.text = new Text("");
-        this.text.setOnMouseClicked(e -> {
-            if (modelView != null) {
-            	modelView.deselectElements();
-                modelView.setElementView(this);
-            }
-            this.applicationControl.setSelected(true);
-            e.consume();
-        });
-        this.text.setOnMousePressed(e -> {
-            if (modelView != null) {
-            	modelView.deselectElements();
-                modelView.setElementView(this);
-            }
-            this.applicationControl.setSelected(true);
-            e.consume();
-        });
         this.text.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getNameProperty());
         this.applicationBorderPaneLabel = new ApplicationBorderPane((Node)this.text);
         this.applicationBorderPaneLabel.setId("applicationBorderPaneLabel");
@@ -61,6 +45,22 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("/application/application.css").toExternalForm());
         this.applicationBorderPaneLabel.getSelectedProperty().bind(this.getSelectedProperty());
         this.applicationBorderPane.getSelectedProperty().bind(this.getSelectedProperty());
+        this.applicationBorderPane.setOnMouseClicked(e -> {
+            if (modelView != null) {
+            	modelView.deselectElements();
+                modelView.setElementView(this);
+            }
+            this.applicationControl.setSelected(true);
+            e.consume();
+        });
+        this.applicationBorderPane.setOnMousePressed(e -> {
+            if (modelView != null) {
+            	modelView.deselectElements();
+                modelView.setElementView(this);
+            }
+            this.applicationControl.setSelected(true);
+            e.consume();
+        });
         this.isSelected = false;
 	}
 

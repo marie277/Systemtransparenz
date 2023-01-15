@@ -1,6 +1,7 @@
 package control;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -45,11 +46,6 @@ public class ModelControl {
 	public void removeRelationView(RelationView relationView) {
 		relationView.getRelationControl().removeApplications();
 		this.modelView.removeElement(relationView);
-	}
-
-	//Methode zum Entfernen einer Anwendungs-Ansicht aus dem Modell
-	public void removeApplicationView(ApplicationView applicationView) {
-		this.modelView.removeElement(applicationView);
 	}
 
 	//Methode zum Vergrößern der Modell-Ansicht
@@ -136,7 +132,17 @@ public class ModelControl {
 	}
 	
 	//Methode zum Entfernen einer Anwendungs-Ansicht aus dem Modell
-	public void removeApplication(ApplicationView applicationView) {
+	public void removeApplicationView(ApplicationView applicationView) throws IllegalAccessException {
+		LinkedList<RelationView> relationViews = new LinkedList<RelationView>();
+        for (RelationView relationView : this.modelView.getRelations()) {
+            if (relationView.getRelationControl().isPartOfRelation(applicationView)) {
+            	relationView.getRelationControl().removeApplication(applicationView);
+                relationViews.add(relationView);
+            }
+        }
+        for (RelationView relationView : relationViews) {
+            this.removeRelationView(relationView);
+        }
 		this.modelView.removeElement(applicationView);
 	}
 
