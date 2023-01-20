@@ -77,15 +77,6 @@ public class RelationView extends ElementView{
 			endX.bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)width));
 			endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)height));
 		}
-		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
-			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-				for(RelationLineView relationLineView : this.relationNodes) {
-					if(relationLineView.getApplicationInRelation().equals(applicationInRelation)) {
-						relationLineView.calculateCenterPoint();
-					}
-				}
-			});
-		}
 		MoveControl.makeRegionMoveable(this.getElementRegion(), (Region)this.getModelView(), (Move)this);
 		this.selected = false;
 	}

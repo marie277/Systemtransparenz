@@ -7,7 +7,6 @@ import org.w3c.dom.Element;
 
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Point2D;
 import control.edit.RelationLine;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
@@ -35,7 +34,7 @@ public class RelationLineView {
 		DoubleBinding height = this.applicationInRelation.getApplicationView().getElementRegion().prefHeightProperty().divide(2.0);
 		this.relationLine.startXProperty().bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)width));
 		this.relationLine.startYProperty().bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)height));
-		this.calculateCenterPoint();
+		//this.calculateCenterPoint();
 		this.relationNodes = new LinkedList<Node>();
 		relationNodes.add((Node)this.relationLine);
 		for(Node node : this.relationNodes) {
@@ -49,32 +48,6 @@ public class RelationLineView {
 	//Setter-Methode für die Auswahl einer Beziehungslinie
 	public void setSelected(boolean selected) {
 		this.getSelectedProperty().set(selected);
-	}
-
-	//Methode zum Berechnen der Koordinaten des Mittelpunktes der Beziehungslinie
-	public void calculateCenterPoint() {
-		Point2D applicationCenterPoint = new Point2D(this.relationLine.getStartX(), this.relationLine.getStartY());
-		Point2D lineCenterPoint = new Point2D(this.relationLine.getEndX(), this.relationLine.getEndY());
-		double m = (lineCenterPoint.getY() - applicationCenterPoint.getY()) / (lineCenterPoint.getX() - applicationCenterPoint.getX());
-        double b = applicationCenterPoint.getY() - (lineCenterPoint.getY() - applicationCenterPoint.getY()) / (lineCenterPoint.getX() - applicationCenterPoint.getX()) * applicationCenterPoint.getX();
-        double x = 0.0;
-        double y = 0.0;
-        if (this.relationLine.getStartY() > this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
-            y = this.applicationInRelation.getApplicationView().getLayout().getY();
-            x = (y - b) / m;
-        }
-        else if (this.relationLine.getStartY() < this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
-            y = this.applicationInRelation.getApplicationView().getLayout().getY() + this.applicationInRelation.getApplicationView().getHeight();
-            x = (y - b) / m;
-        }
-        else if (this.relationLine.getStartX() > this.relationLine.getEndX()) {
-            x = this.applicationInRelation.getApplicationView().getLayout().getX();
-            y = m * x + b;
-        }
-        else {
-            x = this.applicationInRelation.getApplicationView().getLayout().getX() + this.applicationInRelation.getApplicationView().getWidth();
-            y = m * x + b;
-        }
 	}
 
 	//Getter-Methode für das Property der Auswahl

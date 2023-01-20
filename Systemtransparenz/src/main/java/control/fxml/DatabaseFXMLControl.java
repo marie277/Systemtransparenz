@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
@@ -42,7 +43,7 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private TextField username;
 	@FXML
-	private TextField password;
+	private PasswordField password;
 	@FXML
 	private TextField host;
 	@FXML
@@ -110,6 +111,7 @@ public class DatabaseFXMLControl implements Initializable {
 	            alertError.show();
 	        }
 		}
+		this.scrollPane.getScene().getWindow().hide();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank

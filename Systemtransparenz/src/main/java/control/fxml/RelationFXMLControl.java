@@ -24,6 +24,7 @@ import model.AssociatesModel;
 import model.RelationModel;
 import view.ApplicationView;
 import view.ModelView;
+import view.RelationView;
 
 //Klasse zur Steuerung der Erstellung einer Beziehung, implementiert Interface Initializable
 public class RelationFXMLControl implements Initializable{
@@ -58,35 +59,66 @@ public class RelationFXMLControl implements Initializable{
     
     //Methode zum Bestätigen der erstellten Beziehung
     @FXML
-    private void submit(ActionEvent event) {
+    private void submit(ActionEvent event) throws Exception {
     	MainControl.getMainControl().setSelectedApplications((ObservableList<ApplicationModel>)this.selectedApplications.getTableView().getItems());
-    	try {
-	    	if (MainControl.getMainControl().getSelectedApplications().size() == 2) {
-	    		ApplicationInRelation firstApplication = this.associates.get(0).getApplicationInRelation();
-	    		ApplicationInRelation secondApplication = this.associates.get(1).getApplicationInRelation();
-	    		RelationModel relationModel = new RelationModel(firstApplication, secondApplication);
-	            MainControl.getMainControl().getModelView().getModelControl().addRelationView(relationModel);
+    	if (MainControl.getMainControl().getSelectedApplications().size() == 2) {
+    		ApplicationInRelation firstApplication = this.associates.get(0).getApplicationInRelation();
+    		ApplicationInRelation secondApplication = this.associates.get(1).getApplicationInRelation();
+    		RelationModel relationModel = new RelationModel(firstApplication, secondApplication);
+    		LinkedList<RelationView> relations = MainControl.getMainControl().getModelView().getRelations();
+    		if(relations.size() == 0) {
+	    		MainControl.getMainControl().getModelView().getModelControl().addRelationView(relationModel);
 	            LinkedList<ApplicationInRelation> applications = MainControl.getMainControl().getModelView().getRelations().getLast().getRelationModel().getApplications();
 	            double x = 0.0;
 	            double y = 0.0;
-                for (ApplicationInRelation applicationInRelation : applications) {
-                    x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
-                    y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
-                }
-                x /= 2.0;
-                y /= 2.0;
+	            for (ApplicationInRelation applicationInRelation : applications) {
+	                x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
+	                y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
+	            }
+	            x /= 2.0;
+	            y /= 2.0;
 	            MainControl.getMainControl().getModelView().getRelations().getLast().move(x, y);
 	            this.borderPane.getScene().getWindow().hide();
-	        }
-    	} catch(Exception e) {
-        	e.printStackTrace();
-        	if (!e.getClass().equals(NullPointerException.class)) {
-                Alert alertError = new Alert(Alert.AlertType.ERROR);
-                alertError.setTitle("Fehler!");
-                alertError.setHeaderText("Es müssen genau zwei Anwendungen ausgewählt werden.");
-                alertError.show();
+    		}
+    		boolean isDuplicate = false;
+    		for(int i = 1; i < relations.size(); i++) {
+    			RelationView relationView = MainControl.getMainControl().getModelView().getRelations().get(i);
+            	if((relationView.getRelationModel().getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName())
+            			&& relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName()))
+            			|| (relationView.getRelationModel().getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName())
+            			&& relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName()))) {
+            		isDuplicate = true;
+            		this.borderPane.getScene().getWindow().hide();
+            		Alert alertError = new Alert(Alert.AlertType.ERROR);
+                    alertError.setTitle("Fehler!");
+                    alertError.setHeaderText("Die ausgewählte Beziehung ist bereits vorhanden.");
+                    alertError.show();
+            	}
+            	else {
+            		isDuplicate = false;
+            	}
             }
+	    	if(!isDuplicate) {
+	    		MainControl.getMainControl().getModelView().getModelControl().addRelationView(relationModel);
+	            LinkedList<ApplicationInRelation> applications = MainControl.getMainControl().getModelView().getRelations().getLast().getRelationModel().getApplications();
+	            double x = 0.0;
+	            double y = 0.0;
+	            for (ApplicationInRelation applicationInRelation : applications) {
+	                x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
+	                y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
+	            }
+	            x /= 2.0;
+	            y /= 2.0;
+	            MainControl.getMainControl().getModelView().getRelations().getLast().move(x, y);
+	            this.borderPane.getScene().getWindow().hide();
+    		}
         }
+    	else {
+    		Alert alertError = new Alert(Alert.AlertType.ERROR);
+            alertError.setTitle("Fehler!");
+            alertError.setHeaderText("Es müssen genau zwei Anwendungen ausgewählt werden.");
+            alertError.show();
+    	}
     }
     
     //Methode zur Auswahl von einer verfügbaren Anwendung als Teil der zu erstellenden Beziehung
@@ -103,19 +135,13 @@ public class RelationFXMLControl implements Initializable{
         }
     }
     
+    //Methode zum Entfernen einer Anwendung aus der Auswahl
     @FXML
     private void remove(ActionEvent event) throws Exception {
     	ApplicationModel applicationModel = this.selectedApplications.getTableView().getSelectionModel().getSelectedItem();
         if (applicationModel != null) {
             this.selectedApplications.getTableView().getItems().remove(applicationModel);
-            this.availableApplications.getTableView().getItems().add(applicationModel);
-            String applicationName = applicationModel.getApplicationName();
-            for(AssociatesModel associatesModel : this.associates) {
-            	String associateName = associatesModel.getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName();
-            	if(associateName.equals(applicationName)) {
-            		this.associates.remove(associatesModel);
-            	}
-            }
+            this.availableApplications.getTableView().getItems().add(applicationModel);  
         }
     }
     

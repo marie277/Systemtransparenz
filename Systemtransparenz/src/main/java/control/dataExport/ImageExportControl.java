@@ -60,7 +60,7 @@ public class ImageExportControl {
 					dimensions = new Dimension2D(dimensions.getWidth(), relationView.getLayout().getY() + relationView.getHeight());
 				}
 			}
-			dimensions = new Dimension2D(dimensions.getWidth()+20.0, dimensions.getHeight()+20.0);
+			dimensions = new Dimension2D(dimensions.getWidth()+50.0, dimensions.getHeight()+50.0);
 			int width = (int)dimensions.getWidth();
 			int height = (int)dimensions.getHeight();
 			WritableImage writableImage = new WritableImage(width, height);

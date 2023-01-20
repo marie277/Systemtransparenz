@@ -157,13 +157,6 @@ public class RelationControl extends ElementControl {
 		DoubleProperty layoutY = elementRegion.layoutYProperty();
 		DoubleBinding widthY = elementRegion.prefHeightProperty().divide(2.0);
 		endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)widthY));
-		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-			for(RelationLineView relationLineViewApp : this.relationView.getRelationNodes()) {
-				if(relationLineViewApp.getApplicationInRelation().equals(applicationInRelation)) {
-					relationLineViewApp.calculateCenterPoint();
-				}
-			}
-		});
 		if(this.relationView.getModelView() != null) {
 			this.relationView.getModelView().getChildren().addAll(0, relationLineView.getRelationNodes());
 		}
