@@ -66,7 +66,9 @@ public class RelationView extends ElementView{
 		this.applicationBorderPane.setCenter((Node)this.stackPane);
 		this.applicationBorderPane.setPrefSize(40.0, 40.0);
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
-			RelationLineView relationLineView = new RelationLineView(applicationInRelation);
+			boolean arrowDirection = this.relationModel.getArrowIncoming();
+			String relationType = this.relationModel.getRelationText();
+			RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, arrowDirection);
 			this.relationNodes.add(relationLineView);
 			DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
 			DoubleProperty layoutX = this.getElementRegion().layoutXProperty();
@@ -77,6 +79,15 @@ public class RelationView extends ElementView{
 			endX.bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)width));
 			endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)height));
 		}
+		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
+			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+                for (RelationLineView rLV : this.relationNodes) {
+                    if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
+                        rLV.calculateCenterPoint();
+                    }
+                }
+            });
+        }
 		MoveControl.makeRegionMoveable(this.getElementRegion(), (Region)this.getModelView(), (Move)this);
 		this.selected = false;
 	}

@@ -68,7 +68,8 @@ public class ApplicationControl extends ElementControl {
 	
 	//Methode zum Hinzufügen einer Anwendung aus einem XML-Dokument, welches als Modell dargestellt wird
 	public static ApplicationView importXMLElement(Element item, ModelView modelView) {
-		ApplicationModel applicationModel = new ApplicationModel("");
+		//ApplicationModel applicationModel = new ApplicationModel("");
+		ApplicationModel applicationModel = new ApplicationModel(0, "", "", "", "", "", "", "");
 		ApplicationView applicationView = new ApplicationView(applicationModel, modelView);
 		String applicationName = item.getAttribute("Anwendungsname");
 		applicationView.getApplicationControl().renameApplication(applicationName);

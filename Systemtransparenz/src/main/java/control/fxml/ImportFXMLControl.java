@@ -17,17 +17,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
 
-//Klasse zur Steuerung des Imports von Anwendungen aus einer Datenbank, implementiert Interface Initializable
-public class DatabaseFXMLControl implements Initializable {
+public class ImportFXMLControl implements Initializable {
 	
-	private static DatabaseFXMLControl databaseFXMLControl;
+	private static ImportFXMLControl importFXMLControl;
 	private Connection connection = null;
 	private String userName;
 	private String passWord;
@@ -41,17 +40,9 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private ScrollPane scrollPane;
 	@FXML
-	private TextField username;
+    private ComboBox<String> databases;
 	@FXML
-	private PasswordField password;
-	@FXML
-	private TextField host;
-	@FXML
-	private TextField port;
-	@FXML
-	private TextField database;
-	@FXML
-	private TextField table;
+    private TableView<ApplicationModel> tableView;
 	@FXML
     private TableColumn<ApplicationModel, String> applicationsColumn;
 	@FXML
@@ -62,16 +53,16 @@ public class DatabaseFXMLControl implements Initializable {
 	private Button submit;
 	
 	//Konstruktor
-	public DatabaseFXMLControl() {
+	public ImportFXMLControl() {
 		
 	}
 	
 	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static DatabaseFXMLControl getDatabaseFXMLControl(){
-        if (databaseFXMLControl == null) {
-        	databaseFXMLControl = new DatabaseFXMLControl();
+	public static ImportFXMLControl getImportFXMLControl(){
+        if (importFXMLControl == null) {
+        	importFXMLControl = new ImportFXMLControl();
         }
-        return databaseFXMLControl;
+        return importFXMLControl;
     }
 	
 	//Methode zum Schließen des Import-Fensters
@@ -98,7 +89,6 @@ public class DatabaseFXMLControl implements Initializable {
 		try {
 	        if (this.importApplications().size() != 0) {
 	        	for(ApplicationModel aM : this.applicationsList) {
-	        		//MainControl.getMainControl().addApplication(aM.getApplicationName());
 	        		MainControl.getMainControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
 	        	}
 	        }
@@ -114,34 +104,43 @@ public class DatabaseFXMLControl implements Initializable {
 		}
 		this.scrollPane.getScene().getWindow().hide();
     }
+	
+	@FXML
+	private void selectApplications() {
+		
+        
+
+	}
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
     public void initializePostgresqlDatabase() {
-    	this.hostUrl = this.host.getText();
-    	this.portNumber = Integer.parseInt(this.port.getText());
-    	this.dataBase = this.database.getText();
-    	this.userName = this.username.getText();
-    	this.passWord = this.password.getText();
-    	
-        try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
-        } catch(Exception e){
-        	e.printStackTrace();
-        	if (!e.getClass().equals(IllegalArgumentException.class)) {
-                Alert alertError = new Alert(Alert.AlertType.ERROR);
-                alertError.setTitle("Fehler!");
-                alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");
-                alertError.show();
-            }  
-        }
+    	if(this.databases.getValue() == "Alle Anwendungen") {
+	    	this.hostUrl = "localhost";
+	    	this.portNumber = 5432;
+	    	this.dataBase = "systemtransparenz";
+	    	this.userName = "postgres";
+	    	this.passWord = "pw369";
+	    	
+	        try {
+	            DriverManager.registerDriver(new org.postgresql.Driver());
+	            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
+	            System.out.println("DB connected");
+	        } catch(Exception e){
+	        	e.printStackTrace();
+	        	if (!e.getClass().equals(IllegalArgumentException.class)) {
+	                Alert alertError = new Alert(Alert.AlertType.ERROR);
+	                alertError.setTitle("Fehler!");
+	                alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");
+	                alertError.show();
+	            }  
+	        }
+    	}
     }
     
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
 		try {
-			this.tableName = this.table.getText();
+			this.tableName = "anwendung";
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM " + tableName + " a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<>();
@@ -164,6 +163,8 @@ public class DatabaseFXMLControl implements Initializable {
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		this.databases.getItems().addAll("Alle Anwendungen", "Kernanwendungen");
+		this.databases.getSelectionModel().select(0);
 		
 	}
 

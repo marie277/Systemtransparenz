@@ -48,6 +48,8 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	private MenuItem importApplications;
 	@FXML
+	private MenuItem importData;
+	@FXML
 	private MenuItem addRelation;
 	@FXML
 	private MenuItem deleteRelation;
@@ -278,6 +280,12 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void importApplications(ActionEvent event) throws IOException, IllegalAccessException {
 		this.mainControl.importApplications();
+	}
+	
+	//Methode zum Öffnen des Fensters für den Anwendungs-Import
+	@FXML
+	public void importData(ActionEvent event) throws IOException, IllegalAccessException {
+		this.mainControl.importData();
 	}
 	
 	//Getter-Methode für die Fläche des aktuellen Modells 

@@ -3,7 +3,9 @@ package model;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import view.ApplicationView;
 import view.ModelView;
@@ -14,12 +16,20 @@ public class ApplicationInRelation {
 	private ApplicationView applicationView;
 	private static int number = 0;
 	private IntegerProperty id;
+	private BooleanProperty arrowDirectionProperty;
 	
 	//Konstruktor
 	public ApplicationInRelation(ApplicationView applicationView) {
 		this.applicationView = applicationView;
 		int applicationId = ApplicationInRelation.number++;
 		this.id = new SimpleIntegerProperty(this, "id", applicationId);
+	}
+	
+	public BooleanProperty getArrowDirectionProperty() {
+		if(this.arrowDirectionProperty == null) {
+			this.arrowDirectionProperty = new SimpleBooleanProperty(this, "arrowDirection", false);
+		}
+		return this.arrowDirectionProperty;
 	}
 	
 	//Getter-Methode für die zugehörige Anwendungs-Ansicht

@@ -147,13 +147,15 @@ public class ModelControl {
 	}
 
 	//Methode zum Hinzufügen einer Anwendungs-Ansicht in das Modell
-	public void addApplication(String applicationName) {
+	//public void addApplication(String applicationName) {
+	public void addApplication(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) {
 		for (ApplicationView applicationView : this.modelView.getApplications()) {
             if (applicationView.getApplicationModel().getApplicationName().equals(applicationName)) {
                 throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
             }
         }
-		ApplicationModel applicationModel = new ApplicationModel(applicationName);
+		//ApplicationModel applicationModel = new ApplicationModel(applicationName);
+		ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
         ApplicationView applicationView = new ApplicationView(applicationModel, this.modelView);
         this.modelView.addElement(applicationView);;
 	}

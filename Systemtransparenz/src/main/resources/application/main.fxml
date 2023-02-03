@@ -38,8 +38,11 @@
         </Menu>
         <Menu fx:id="edit" mnemonicParsing="false" text="Bearbeiten">
           <items>
-                  <MenuItem fx:id="importApplications" mnemonicParsing="false" onAction="#importApplications" text="Anwendungen importieren" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
+          	<Menu mnemonicParsing="false" text="Anwendungen importieren">
+                  <MenuItem fx:id="importApplications" mnemonicParsing="false" onAction="#importApplications" text="Eigene Datenbank-Verbindung nutzen" />
+                  <MenuItem fx:id="importData" mnemonicParsing="false" onAction="#importData" text="Voreingestellte Datenbank-Verbindung nutzen" />
+            </Menu>
+            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="addRelation" mnemonicParsing="false" onAction="#addRelation" text="Relation anlegen" />
             <MenuItem fx:id="deleteRelation" mnemonicParsing="false" onAction="#deleteRelation" text="Relation entfernen" />
             <SeparatorMenuItem mnemonicParsing="false" />

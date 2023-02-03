@@ -1,6 +1,5 @@
 package view;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import control.ModelControl;
 import control.dataExport.FileExportControl;
@@ -13,7 +12,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.Node;
 
 //Klasse zur Präsentation eines Modells, beerbt Klasse Pane und implementiert Interface Zoom
 public class ModelView extends Pane implements Zoom {
@@ -136,7 +134,7 @@ public class ModelView extends Pane implements Zoom {
 		if(elementView.getClass().equals(RelationView.class)) {
 			RelationView relationView = (RelationView)elementView;
 			for(RelationLineView relationLineView : relationView.getRelationNodes()) {
-				this.getChildren().removeAll((Collection<? extends Node>)relationLineView.getRelationNodes());
+				this.getChildren().removeAll(relationLineView.getRelationNodes());
 			}
 		}
         this.getChildren().remove(elementView.getElementRegion());
@@ -165,7 +163,7 @@ public class ModelView extends Pane implements Zoom {
 		if(elementView.getClass().equals(RelationView.class)) {
 			RelationView relationView = (RelationView)elementView;
 			for(RelationLineView relationLineView : relationView.getRelationNodes()) {
-				this.getChildren().addAll(0, (Collection<? extends Node>)relationLineView.getRelationNodes());
+				this.getChildren().addAll(0, relationLineView.getRelationNodes());
 			}
 		}
         this.getChildren().add(this.getChildren().size(), elementView.getElementRegion());

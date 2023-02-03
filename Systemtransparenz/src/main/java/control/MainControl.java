@@ -317,7 +317,7 @@ public class MainControl {
 	}
 	
 	//Methode zum Öffnen eines Dialog zum Anlegen einer neuen Anwendung
-	public void addApplication() throws IllegalAccessException {
+	/*public void addApplication() throws IllegalAccessException {
 		if(this.getModelView() != null) {
 	        TextInputDialog dialog = new TextInputDialog("");
 	        dialog.setTitle("Anwendung erstellen");
@@ -331,11 +331,32 @@ public class MainControl {
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
 		}
+    }*/
+	public void addApplication() throws IllegalAccessException, IOException {
+		if(this.getModelView() != null) {
+			Stage addRelationStage = new Stage();
+			Parent loader = FXMLLoader.load(Main.class.getResource("application.fxml"));
+			Scene addApplicationScene = new Scene(loader);
+			addRelationStage.initModality(Modality.APPLICATION_MODAL);
+			addRelationStage.setTitle("Anwendung hinzufügen");
+			addRelationStage.setScene(addApplicationScene);
+			addRelationStage.centerOnScreen();
+			addRelationStage.show();
+		}
+		else {
+			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
+		}
     }
-    
+	
     //Methode zum Hinzufügen einer Anwendung in das Modell
-    public void addApplication(String applicationName) throws IllegalArgumentException {
+    /*public void addApplication(String applicationName) throws IllegalArgumentException {
         MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationName);
+    }*/
+    
+  //Methode zum Hinzufügen einer Anwendung in das Modell
+    public void addApplication(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) throws IllegalArgumentException {
+        //MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationName);
+    	MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
     }
 
     //Methode zum Löschen einer Anwendung aus dem Modell
@@ -386,6 +407,22 @@ public class MainControl {
 		result.ifPresent(e -> {
 			this.getModelView().setModelName(e);
 		});
+	}
+
+	//Methode zum Öffnen der Benutzeroberfläche für den Import von Anwendungen aus einer PostgreSQL-Datenbank
+	public void importData() throws IOException, IllegalAccessException {
+		if(this.getModelView() != null) {
+			Stage applicationImport = new Stage();
+	    	Parent loader = FXMLLoader.load(Main.class.getResource("import.fxml"));
+	    	Scene scene = new Scene(loader);
+	    	applicationImport.setTitle("Anwendungen importieren");
+	    	applicationImport.setScene(scene);
+	    	applicationImport.centerOnScreen();
+	    	applicationImport.show();
+		}
+		else {
+			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
+		}
 	}
 	
 }

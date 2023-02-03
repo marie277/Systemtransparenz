@@ -9,8 +9,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import model.ApplicationModel;
 
@@ -21,10 +23,18 @@ public class ApplicationView extends ElementView {
 	private ApplicationModel applicationModel;
 	private ApplicationControl applicationControl;
 	private ApplicationBorderPane applicationBorderPane;
-	private ApplicationBorderPane applicationBorderPaneLabel;
 	private BooleanProperty selectedProperty;
 	private boolean isSelected;
-	private Text text;
+	private Text name;
+	private Text id;
+	private Text description;
+	private Text category;
+	private Text producer;
+	private Text manager;
+	private Text department;
+	private Text admin;
+	private VBox vbox;
+	private TitledPane titledPane;
 
 	//Konstruktor
 	public ApplicationView(ApplicationModel applicationModel, ModelView modelView) {
@@ -35,15 +45,31 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.setId("applicationBorderPane");
         this.applicationBorderPane.getStyleClass().add("applicationBorderPane");
         this.applicationBorderPane.setPrefSize(40.0, 40.0);
-        this.text = new Text("");
-        this.text.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getNameProperty());
-        this.applicationBorderPaneLabel = new ApplicationBorderPane((Node)this.text);
-        this.applicationBorderPaneLabel.setId("applicationBorderPaneLabel");
-        this.applicationBorderPane.setCenter((Node)this.applicationBorderPaneLabel);
-        this.applicationBorderPane.setCenter((Node)this.text);
+        this.name = new Text("");
+        this.name.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getNameProperty());
+        this.id = new Text("");
+        this.id.textProperty().bind(((ObservableValue<? extends String>)this.applicationModel.getIdProperty().asString()));
+        this.description = new Text("");
+        this.description.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getDescriptionProperty());
+        this.category = new Text("");
+        this.category.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getCategoryProperty());
+        this.producer = new Text("");
+        this.producer.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getProducerProperty());
+        this.manager = new Text("");
+        this.manager.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getManagerProperty());
+        this.department = new Text("");
+        this.department.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getDepartmentProperty());
+        this.admin = new Text("");
+        this.admin.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getAdminProperty());
+        this.vbox = new VBox();
+        vbox.getChildren().addAll(this.id, this.description, this.applicationBorderPane, this.category, this.producer, this.manager, this.department, this.admin);
+        this.titledPane = new TitledPane();
+        this.titledPane.setContent(this.vbox);
+        this.titledPane.setExpanded(false);
+        this.applicationBorderPane.setCenter((Node)this.name);
+        this.applicationBorderPane.setBottom(titledPane);
         MoveControl.makeRegionMoveable((Region)this.applicationBorderPane, (Region)this.getModelView(), (Move)this);
         this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("/application/application.css").toExternalForm());
-        this.applicationBorderPaneLabel.getSelectedProperty().bind(this.getSelectedProperty());
         this.applicationBorderPane.getSelectedProperty().bind(this.getSelectedProperty());
         this.applicationBorderPane.setOnMouseClicked(e -> {
             if (modelView != null) {
@@ -105,7 +131,7 @@ public class ApplicationView extends ElementView {
 
 	//Getter-Methode für den Text der präsentierten Anwendung
 	public Text getText() {
-		return this.text;
+		return this.name;
 	}
 	
 	//Getter-Methode für das gegliederte Feld einer präsentierten Anwendung

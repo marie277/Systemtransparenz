@@ -1,6 +1,5 @@
 package control;
 
-import java.util.Collection;
 import java.util.LinkedList;
 
 import org.w3c.dom.Document;
@@ -146,7 +145,9 @@ public class RelationControl extends ElementControl {
 	public void addPartOfRelation(ApplicationView applicationView) {
 		ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
 		this.relationView.getRelationModel().getApplications().add(applicationInRelation);
-		RelationLineView relationLineView = new RelationLineView(applicationInRelation);
+		String relationType = this.relationView.getRelationModel().getRelationText();
+		boolean arrowDirection = this.relationView.getRelationModel().getArrowIncoming();
+		RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, arrowDirection);
 		this.relationView.getRelationNodes().add(relationLineView);
 		Region elementRegion = this.relationView.getElementRegion();
 		DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
@@ -157,6 +158,13 @@ public class RelationControl extends ElementControl {
 		DoubleProperty layoutY = elementRegion.layoutYProperty();
 		DoubleBinding widthY = elementRegion.prefHeightProperty().divide(2.0);
 		endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)widthY));
+		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
+            for (RelationLineView rLV : this.relationView.getRelationNodes()) {
+                if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
+                	rLV.calculateCenterPoint();
+                }
+            }
+        });
 		if(this.relationView.getModelView() != null) {
 			this.relationView.getModelView().getChildren().addAll(0, relationLineView.getRelationNodes());
 		}
@@ -228,7 +236,7 @@ public class RelationControl extends ElementControl {
 		}
 		ModelView modelView = this.relationView.getModelView();
 		if(modelView != null) {
-			modelView.getChildren().removeAll((Collection<?>)relationLineView.getRelationNodes());
+			modelView.getChildren().removeAll(relationLineView.getRelationNodes());
 		}
 		relationLineView = null;
 		applicationInRelationRel = null;
@@ -253,7 +261,8 @@ public class RelationControl extends ElementControl {
 		for(int i = 0; i < relationNodes.getLength(); i++) {
 			relationLineViews.add(RelationLineView.importFromXML((Element) relationNodes.item(i), modelView));
 		}
-		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation());
+		boolean arrowDirection = element.getAttribute("Eingehende Beziehung").equals(relationLineViews.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName());
+		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), arrowDirection);
 		for(int i = 2; i < relationLineViews.size(); i++) {
 			relationModel.getApplications().add(relationLineViews.get(i).getApplicationInRelation());
 		}
