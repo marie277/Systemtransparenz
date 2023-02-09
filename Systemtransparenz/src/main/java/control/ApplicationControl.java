@@ -19,6 +19,13 @@ public class ApplicationControl extends ElementControl {
 	private Text applicationText;
 	private Bounds applicationBounds;
 	private String applicationName;
+	private int applicationId;
+	private String applicationDescription;
+	private String applicationCategory;
+	private String applicationProducer;
+	private String applicationManager;
+	private String applicationDepartment;
+	private String applicationAdmin;
 	private static final double factor = 1.2;
 
 	//Konstruktor
@@ -61,18 +68,37 @@ public class ApplicationControl extends ElementControl {
 		Element element = super.createXMLElement(doc);
 		Element application = doc.createElement("Anwendung");
 		application.appendChild(element);
+		this.applicationId = this.applicationView.getApplicationModel().getApplicationId();
+		application.setAttribute("ID", String.valueOf(this.applicationId));
 		this.applicationName = this.applicationView.getApplicationModel().getApplicationName();
 		application.setAttribute("Anwendungsname", this.applicationName);
+		this.applicationDescription = this.applicationView.getApplicationModel().getApplicationDescription();
+		application.setAttribute("Beschreibung", this.applicationDescription);
+		this.applicationCategory = this.applicationView.getApplicationModel().getApplicationCategory();
+		application.setAttribute("Kategorie", this.applicationCategory);
+		this.applicationProducer = this.applicationView.getApplicationModel().getApplicationProducer();
+		application.setAttribute("Hersteller", this.applicationProducer);
+		this.applicationManager = this.applicationView.getApplicationModel().getApplicationManager();
+		application.setAttribute("Anwendungsmanager", this.applicationManager);
+		this.applicationDepartment = this.applicationView.getApplicationModel().getApplicationDepartment();
+		application.setAttribute("Fachbereich", this.applicationDepartment);
+		this.applicationAdmin = this.applicationView.getApplicationModel().getApplicationAdmin();
+		application.setAttribute("Admin", this.applicationAdmin);
 		return application;
 	}
 	
 	//Methode zum Hinzufügen einer Anwendung aus einem XML-Dokument, welches als Modell dargestellt wird
 	public static ApplicationView importXMLElement(Element item, ModelView modelView) {
-		//ApplicationModel applicationModel = new ApplicationModel("");
-		ApplicationModel applicationModel = new ApplicationModel(0, "", "", "", "", "", "", "");
-		ApplicationView applicationView = new ApplicationView(applicationModel, modelView);
+		String applicationId = item.getAttribute("ID");
 		String applicationName = item.getAttribute("Anwendungsname");
-		applicationView.getApplicationControl().renameApplication(applicationName);
+		String applicationDescription = item.getAttribute("Beschreibung");
+		String applicationCategory = item.getAttribute("Kategorie");
+		String applicationProducer = item.getAttribute("Hersteller");
+		String applicationManager = item.getAttribute("Anwendungsmanager");
+		String applicationDepartment = item.getAttribute("Fachbereich");
+		String applicationAdmin = item.getAttribute("Admin");
+		ApplicationModel applicationModel = new ApplicationModel(Integer.parseInt(applicationId), applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
+		ApplicationView applicationView = new ApplicationView(applicationModel, modelView);
 		modelView.addElement(applicationView);
 		NodeList nodeList = item.getElementsByTagName("XML-Element");
 		Element element = (Element)nodeList.item(0);
@@ -98,4 +124,37 @@ public class ApplicationControl extends ElementControl {
 		}
 	}
 
+	public void changeApplicationId(String applicationId) {
+		this.applicationView.getApplicationModel().setApplicationId(Integer.parseInt(applicationId));
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+
+	public void changeApplicationDescription(String applicationDescription) {
+		this.applicationView.getApplicationModel().setApplicationDescription(applicationDescription);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+
+	public void changeApplicationCategory(String applicationCategory) {
+		this.applicationView.getApplicationModel().setApplicationCategory(applicationCategory);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+
+	public void changeApplicationProducer(String applicationProducer) {
+		this.applicationView.getApplicationModel().setApplicationProducer(applicationProducer);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+	public void changeApplicationManager(String applicationManager) {
+		this.applicationView.getApplicationModel().setApplicationDescription(applicationManager);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+
+	public void changeApplicationDepartment(String applicationDepartment) {
+		this.applicationView.getApplicationModel().setApplicationDepartment(applicationDepartment);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
+
+	public void changeApplicationAdmin(String applicationAdmin) {
+		this.applicationView.getApplicationModel().setApplicationAdmin(applicationAdmin);
+		this.applicationView.getModelView().getFileExportControl().setSaved(false);
+	}
 }

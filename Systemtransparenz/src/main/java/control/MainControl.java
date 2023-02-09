@@ -316,22 +316,6 @@ public class MainControl {
 		}
 	}
 	
-	//Methode zum Öffnen eines Dialog zum Anlegen einer neuen Anwendung
-	/*public void addApplication() throws IllegalAccessException {
-		if(this.getModelView() != null) {
-	        TextInputDialog dialog = new TextInputDialog("");
-	        dialog.setTitle("Anwendung erstellen");
-	        dialog.setHeaderText("Wählen Sie eine Bezeichnung für Ihre Anwendung.");
-	        dialog.setContentText("Hier die Bezeichnung für Ihre Anwendung einfügen.");
-	        Optional<String> result = (Optional<String>)dialog.showAndWait();
-	        result.ifPresent(applicationName -> {
-	        	this.addApplication(applicationName);
-	        });
-		}
-		else {
-			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
-		}
-    }*/
 	public void addApplication() throws IllegalAccessException, IOException {
 		if(this.getModelView() != null) {
 			Stage addRelationStage = new Stage();
@@ -347,15 +331,9 @@ public class MainControl {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
 		}
     }
-	
-    //Methode zum Hinzufügen einer Anwendung in das Modell
-    /*public void addApplication(String applicationName) throws IllegalArgumentException {
-        MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationName);
-    }*/
     
   //Methode zum Hinzufügen einer Anwendung in das Modell
     public void addApplication(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) throws IllegalArgumentException {
-        //MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationName);
     	MainControl.modelFXMLControl.getModelView().getModelControl().addApplication(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
     }
 
@@ -416,6 +394,37 @@ public class MainControl {
 	    	Parent loader = FXMLLoader.load(Main.class.getResource("import.fxml"));
 	    	Scene scene = new Scene(loader);
 	    	applicationImport.setTitle("Anwendungen importieren");
+	    	applicationImport.setScene(scene);
+	    	applicationImport.centerOnScreen();
+	    	applicationImport.show();
+		}
+		else {
+			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
+		}
+	}
+
+	public void exportApplications() throws IOException, IllegalAccessException {
+		if(this.getModelView() != null) {
+			Stage applicationImport = new Stage();
+	    	Parent loader = FXMLLoader.load(Main.class.getResource("connectExport.fxml"));
+	    	Scene scene = new Scene(loader);
+	    	applicationImport.setTitle("Anwendungen exportieren");
+	    	applicationImport.setScene(scene);
+	    	applicationImport.centerOnScreen();
+	    	applicationImport.show();
+		}
+		else {
+			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
+		}
+	}
+
+	public void exportData() throws IOException, IllegalAccessException {
+		// TODO Auto-generated method stub
+		if(this.getModelView() != null) {
+			Stage applicationImport = new Stage();
+	    	Parent loader = FXMLLoader.load(Main.class.getResource("export.fxml"));
+	    	Scene scene = new Scene(loader);
+	    	applicationImport.setTitle("Anwendungen exportieren");
 	    	applicationImport.setScene(scene);
 	    	applicationImport.centerOnScreen();
 	    	applicationImport.show();

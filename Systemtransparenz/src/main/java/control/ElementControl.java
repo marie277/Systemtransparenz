@@ -54,7 +54,7 @@ public abstract class ElementControl {
 	//Methode zum Import der Attribute eines XML-Elements
 	public static void importXMLSettings(Element item, ElementView elementView) {
 		double width = Double.parseDouble(item.getAttribute("Weite"));
-		double height =  Double.parseDouble(item.getAttribute("Hoehe"));
+		double height =  Double.parseDouble(item.getAttribute("Höhe"));
 		double x = Double.parseDouble(item.getAttribute("X-Koordinate"));
 		double y = Double.parseDouble(item.getAttribute("Y-Koordinate"));
 		elementView.setSize(width, height);
@@ -80,7 +80,7 @@ public abstract class ElementControl {
 		String widthAttribute = new StringBuilder().append(region.getWidth()).toString();
 		element.setAttribute("Weite",widthAttribute);
 		String heightAttribute = new StringBuilder().append(region.getHeight()).toString();
-		element.setAttribute("Hoehe", heightAttribute);
+		element.setAttribute("Höhe", heightAttribute);
 		return element;
 	}
 	

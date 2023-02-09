@@ -40,7 +40,7 @@ public class RelationView extends ElementView{
 		this.modelView = modelView;
 		this.relationControl = new RelationControl(this);
 		this.relationText = new Text("");
-		this.relationText.textProperty().bind((ObservableValue<? extends String>)this.relationModel.getRelationNameProperty());
+		this.relationText.textProperty().bind((ObservableValue<? extends String>)this.relationModel.getRelationTypeProperty());
 		this.stackPane = new StackPane();
 		this.relationNodes = new LinkedList<RelationLineView>();
 		this.applicationBorderPane = new ApplicationBorderPane();
@@ -66,9 +66,9 @@ public class RelationView extends ElementView{
 		this.applicationBorderPane.setCenter((Node)this.stackPane);
 		this.applicationBorderPane.setPrefSize(40.0, 40.0);
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
-			boolean arrowDirection = this.relationModel.getArrowIncoming();
-			String relationType = this.relationModel.getRelationText();
-			RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, arrowDirection);
+			boolean relationDirection = this.relationModel.getRelationDirection();
+			String relationType = this.relationModel.getRelationType();
+			RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, relationDirection);
 			this.relationNodes.add(relationLineView);
 			DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
 			DoubleProperty layoutX = this.getElementRegion().layoutXProperty();
@@ -83,7 +83,7 @@ public class RelationView extends ElementView{
 			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
                 for (RelationLineView rLV : this.relationNodes) {
                     if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
-                        rLV.calculateCenterPoint();
+                        rLV.getRelationHub();
                     }
                 }
             });

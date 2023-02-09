@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import control.edit.Zoom;
+import model.ApplicationInRelation;
 import model.ApplicationModel;
 import model.RelationModel;
 import view.ApplicationView;
@@ -63,8 +64,8 @@ public class ModelControl {
 		ModelView modelView = new ModelView();
 		String modelName = item.getAttribute("Modellname");
 		modelView.setModelName(modelName);
-		modelView.setPrefHeight(Double.parseDouble(item.getAttribute("Modellhoehe")));
-		modelView.setMinHeight(Double.parseDouble(item.getAttribute("Modellhoehe")));
+		modelView.setPrefHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
+		modelView.setMinHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
 		modelView.setPrefWidth(Double.parseDouble(item.getAttribute("Modellweite")));
 		modelView.setMinWidth(Double.parseDouble(item.getAttribute("Modellweite")));
 		NodeList applications = item.getElementsByTagName("Anwendung");
@@ -93,7 +94,7 @@ public class ModelControl {
 			String widthAttribute = new StringBuilder().append(this.modelView.getPrefWidth()).toString();
 			model.setAttribute("Modellweite", widthAttribute);
 			String heightAttribute = new StringBuilder().append(this.modelView.getPrefHeight()).toString();
-			model.setAttribute("Modellhoehe", heightAttribute);
+			model.setAttribute("Modellhöhe", heightAttribute);
 			String zoomAttribute = new StringBuilder().append(this.modelView.getZoomControl().getZoomCounter()).toString();
 			model.setAttribute("Zoom", zoomAttribute);
 			Element applications = doc.createElement("Anwendungen");
@@ -147,14 +148,12 @@ public class ModelControl {
 	}
 
 	//Methode zum Hinzufügen einer Anwendungs-Ansicht in das Modell
-	//public void addApplication(String applicationName) {
 	public void addApplication(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) {
 		for (ApplicationView applicationView : this.modelView.getApplications()) {
-            if (applicationView.getApplicationModel().getApplicationName().equals(applicationName)) {
-                throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
+            if (applicationView.getApplicationModel().getApplicationId() == applicationId) {
+                throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit dieser ID vorhanden.");
             }
         }
-		//ApplicationModel applicationModel = new ApplicationModel(applicationName);
 		ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
         ApplicationView applicationView = new ApplicationView(applicationModel, this.modelView);
         this.modelView.addElement(applicationView);;
@@ -162,17 +161,25 @@ public class ModelControl {
 
 	//Methode zum Umbenennen einer Anwendungs-Ansicht im Modell
 	public void renameApplication(ApplicationView applicationView, String applicationName) {
-		for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
+		/*for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
             if (applicationViewModel.getApplicationModel().getApplicationName().equals(applicationName) && !applicationViewModel.equals(applicationView)) {
                 throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
             }
-        }
+        }*/
         applicationView.getApplicationControl().renameApplication(applicationName);
 	}
 
 	//Methode zur Änderung des Beziehungstyps einer Beziehung in dem Modell
-	public void editRelationType(RelationView relationView, String selectedItem) {
-		relationView.getRelationControl().setRelationText(selectedItem);
+	public void editRelation(RelationView relationView, String relationType, String relationDirection) {
+		ApplicationInRelation firstApplication = relationView.getRelationModel().getApplications().get(0);
+		ApplicationInRelation secondApplication = relationView.getRelationModel().getApplications().get(1);
+		boolean arrowIncoming = false;
+		if(relationDirection.equals(firstApplication.getApplicationView().getApplicationModel().getApplicationName())) {
+			arrowIncoming = true;
+		}
+		this.removeRelationView(relationView);
+		RelationModel relationModel = new RelationModel(firstApplication, secondApplication, relationType, arrowIncoming);
+		this.addRelationView(relationModel);	
 	}
 
 	//Methode zur Prüfung, ob eine Modell-Ansicht mit der gesteuerten übereinstimmt
@@ -184,5 +191,38 @@ public class ModelControl {
 		else {
 			return false;
 		}
+	}
+
+	public void changeApplicationId(ApplicationView applicationView, String applicationId) {
+		for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
+            if (applicationViewModel.getApplicationModel().getApplicationName().equals(applicationId) && !applicationViewModel.equals(applicationView)) {
+                throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit dieser ID vorhanden.");
+            }
+        }
+        applicationView.getApplicationControl().changeApplicationId(applicationId);
+	}
+
+	public void changeApplicationDescription(ApplicationView applicationView, String applicationDescription) {
+		applicationView.getApplicationControl().changeApplicationDescription(applicationDescription);
+	}
+
+	public void changeApplicationCategory(ApplicationView applicationView, String applicationCategory) {
+		applicationView.getApplicationControl().changeApplicationCategory(applicationCategory);
+	}
+
+	public void changeApplicationProducer(ApplicationView applicationView, String applicationProducer) {
+		applicationView.getApplicationControl().changeApplicationProducer(applicationProducer);
+	}
+	
+	public void changeApplicationManager(ApplicationView applicationView, String applicationManager) {
+		applicationView.getApplicationControl().changeApplicationManager(applicationManager);
+	}
+
+	public void changeApplicationDepartment(ApplicationView applicationView, String applicationDepartment) {
+		applicationView.getApplicationControl().changeApplicationDepartment(applicationDepartment);
+	}
+
+	public void changeApplicationAdmin(ApplicationView applicationView, String applicationAdmin) {
+		applicationView.getApplicationControl().changeApplicationAdmin(applicationAdmin);
 	}
 }

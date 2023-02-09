@@ -34,7 +34,7 @@ public class DatabaseFXMLControl implements Initializable {
 	private String hostUrl;
 	private int portNumber;
 	private String dataBase;
-	private String tableName;
+	private String sqlStatement;
 	private LinkedList<ApplicationModel> applications;
 	private ObservableList<ApplicationModel> applicationsList;
 	
@@ -51,7 +51,7 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private TextField database;
 	@FXML
-	private TextField table;
+	private TextField statement;
 	@FXML
     private TableColumn<ApplicationModel, String> applicationsColumn;
 	@FXML
@@ -141,8 +141,8 @@ public class DatabaseFXMLControl implements Initializable {
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
 		try {
-			this.tableName = this.table.getText();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM " + tableName + " a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
+			this.sqlStatement = this.statement.getText();
+            PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<>();
             while (resultSet.next()){
@@ -164,7 +164,8 @@ public class DatabaseFXMLControl implements Initializable {
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+		String defaultStatement = "SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid";
+		this.statement.setText(defaultStatement);
 	}
 
 }

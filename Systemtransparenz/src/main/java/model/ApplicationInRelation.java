@@ -16,7 +16,7 @@ public class ApplicationInRelation {
 	private ApplicationView applicationView;
 	private static int number = 0;
 	private IntegerProperty id;
-	private BooleanProperty arrowDirectionProperty;
+	private BooleanProperty relationDirectionProperty;
 	
 	//Konstruktor
 	public ApplicationInRelation(ApplicationView applicationView) {
@@ -25,11 +25,11 @@ public class ApplicationInRelation {
 		this.id = new SimpleIntegerProperty(this, "id", applicationId);
 	}
 	
-	public BooleanProperty getArrowDirectionProperty() {
-		if(this.arrowDirectionProperty == null) {
-			this.arrowDirectionProperty = new SimpleBooleanProperty(this, "arrowDirection", false);
+	public BooleanProperty getRelationDirectionProperty() {
+		if(this.relationDirectionProperty == null) {
+			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", false);
 		}
-		return this.arrowDirectionProperty;
+		return this.relationDirectionProperty;
 	}
 	
 	//Getter-Methode für die zugehörige Anwendungs-Ansicht
@@ -43,7 +43,7 @@ public class ApplicationInRelation {
 		ApplicationInRelation applicationInRelation = null;
         for (ApplicationView applicationViewRel : modelView.getApplications()) {
         	String applicationName = applicationViewRel.getApplicationModel().getApplicationName();
-            if (applicationName.equals(item.getAttribute("BeziehungsteilnehmerAnwendung"))) {
+            if (applicationName.equals(item.getAttribute("Anwendungsname"))) {
                 applicationView = applicationViewRel;
                 break;
             }
@@ -56,7 +56,7 @@ public class ApplicationInRelation {
 	public Element createXMLElement(Document doc) {
 		Element element = doc.createElement("Beziehungsteilnehmer");
 		String applicationName = this.getApplicationView().getApplicationModel().getApplicationName();
-	    element.setAttribute("BeziehungsteilnehmerAnwendung", applicationName);
+	    element.setAttribute("Anwendungsname", applicationName);
 	    return element;
 	}
 	

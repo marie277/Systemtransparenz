@@ -42,6 +42,10 @@
                   <MenuItem fx:id="importApplications" mnemonicParsing="false" onAction="#importApplications" text="Eigene Datenbank-Verbindung nutzen" />
                   <MenuItem fx:id="importData" mnemonicParsing="false" onAction="#importData" text="Voreingestellte Datenbank-Verbindung nutzen" />
             </Menu>
+            <Menu mnemonicParsing="false" text="Anwendungen exportieren">
+                  <MenuItem fx:id="exportApplications" mnemonicParsing="false" onAction="#exportApplications" text="Eigene Datenbank-Verbindung nutzen" />
+                  <MenuItem fx:id="exportData" mnemonicParsing="false" onAction="#exportData" text="Voreingestellte Datenbank-Verbindung nutzen" />
+            </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="addRelation" mnemonicParsing="false" onAction="#addRelation" text="Relation anlegen" />
             <MenuItem fx:id="deleteRelation" mnemonicParsing="false" onAction="#deleteRelation" text="Relation entfernen" />

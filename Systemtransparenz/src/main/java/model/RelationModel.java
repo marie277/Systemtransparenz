@@ -12,72 +12,72 @@ import javafx.beans.property.StringProperty;
 //Klasse zur Speicherung der Daten einer Anwendung
 public class RelationModel {
 
-	private String relationText;
-	private StringProperty relationName;
-	private boolean arrowIncoming;
-	private BooleanProperty arrowIncomingProperty;
+	private String relationType;
+	private StringProperty relationTypeProperty;
+	private boolean relationDirection;
+	private BooleanProperty relationDirectionProperty;
 	private static int number = 0;
 	private IntegerProperty id;
-	private LinkedList<ApplicationInRelation> applicationsInRelation;
+	private LinkedList<ApplicationInRelation> applications;
 	
 	//Konstruktor
 	public RelationModel(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication, String relationText, boolean arrowIncoming) {
-		this.applicationsInRelation = new LinkedList<ApplicationInRelation>();
-        this.applicationsInRelation.add(firstApplication);
-        this.applicationsInRelation.add(secondApplication);
-        this.relationText = relationText;
-        this.arrowIncoming = arrowIncoming;
+		this.applications = new LinkedList<ApplicationInRelation>();
+        this.applications.add(firstApplication);
+        this.applications.add(secondApplication);
+        this.relationType = relationText;
+        this.relationDirection = arrowIncoming;
 		int relationId = RelationModel.number++;
         this.id = new SimpleIntegerProperty(this, "id", relationId); 
 	}
 
 	//Getter-Methode für die in einer Beziehung enthaltenen Anwendungen
 	public LinkedList<ApplicationInRelation> getApplications() {
-		return this.applicationsInRelation;
+		return this.applications;
 	}
 	
 	//Getter-Methode für den Beziehungstext, welcher dem Beziehungstypen entspricht
-	public String getRelationText() {
-		if(this.relationName != null) {
-			return this.relationName.get();
+	public String getRelationType() {
+		if(this.relationTypeProperty != null) {
+			return this.relationTypeProperty.get();
 		}
 		else {
-			return this.relationText;
+			return this.relationType;
 		}
 	}
 	
 	//Setter-Methode für den Beziehungstext
-	public void setRelationText(String relationText) {
-		if(this.relationName != null) {
-			this.relationName.set(relationText);
+	public void setRelationType(String relationType) {
+		if(this.relationTypeProperty != null) {
+			this.relationTypeProperty.set(relationType);
 		}
 		else {
-			this.relationText = relationText;
+			this.relationType = relationType;
 		}
 	}
 	
 	//Getter-Methode für das Property des Beziehungstexts
-	public StringProperty getRelationNameProperty() {
-		if(this.relationName == null) {
-			this.relationName = new SimpleStringProperty(this, "Relation", this.relationText);
+	public StringProperty getRelationTypeProperty() {
+		if(this.relationTypeProperty == null) {
+			this.relationTypeProperty = new SimpleStringProperty(this, "relationType", this.relationType);
 		}
-		return this.relationName;
+		return this.relationTypeProperty;
 	}
 	
-	public boolean getArrowIncoming() {
-		if(this.arrowIncomingProperty != null) {
-			return this.arrowIncomingProperty.get();
+	public boolean getRelationDirection() {
+		if(this.relationDirectionProperty != null) {
+			return this.relationDirectionProperty.get();
 		}
 		else {
-			return this.arrowIncoming;
+			return this.relationDirection;
 		}
 	}
 	
-	public BooleanProperty getArrowIncomingProperty() {
-		if(this.arrowIncomingProperty == null) {
-			this.arrowIncomingProperty = new SimpleBooleanProperty(this, "arrowIncoming", this.arrowIncoming);
+	public BooleanProperty getRelationDirectionProperty() {
+		if(this.relationDirectionProperty == null) {
+			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", this.relationDirection);
 		}
-		return this.arrowIncomingProperty;
+		return this.relationDirectionProperty;
 	}
 	
 	//Getter-Methode für die ID der beziehung
@@ -94,12 +94,17 @@ public class RelationModel {
 	@Override
 	public boolean equals(Object object) {
 		RelationModel relationModel = (RelationModel)object;
-		if(super.equals(object) && this.getId() == relationModel.getId() && this.getRelationText().equals(relationModel.getRelationText()) && this.getApplications().equals(relationModel.getApplications())) {
+		if(super.equals(object) && this.getId() == relationModel.getId() && this.getRelationType().equals(relationModel.getRelationType()) && this.getApplications().equals(relationModel.getApplications())) {
 			return true;
 		}
 		else {
 			return false;
 		}
 	}
-	
+
+	public void setRelationDirection(boolean relationDirection) {
+		this.relationDirection = relationDirection;
+		
+	}
+
 }

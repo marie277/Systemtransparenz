@@ -7,6 +7,7 @@ import control.MainControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import view.RelationView;
@@ -18,12 +19,22 @@ public class EditRelationFXMLControl implements Initializable {
     @FXML
     private ComboBox<String> relationType;
     @FXML
+    private ComboBox<String> relationDirection;
+    @FXML
     private Button submit;
     
     //Methode zur Bearbeitung einer ausgewählten Anwendung
     @FXML
-    private void editRelationType(ActionEvent event) {;
-    	MainControl.getMainControl().getModelView().getModelControl().editRelationType(this.relationView, this.relationType.getSelectionModel().getSelectedItem());
+    private void editRelation(ActionEvent event) {;
+	    if((!relationType.getSelectionModel().getSelectedItem().equals("Verknüpft mit") && relationDirection.getSelectionModel().getSelectedItem().equals("keine")) || (relationType.getSelectionModel().getSelectedItem().equals("Verknüpft mit") && !relationDirection.getSelectionModel().getSelectedItem().equals("keine"))) {
+			Alert alertError = new Alert(Alert.AlertType.ERROR);
+	        alertError.setTitle("Fehler!");
+	        alertError.setHeaderText("Der Beziehungstyp Verknüpft mit erfordert keine eingehende Anwendung, die beiden übrigen schon.");
+	        alertError.show();
+		}
+	    else {
+	    	MainControl.getMainControl().getModelView().getModelControl().editRelation(this.relationView, this.relationType.getSelectionModel().getSelectedItem(), this.relationDirection.getSelectionModel().getSelectedItem());
+	    }
     }
     
     //Methode zur Initialisierung der Steuerung
@@ -31,9 +42,23 @@ public class EditRelationFXMLControl implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
         this.relationView = (RelationView)MainControl.getMainControl().getSelectedElementView();
         MainControl.getMainControl().setRelationView(this.relationView);
-        this.relationType.getItems().addAll("Verknüpft mit");
+        this.relationType.getItems().addAll("Verknüpft mit", "Hat", "Nutzt");
         String relationText = this.relationView.getRelationText().getText();
         this.relationType.getSelectionModel().select(relationText);
+        this.relationDirection.getItems().addAll("keine", this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName(), this.relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName());
+        String relationIncoming = "";
+        if(this.relationType.getSelectionModel().getSelectedItem().equals("Hat") || this.relationType.getSelectionModel().getSelectedItem().equals("Nutzt")) {
+	        if(this.relationView.getRelationModel().getRelationDirection() == true) {
+	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName();
+	        }
+	        else {
+	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName();
+	        }
+        }
+        else {
+        	relationIncoming = "keine";
+        }
+        this.relationDirection.getSelectionModel().select(relationIncoming);
 	}
 
 }

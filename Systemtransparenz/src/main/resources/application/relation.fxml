@@ -18,7 +18,7 @@
                <children>
                   <TableView prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn fx:id="availableApplications" prefWidth="199.0" text="Verfï¿½gbare Anwendungen" />
+                      <TableColumn fx:id="availableApplications" prefWidth="199.0" text="Verfügbare Anwendungen" />
                     </columns>
                   </TableView>
                </children>
@@ -27,14 +27,14 @@
          <top>
             <AnchorPane prefHeight="83.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
-                  <Text layoutX="3.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wï¿½hlen Sie zwei Anwendungen aus, welche zu einer Beziehung hinzugefï¿½gt werden sollen." />
+                  <Text layoutX="3.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wählen Sie zwei Anwendungen aus, welche zu einer Beziehung hinzugefï¿½gt werden sollen." />
                </children>
             </AnchorPane>
          </top>
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="select" layoutX="55.0" layoutY="14.0" mnemonicParsing="false" onAction="#select" text="Auswï¿½hlen" />
+                  <Button fx:id="select" layoutX="55.0" layoutY="14.0" mnemonicParsing="false" onAction="#select" text="Auswählen" />
                   <Button fx:id="remove" layoutX="61.0" layoutY="51.0" mnemonicParsing="false" onAction="#remove" text="Entfernen" />
                   <Label layoutX="55.0" layoutY="88.0" text="Beziehungstyp:" />
                   <ComboBox fx:id="relationTypes" layoutX="25.0" layoutY="116.0" prefWidth="150.0" />
@@ -47,7 +47,7 @@
             <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <children>
                   <Button fx:id="cancel" layoutX="128.0" layoutY="13.0" mnemonicParsing="false" onAction="#cancel" text="Abbrechen" />
-                  <Button fx:id="submit" layoutX="398.0" layoutY="13.0" mnemonicParsing="false" onAction="#submit" text="Bestï¿½tigen" />
+                  <Button fx:id="submit" layoutX="398.0" layoutY="13.0" mnemonicParsing="false" onAction="#submit" text="Bestätigen" />
                </children>
             </AnchorPane>
          </bottom>
@@ -56,7 +56,7 @@
                <children>
                   <TableView prefHeight="200.0" prefWidth="200.0">
                     <columns>
-                      <TableColumn fx:id="selectedApplications" prefWidth="199.0" text="Ausgewï¿½hlte Anwendungen" />
+                      <TableColumn fx:id="selectedApplications" prefWidth="199.0" text="Ausgewählte Anwendungen" />
                     </columns>
                   </TableView>
                </children>

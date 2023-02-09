@@ -71,30 +71,17 @@ public class RelationControl extends ElementControl {
 		this.setSaved(false);
 	}
 
-	//Methode zur Erstellung einer Beziehung als XML-Element, welches in einer Datei exportiert werden kann
-	public Element createXMLElement(Document doc) {
-		Element relation = doc.createElement("Beziehung");
-		String relationText = this.relationView.getRelationModel().getRelationText();
-		relation.setAttribute("Beziehungstyp", relationText);
-		Element applicationInRelation = doc.createElement("Beziehungsteilnehmer");
-		for(RelationLineView relationLineView : this.relationView.getRelationNodes()) {
-			applicationInRelation.appendChild(relationLineView.createXMLElement(doc));
-		}
-		relation.appendChild(applicationInRelation);
-		return relation;
-	}
-
 	//Methode zur Aktualisierung der Elements-Grenzen
 	@Override
 	public void refresh() {
 		this.relationBounds = this.relationView.getRelationText().getLayoutBounds();
-		this.relationView.setLayout(this.relationBounds.getWidth()*2.0, this.relationBounds.getHeight()*2.0);
+		this.relationView.setLayout(this.relationBounds.getWidth()*1.2, this.relationBounds.getHeight()*1.2);
 		this.setSaved(false);
 	}
 	
 	//Setter-Methode für den Beziehungs-Text, welcher den Beziehungstyp angibt
-	public void setRelationText(String relationText) {
-		this.relationView.getRelationModel().setRelationText(relationText);
+	public void setRelationType(String relationType) {
+		this.relationView.getRelationModel().setRelationType(relationType);
 		this.refresh();
 	}
 	
@@ -145,9 +132,9 @@ public class RelationControl extends ElementControl {
 	public void addPartOfRelation(ApplicationView applicationView) {
 		ApplicationInRelation applicationInRelation = new ApplicationInRelation(applicationView);
 		this.relationView.getRelationModel().getApplications().add(applicationInRelation);
-		String relationType = this.relationView.getRelationModel().getRelationText();
-		boolean arrowDirection = this.relationView.getRelationModel().getArrowIncoming();
-		RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, arrowDirection);
+		String relationType = this.relationView.getRelationModel().getRelationType();
+		boolean relationDirection = this.relationView.getRelationModel().getRelationDirection();
+		RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, relationDirection);
 		this.relationView.getRelationNodes().add(relationLineView);
 		Region elementRegion = this.relationView.getElementRegion();
 		DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
@@ -161,7 +148,7 @@ public class RelationControl extends ElementControl {
 		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
             for (RelationLineView rLV : this.relationView.getRelationNodes()) {
                 if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
-                	rLV.calculateCenterPoint();
+                	rLV.getRelationHub();
                 }
             }
         });
@@ -254,21 +241,50 @@ public class RelationControl extends ElementControl {
 		return false;
 	}
 	
+
+	//Methode zur Erstellung einer Beziehung als XML-Element, welches in einer Datei exportiert werden kann
+	public Element createXMLElement(Document doc) {
+		Element relation = doc.createElement("Beziehung");
+		String relationType = this.relationView.getRelationModel().getRelationType();
+		relation.setAttribute("Beziehungstyp", relationType);
+		String relationDirection = "";
+		if(this.relationView.getRelationModel().getRelationDirection() == true) {
+			relationDirection = this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName();
+		}
+		relation.setAttribute("Beziehungsrichtung", relationDirection);
+		Element applicationInRelation = doc.createElement("Beziehungsteilnehmer");
+		for(RelationLineView relationLineView : this.relationView.getRelationNodes()) {
+			applicationInRelation.appendChild(relationLineView.createXMLElement(doc));
+		}
+		relation.appendChild(applicationInRelation);
+		return relation;
+	}
+	
 	//Methode zum Hinzufügen einer Beziehung aus einem XML-Dokument, welches als Modell dargestellt wird
 	public static void importXMLElement(Element element, ModelView modelView) {
 		NodeList relationNodes = element.getElementsByTagName("Beziehungslinie");
 		LinkedList<RelationLineView> relationLineViews = new LinkedList<RelationLineView>();
 		for(int i = 0; i < relationNodes.getLength(); i++) {
 			relationLineViews.add(RelationLineView.importFromXML((Element) relationNodes.item(i), modelView));
+		
 		}
-		boolean arrowDirection = element.getAttribute("Eingehende Beziehung").equals(relationLineViews.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName());
-		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), arrowDirection);
+		boolean relationDirection = false;
+		if(element.getAttribute("Beziehungsrichtung").equals(relationLineViews.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName())){
+			relationDirection = false;
+		}
+		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), relationDirection);
 		for(int i = 2; i < relationLineViews.size(); i++) {
 			relationModel.getApplications().add(relationLineViews.get(i).getApplicationInRelation());
 		}
 		RelationView relationView = new RelationView(relationModel, modelView);
-		relationView.getRelationControl().setRelationText(element.getAttribute("Beziehungstyp"));
+		relationView.getRelationControl().setRelationType(element.getAttribute("Beziehungstyp"));
+		relationView.getRelationControl().setRelationDirection(relationDirection);
 		modelView.addElement(relationView);
+	}
+
+	private void setRelationDirection(boolean relationDirection) {
+		this.relationView.getRelationModel().setRelationDirection(relationDirection);
+		//this.refresh();
 	}
 
 }

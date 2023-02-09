@@ -4,9 +4,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 import control.MainControl;
@@ -23,17 +21,19 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
+import view.ApplicationView;
+import view.ModelView;
 
-public class ImportFXMLControl implements Initializable {
+public class ExportFXMLControl implements Initializable {
 	
-	private static ImportFXMLControl importFXMLControl;
+	private static ExportFXMLControl exportFXMLControl;
+	private ModelView modelView;
 	private Connection connection = null;
 	private String userName;
 	private String passWord;
 	private String hostUrl;
 	private int portNumber;
 	private String dataBase;
-	private LinkedList<ApplicationModel> applications;
 	private ObservableList<ApplicationModel> applicationsList;
 	
 	@FXML
@@ -52,16 +52,16 @@ public class ImportFXMLControl implements Initializable {
 	private Button submit;
 	
 	//Konstruktor
-	public ImportFXMLControl() {
+	public ExportFXMLControl() {
 		
 	}
 	
 	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static ImportFXMLControl getImportFXMLControl(){
-        if (importFXMLControl == null) {
-        	importFXMLControl = new ImportFXMLControl();
+	public static ExportFXMLControl getExportFXMLControl(){
+        if (exportFXMLControl == null) {
+        	exportFXMLControl = new ExportFXMLControl();
         }
-        return importFXMLControl;
+        return exportFXMLControl;
     }
 	
 	//Methode zum Schließen des Import-Fensters
@@ -75,21 +75,23 @@ public class ImportFXMLControl implements Initializable {
 	private void load(ActionEvent event) {
 		this.initializePostgresqlDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
+       
+        //im Modell vorhandene Anwendungen
         applicationsList = FXCollections.observableArrayList();
-        for (ApplicationModel aM : this.importApplications()) {
-            applicationsList.add(aM);
+        for (ApplicationView applicationView : this.modelView.getApplications()) {
+        	applicationsList.add(applicationView.getApplicationModel());
         }
+        
         this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
+        
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
 	@FXML
     private void submit(ActionEvent event) {
 		try {
-	        if (this.importApplications().size() != 0) {
-	        	for(ApplicationModel aM : this.applicationsList) {
-	        		MainControl.getMainControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
-	        	}
+	        for(ApplicationModel applicationModel : this.applicationsList) {
+	        	this.exportApplications(applicationModel);
 	        }
 		}
 		catch (Exception e){
@@ -103,13 +105,6 @@ public class ImportFXMLControl implements Initializable {
 		}
 		this.scrollPane.getScene().getWindow().hide();
     }
-	
-	@FXML
-	private void selectApplications() {
-		
-        
-
-	}
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
     public void initializePostgresqlDatabase() {
@@ -139,17 +134,35 @@ public class ImportFXMLControl implements Initializable {
 	}
     
     
-    //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
-    public LinkedList<ApplicationModel> importApplications() {
-		try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
-            ResultSet resultSet = preparedStatement.executeQuery();
-            applications = new LinkedList<>();
-            while (resultSet.next()){
-            	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
-            }
-            return applications;
-        } catch(Exception e) {
+    //Methode zum Export der Anwendungen aus der ausgewählte Tabelle
+    public boolean exportApplications(ApplicationModel applicationModel) {
+    	try {
+    		PreparedStatement preparedStatement = connection.prepareStatement(
+    				"INSERT INTO anwendung (anwendungsid, anwendungsname, beschreibung, kategoriename, herstellerid, anwendungsmanagerid, fachbereichid, adminid)"
+    				+"VALUES (?, ?, ?,"
+    				+"(SELECT kategoriename from kategorie WHERE kategorie.kategoriename = ?),"
+    				+"(SELECT herstellerid from hersteller WHERE hersteller.herstellername = ?),"
+    				+"(SELECT anwendungsmanagerid from (anwendungsmanager INNER JOIN mitarbeiter ON anwendungsmanager.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?),"
+    				+"(SELECT fachbereichid from fachbereich WHERE fachbereich.fachbereichname = ?),"
+    				+"(SELECT adminid from (administrator INNER JOIN mitarbeiter ON administrator.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?))"
+    				+"ON CONFLICT (anwendungsid) DO UPDATE "
+    				+"SET anwendungsname = excluded.anwendungsname,"
+    				+"beschreibung = excluded.beschreibung,"
+    				+"kategoriename = excluded.kategoriename,"
+    				+"herstellerid = excluded.herstellerid,"
+    				+"anwendungsmanagerid = excluded.anwendungsmanagerid,"
+    				+"fachbereichid = excluded.fachbereichid,"
+    				+"adminid = excluded.adminid;");
+            preparedStatement.setInt(1, applicationModel.getApplicationId());
+            preparedStatement.setString(2, applicationModel.getApplicationName());
+            preparedStatement.setString(3, applicationModel.getApplicationDescription());
+            preparedStatement.setString(4, applicationModel.getApplicationCategory());
+            preparedStatement.setString(5, applicationModel.getApplicationProducer());
+            preparedStatement.setString(6, applicationModel.getApplicationManager());
+            preparedStatement.setString(7, applicationModel.getApplicationDepartment());
+            preparedStatement.setString(8, applicationModel.getApplicationAdmin());
+            preparedStatement.execute();
+        } catch (Exception e) {
         	e.printStackTrace();
 			if (!e.getClass().equals(SQLException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
@@ -157,13 +170,15 @@ public class ImportFXMLControl implements Initializable {
                 alertError.setHeaderText("Es konnten keine Anwendungen importiert werden.");
                 alertError.show();
             }
-		}
-		return null;
+			return false;
+        }
+        return true;
 	}
     
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		this.modelView = MainControl.getMainControl().getModelView();
 		this.databases.getItems().addAll("Alle Anwendungen", "Kernanwendungen");
 		this.databases.getSelectionModel().select(0);
 		
