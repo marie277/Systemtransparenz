@@ -46,7 +46,7 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane = new ApplicationBorderPane();
         this.applicationBorderPane.setId("applicationBorderPane");
         this.applicationBorderPane.getStyleClass().add("applicationBorderPane");
-        this.applicationBorderPane.setPrefSize(40.0, 40.0);
+        this.applicationBorderPane.setPrefSize(200.0, 100.0);
         this.name = new Text("");
         this.name.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getNameProperty());
         Label idLabel = new Label("ID: ");

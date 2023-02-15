@@ -7,6 +7,7 @@ import control.RelationControl;
 import control.edit.ApplicationBorderPane;
 import control.edit.Move;
 import control.edit.MoveControl;
+import control.edit.RelationLine;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -14,6 +15,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -64,20 +66,25 @@ public class RelationView extends ElementView{
 		this.stackPane.getChildren().add((Node)this.relationText);
 		this.stackPane.setAlignment(Pos.CENTER);
 		this.applicationBorderPane.setCenter((Node)this.stackPane);
-		this.applicationBorderPane.setPrefSize(40.0, 40.0);
+		this.applicationBorderPane.setPrefSize(0.0, 0.0);
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
 			boolean relationDirection = this.relationModel.getRelationDirection();
 			String relationType = this.relationModel.getRelationType();
 			RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, relationDirection);
+			
+			if(relationType == "Nutzt") {
+				relationLineView.getRelationLine().setStyle("-fx-stroke-dash-array: 2 12 12 2; ");
+			}
 			this.relationNodes.add(relationLineView);
 			DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
 			DoubleProperty layoutX = this.getElementRegion().layoutXProperty();
 			DoubleBinding width = this.getElementRegion().prefWidthProperty().divide(2.0);
 			DoubleProperty endY = relationLineView.getRelationLine().endYProperty();
 			DoubleProperty layoutY = this.getElementRegion().layoutXProperty();
-			DoubleBinding height = this.getElementRegion().prefWidthProperty().divide(2.0);
+			DoubleBinding height = this.getElementRegion().prefHeightProperty().divide(2.0);
 			endX.bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)width));
 			endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)height));
+			
 		}
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
 			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
@@ -89,6 +96,11 @@ public class RelationView extends ElementView{
             });
         }
 		MoveControl.makeRegionMoveable(this.getElementRegion(), (Region)this.getModelView(), (Move)this);
+		this.relationText.layoutBoundsProperty().addListener((o, oldVal, newVal) -> {
+            for (RelationLineView rLV : this.relationNodes) {
+            	rLV.getRelationHub();
+            }
+        });
 		this.selected = false;
 	}
 
