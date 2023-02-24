@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import control.edit.ApplicationInRelation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +17,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
-import model.ApplicationInRelation;
 import model.ApplicationModel;
-import model.AssociatesModel;
+import model.MainModel;
 import model.RelationModel;
 import view.ApplicationView;
 import view.ModelView;
@@ -51,7 +49,7 @@ public class RelationFXMLControl implements Initializable{
     @FXML
     private Button submit;
     @FXML
-    private LinkedList<AssociatesModel> associates;
+    private LinkedList<ApplicationInRelation> applicationsInRelation;
     
     //Methode zum Schließen des Fensters zur Anlage einer Beziehung
     @FXML
@@ -62,10 +60,10 @@ public class RelationFXMLControl implements Initializable{
     //Methode zum Bestätigen der erstellten Beziehung
     @FXML
     private void submit(ActionEvent event) throws Exception {
-    	MainControl.getMainControl().setSelectedApplications((ObservableList<ApplicationModel>)this.selectedApplications.getTableView().getItems());
-    	if (MainControl.getMainControl().getSelectedApplications().size() == 2) {
-    		ApplicationInRelation firstApplication = this.associates.get(0).getApplicationInRelation();
-    		ApplicationInRelation secondApplication = this.associates.get(1).getApplicationInRelation();
+    	MainModel.getMainModel().setSelectedApplications((ObservableList<ApplicationModel>)this.selectedApplications.getTableView().getItems());
+    	if (MainModel.getMainModel().getSelectedApplications().size() == 2) {
+    		ApplicationInRelation firstApplication = this.applicationsInRelation.get(0);
+    		ApplicationInRelation secondApplication = this.applicationsInRelation.get(1);
     		String relationType = this.relationTypes.getValue();
     		String arrowDirection = this.incomingRelation.getValue();
     		if((!relationType.equals("Verknüpft mit") && arrowDirection.equals("keine")) || (relationType.equals("Verknüpft mit") && !arrowDirection.equals("keine"))) {
@@ -78,10 +76,10 @@ public class RelationFXMLControl implements Initializable{
 	    	else {
 	    		boolean arrowIncoming = arrowDirection.equals(firstApplication.getApplicationView().getApplicationModel().getApplicationName());
 	    		RelationModel relationModel = new RelationModel(firstApplication, secondApplication, relationType, arrowIncoming);
-	    		LinkedList<RelationView> relations = MainControl.getMainControl().getModelView().getRelations();
+	    		LinkedList<RelationView> relations = MainModel.modelFXMLControl.getModelView().getRelations();
 	    		if(relations.size() == 0) {
-		    		MainControl.getMainControl().getModelView().getModelControl().addRelationView(relationModel);
-		            LinkedList<ApplicationInRelation> applications = MainControl.getMainControl().getModelView().getRelations().getLast().getRelationModel().getApplications();
+	    			MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
+	    			LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
 		            double x = 0.0;
 		            double y = 0.0;
 		            for (ApplicationInRelation applicationInRelation : applications) {
@@ -90,13 +88,13 @@ public class RelationFXMLControl implements Initializable{
 		            }
 		            x /= 2.0;
 		            y /= 2.0;
-		            MainControl.getMainControl().getModelView().getRelations().getLast().move(x, y);
+		            MainModel.modelFXMLControl.getModelView().getRelations().getLast().move(x, y);
 		            this.borderPane.getScene().getWindow().hide();
 	    		}
 	    		else {
 		    		boolean isDuplicate = false;
 		    		for(int i = 0; i < relations.size(); i++) {
-		    			RelationView relationView = MainControl.getMainControl().getModelView().getRelations().get(i);
+		    			RelationView relationView = MainModel.modelFXMLControl.getModelView().getRelations().get(i);
 		            	if((relationView.getRelationModel().getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName())
 		            			&& relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName()))
 		            			|| (relationView.getRelationModel().getApplications().getFirst().getApplicationView().getApplicationModel().getApplicationName().equals(relationModel.getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName())
@@ -113,8 +111,8 @@ public class RelationFXMLControl implements Initializable{
 		            	}
 		            }
 			    	if(!isDuplicate) {
-			    		MainControl.getMainControl().getModelView().getModelControl().addRelationView(relationModel);
-			            LinkedList<ApplicationInRelation> applications = MainControl.getMainControl().getModelView().getRelations().getLast().getRelationModel().getApplications();
+			    		MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
+			            LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
 			            double x = 0.0;
 			            double y = 0.0;
 			            for (ApplicationInRelation applicationInRelation : applications) {
@@ -123,7 +121,7 @@ public class RelationFXMLControl implements Initializable{
 			            }
 			            x /= 2.0;
 			            y /= 2.0;
-			            MainControl.getMainControl().getModelView().getRelations().getLast().move(x, y);
+			            MainModel.modelFXMLControl.getModelView().getRelations().getLast().move(x, y);
 			            this.borderPane.getScene().getWindow().hide();
 			    	}	
 			    }
@@ -145,10 +143,21 @@ public class RelationFXMLControl implements Initializable{
             this.availableApplications.getTableView().getItems().remove(applicationModel);
             this.selectedApplications.getTableView().getItems().add(applicationModel);
             this.incomingRelation.getItems().addAll(applicationModel.getApplicationName());
-            String applicationName = applicationModel.getApplicationName();
-            Text text = new Text(applicationName);
-            AssociatesModel associatesModel = new AssociatesModel(text);
-            this.associates.add(associatesModel);
+            ApplicationView applicationView = null;
+            LinkedList<ApplicationView> applicationViews = MainModel.modelFXMLControl.getModelView().getApplications();
+            for (ApplicationView aV : applicationViews) {
+                if (aV.getApplicationModel().equals(applicationModel)) {
+                    applicationView = aV;
+                }
+            }
+            ApplicationInRelation applicationInRelation;
+            if (applicationView != null) {
+            	applicationInRelation = new ApplicationInRelation(applicationView);
+            	this.applicationsInRelation.add(applicationInRelation);
+            }
+            else {
+            	throw new Exception("Achtung! Es sind keine Anwendungen vorhanden.");
+            }
         }
     }
     
@@ -165,8 +174,8 @@ public class RelationFXMLControl implements Initializable{
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.modelView = MainControl.getMainControl().getModelView();
-		this.associates = new LinkedList<AssociatesModel>();
+		this.modelView = MainModel.modelFXMLControl.getModelView();
+		this.applicationsInRelation = new LinkedList<ApplicationInRelation>();
 		this.relationTypes.getItems().addAll("Verknüpft mit", "Hat", "Nutzt");
 		this.relationTypes.getSelectionModel().select(0);
 		this.incomingRelation.getItems().add("keine");

@@ -1,4 +1,4 @@
-package model;
+package control.edit;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +25,7 @@ public class ApplicationInRelation {
 		this.id = new SimpleIntegerProperty(this, "id", applicationId);
 	}
 	
+	//Getter-Methode für das Property der Beziehungspfeil-Richtung
 	public BooleanProperty getRelationDirectionProperty() {
 		if(this.relationDirectionProperty == null) {
 			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", false);
@@ -41,10 +42,10 @@ public class ApplicationInRelation {
 	public static ApplicationInRelation importFromXML(Element item, ModelView modelView) {
 		ApplicationView applicationView = null;
 		ApplicationInRelation applicationInRelation = null;
-        for (ApplicationView applicationViewRel : modelView.getApplications()) {
-        	String applicationName = applicationViewRel.getApplicationModel().getApplicationName();
+        for (ApplicationView aV : modelView.getApplications()) {
+        	String applicationName = aV.getApplicationModel().getApplicationName();
             if (applicationName.equals(item.getAttribute("Anwendungsname"))) {
-                applicationView = applicationViewRel;
+                applicationView = aV;
                 break;
             }
         }
@@ -65,21 +66,9 @@ public class ApplicationInRelation {
 		this.applicationView = applicationView;
 	}
 	
-	//Getter-Methode für die zugehörige ID
+	//Getter-Methode für das Property der zugehörigen ID
 	public IntegerProperty getIdProperty() {
 		return this.id;
 	}
-	
-	//Methode zum Vergleich, ob eine an einer Beziehung beteiligte Anwendung mit der hier gespeicherten übereinstimmt
-	@Override
-    public boolean equals(Object object) {
-		ApplicationInRelation applicationInRelation = (ApplicationInRelation)object;
-        if (super.equals(object) && this.getApplicationView().equals(applicationInRelation.getApplicationView()) && this.getIdProperty() == applicationInRelation.getIdProperty()) {
-            return true;
-        }
-        else {
-        	return false;
-        }
-    }
 	
 }

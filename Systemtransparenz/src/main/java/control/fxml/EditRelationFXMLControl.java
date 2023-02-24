@@ -3,13 +3,13 @@ package control.fxml;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import control.MainControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import model.MainModel;
 import view.RelationView;
 
 //Klasse zur Steuerung der Bearbeitung einer ausgewählten Beziehung zwischen zwei Anwendungen, implementiert Interface Initializable
@@ -33,15 +33,15 @@ public class EditRelationFXMLControl implements Initializable {
 	        alertError.show();
 		}
 	    else {
-	    	MainControl.getMainControl().getModelView().getModelControl().editRelation(this.relationView, this.relationType.getSelectionModel().getSelectedItem(), this.relationDirection.getSelectionModel().getSelectedItem());
+	    	MainModel.modelFXMLControl.getModelView().getModelControl().editRelation(this.relationView, this.relationType.getSelectionModel().getSelectedItem(), this.relationDirection.getSelectionModel().getSelectedItem());
 	    }
     }
     
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-        this.relationView = (RelationView)MainControl.getMainControl().getSelectedElementView();
-        MainControl.getMainControl().setRelationView(this.relationView);
+		this.relationView = (RelationView)MainModel.modelFXMLControl.getModelView().getElementView();
+        MainModel.getMainModel().setRelationView(this.relationView);
         this.relationType.getItems().addAll("Verknüpft mit", "Hat", "Nutzt");
         String relationText = this.relationView.getRelationText().getText();
         this.relationType.getSelectionModel().select(relationText);

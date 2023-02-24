@@ -3,7 +3,6 @@ package view;
 import control.ApplicationControl;
 import control.ElementControl;
 import control.edit.ApplicationBorderPane;
-import control.edit.Move;
 import control.edit.MoveControl;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -91,7 +90,7 @@ public class ApplicationView extends ElementView {
         this.titledPane.setExpanded(false);
         this.applicationBorderPane.setCenter((Node)this.name);
         this.applicationBorderPane.setBottom(titledPane);
-        MoveControl.makeRegionMoveable((Region)this.applicationBorderPane, (Region)this.getModelView(), (Move)this);
+        MoveControl.makeRegionMoveable((Region)this.applicationBorderPane, this.getModelView(), this);
         this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("/application/application.css").toExternalForm());
         this.applicationBorderPane.getSelectedProperty().bind(this.getSelectedProperty());
         this.applicationBorderPane.setOnMouseClicked(e -> {

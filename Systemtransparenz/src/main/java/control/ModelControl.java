@@ -10,8 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import control.edit.Zoom;
-import model.ApplicationInRelation;
+import control.edit.ApplicationInRelation;
 import model.ApplicationModel;
 import model.RelationModel;
 import view.ApplicationView;
@@ -82,10 +81,10 @@ public class ModelControl {
 	//Methode zum Erstellen eines XML-Elements zum Speichern in einer Datei
 	public Element createXMLElement(Document doc) {
 		for(ApplicationView applicationView : this.modelView.getApplications()) {
-			this.modelView.getZoomControl().removeObject((Zoom)applicationView);
+			this.modelView.getZoomControl().removeObject(applicationView);
 		}
 		for(RelationView relationView : this.modelView.getRelations()) {
-			this.modelView.getZoomControl().removeObject((Zoom)relationView);
+			this.modelView.getZoomControl().removeObject(relationView);
 		}
 		Element model = doc.createElement("Modell");
 		try {
@@ -108,19 +107,19 @@ public class ModelControl {
 			model.appendChild(applications);
 			model.appendChild(relations);
 			for(ApplicationView applicationView : this.modelView.getApplications()) {
-				this.modelView.getZoomControl().addObject((Zoom)applicationView);
+				this.modelView.getZoomControl().addObject(applicationView);
 			}
 			for(RelationView relationView : this.modelView.getRelations()) {
-				this.modelView.getZoomControl().addObject((Zoom)relationView);
+				this.modelView.getZoomControl().addObject(relationView);
 			};
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			for(ApplicationView applicationView : this.modelView.getApplications()) {
-				this.modelView.getZoomControl().addObject((Zoom)applicationView);
+				this.modelView.getZoomControl().addObject(applicationView);
 			}
 			for(RelationView relationView : this.modelView.getRelations()) {
-				this.modelView.getZoomControl().addObject((Zoom)relationView);
+				this.modelView.getZoomControl().addObject(relationView);
 			}
 		}
 		return model;
@@ -161,12 +160,7 @@ public class ModelControl {
 
 	//Methode zum Umbenennen einer Anwendungs-Ansicht im Modell
 	public void renameApplication(ApplicationView applicationView, String applicationName) {
-		/*for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
-            if (applicationViewModel.getApplicationModel().getApplicationName().equals(applicationName) && !applicationViewModel.equals(applicationView)) {
-                throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit diesem Namen vorhanden.");
-            }
-        }*/
-        applicationView.getApplicationControl().renameApplication(applicationName);
+        applicationView.getApplicationControl().changeApplicationName(applicationName);
 	}
 
 	//Methode zur Änderung des Beziehungstyps einer Beziehung in dem Modell
@@ -182,17 +176,7 @@ public class ModelControl {
 		this.addRelationView(relationModel);	
 	}
 
-	//Methode zur Prüfung, ob eine Modell-Ansicht mit der gesteuerten übereinstimmt
-	@Override
-	public boolean equals(Object object) {
-		if(super.equals(object) && this.modelView.equals(((ModelControl) object).getModelView())) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
+	//Methode zur Änderung der ID einer Anwendung
 	public void changeApplicationId(ApplicationView applicationView, String applicationId) {
 		for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
             if (applicationViewModel.getApplicationModel().getApplicationName().equals(applicationId) && !applicationViewModel.equals(applicationView)) {
@@ -202,27 +186,34 @@ public class ModelControl {
         applicationView.getApplicationControl().changeApplicationId(applicationId);
 	}
 
+	//Methode zur Änderung der Beschreibung einer Anwendung
 	public void changeApplicationDescription(ApplicationView applicationView, String applicationDescription) {
 		applicationView.getApplicationControl().changeApplicationDescription(applicationDescription);
 	}
 
+	//Methode zur Änderung der Kategory einer Anwendung
 	public void changeApplicationCategory(ApplicationView applicationView, String applicationCategory) {
 		applicationView.getApplicationControl().changeApplicationCategory(applicationCategory);
 	}
 
+	//Methode zur Änderung des Produzenten einer Anwendung
 	public void changeApplicationProducer(ApplicationView applicationView, String applicationProducer) {
 		applicationView.getApplicationControl().changeApplicationProducer(applicationProducer);
 	}
 	
+	//Methode zur Änderung des Managers einer Anwendung
 	public void changeApplicationManager(ApplicationView applicationView, String applicationManager) {
 		applicationView.getApplicationControl().changeApplicationManager(applicationManager);
 	}
 
+	//Methode zur Änderung des Fachbereichs einer Anwendung
 	public void changeApplicationDepartment(ApplicationView applicationView, String applicationDepartment) {
 		applicationView.getApplicationControl().changeApplicationDepartment(applicationDepartment);
 	}
 
+	//Methode zur Änderung des Admins einer Anwendung
 	public void changeApplicationAdmin(ApplicationView applicationView, String applicationAdmin) {
 		applicationView.getApplicationControl().changeApplicationAdmin(applicationAdmin);
 	}
+	
 }

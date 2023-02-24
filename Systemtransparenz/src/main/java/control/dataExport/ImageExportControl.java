@@ -40,24 +40,23 @@ public class ImageExportControl {
 			File parentFile = new File(file.getParent());
 			fileChooser.setInitialDirectory(parentFile);
 		}
-		
 		file = fileChooser.showSaveDialog(this.modelView.getScene().getWindow());
 		if(file != null) {
 			Dimension2D dimensions = new Dimension2D(0.0, 0.0);
 			for(ApplicationView applicationView : this.modelView.getApplications()) {
-				if(applicationView.getLayout().getX() + applicationView.getWidth() > dimensions.getWidth()) {
-					dimensions = new Dimension2D(applicationView.getLayout().getX() + applicationView.getWidth(), dimensions.getHeight());
+				if(applicationView.getLayout().getX() + applicationView.getElementRegion().getPrefWidth() > dimensions.getWidth()) {
+					dimensions = new Dimension2D(applicationView.getLayout().getX() + applicationView.getElementRegion().getPrefWidth(), dimensions.getHeight());
 				}
-				if(applicationView.getLayout().getY() + applicationView.getHeight() > dimensions.getHeight()) {
-					dimensions = new Dimension2D(dimensions.getWidth(), applicationView.getLayout().getY() + applicationView.getHeight());
+				if(applicationView.getLayout().getY() + applicationView.getElementRegion().getPrefHeight() > dimensions.getHeight()) {
+					dimensions = new Dimension2D(dimensions.getWidth(), applicationView.getLayout().getY() + applicationView.getElementRegion().getPrefHeight());
 				}
 			}
 			for(RelationView relationView : this.modelView.getRelations()) {
-				if(relationView.getLayout().getX() + relationView.getWidth() > dimensions.getWidth()) {
-					dimensions = new Dimension2D(relationView.getLayout().getX() + relationView.getWidth(), dimensions.getHeight());
+				if(relationView.getLayout().getX() + relationView.getElementRegion().getPrefWidth() > dimensions.getWidth()) {
+					dimensions = new Dimension2D(relationView.getLayout().getX() + relationView.getElementRegion().getPrefWidth(), dimensions.getHeight());
 				}
-				if(relationView.getLayout().getY() + relationView.getHeight() > dimensions.getHeight()) {
-					dimensions = new Dimension2D(dimensions.getWidth(), relationView.getLayout().getY() + relationView.getHeight());
+				if(relationView.getLayout().getY() + relationView.getElementRegion().getPrefHeight() > dimensions.getHeight()) {
+					dimensions = new Dimension2D(dimensions.getWidth(), relationView.getLayout().getY() + relationView.getElementRegion().getPrefHeight());
 				}
 			}
 			dimensions = new Dimension2D(dimensions.getWidth()+50.0, dimensions.getHeight()+50.0);

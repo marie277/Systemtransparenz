@@ -7,7 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import org.postgresql.Driver;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,12 +22,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
+import model.MainModel;
 import view.ApplicationView;
 import view.ModelView;
 
 public class ExportFXMLControl implements Initializable {
 	
-	private static ExportFXMLControl exportFXMLControl;
 	private ModelView modelView;
 	private Connection connection = null;
 	private String userName;
@@ -51,19 +52,6 @@ public class ExportFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
-	//Konstruktor
-	public ExportFXMLControl() {
-		
-	}
-	
-	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static ExportFXMLControl getExportFXMLControl(){
-        if (exportFXMLControl == null) {
-        	exportFXMLControl = new ExportFXMLControl();
-        }
-        return exportFXMLControl;
-    }
-	
 	//Methode zum Schließen des Import-Fensters
 	@FXML
     private void cancel(ActionEvent event) {
@@ -73,17 +61,13 @@ public class ExportFXMLControl implements Initializable {
 	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
 	@FXML
 	private void load(ActionEvent event) {
-		this.initializePostgresqlDatabase();
+		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
-       
-        //im Modell vorhandene Anwendungen
         applicationsList = FXCollections.observableArrayList();
         for (ApplicationView applicationView : this.modelView.getApplications()) {
         	applicationsList.add(applicationView.getApplicationModel());
         }
-        
         this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
-        
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
@@ -99,7 +83,7 @@ public class ExportFXMLControl implements Initializable {
 			if (!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
-	            alertError.setHeaderText("Es sind keine Anwendungen in der ausgewählten Tabelle vorhanden.");
+	            alertError.setHeaderText("Es konnten keine Anwendungen in die ausgewählte Tabelle exportiert werden.");
 	            alertError.show();
 	        }
 		}
@@ -107,7 +91,7 @@ public class ExportFXMLControl implements Initializable {
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
-    public void initializePostgresqlDatabase() {
+    public void initializeDatabase() {
     	this.hostUrl = "localhost";
     	this.portNumber = 5432;
     	this.userName = "postgres";
@@ -119,9 +103,9 @@ public class ExportFXMLControl implements Initializable {
 	    	this.dataBase = "itportfolio";
     	}
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -133,52 +117,39 @@ public class ExportFXMLControl implements Initializable {
         }
 	}
     
-    
     //Methode zum Export der Anwendungen aus der ausgewählte Tabelle
-    public boolean exportApplications(ApplicationModel applicationModel) {
-    	try {
-    		PreparedStatement preparedStatement = connection.prepareStatement(
-    				"INSERT INTO anwendung (anwendungsid, anwendungsname, beschreibung, kategoriename, herstellerid, anwendungsmanagerid, fachbereichid, adminid)"
-    				+"VALUES (?, ?, ?,"
-    				+"(SELECT kategoriename from kategorie WHERE kategorie.kategoriename = ?),"
-    				+"(SELECT herstellerid from hersteller WHERE hersteller.herstellername = ?),"
-    				+"(SELECT anwendungsmanagerid from (anwendungsmanager INNER JOIN mitarbeiter ON anwendungsmanager.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?),"
-    				+"(SELECT fachbereichid from fachbereich WHERE fachbereich.fachbereichname = ?),"
-    				+"(SELECT adminid from (administrator INNER JOIN mitarbeiter ON administrator.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?))"
-    				+"ON CONFLICT (anwendungsid) DO UPDATE "
-    				+"SET anwendungsname = excluded.anwendungsname,"
-    				+"beschreibung = excluded.beschreibung,"
-    				+"kategoriename = excluded.kategoriename,"
-    				+"herstellerid = excluded.herstellerid,"
-    				+"anwendungsmanagerid = excluded.anwendungsmanagerid,"
-    				+"fachbereichid = excluded.fachbereichid,"
-    				+"adminid = excluded.adminid;");
-            preparedStatement.setInt(1, applicationModel.getApplicationId());
-            preparedStatement.setString(2, applicationModel.getApplicationName());
-            preparedStatement.setString(3, applicationModel.getApplicationDescription());
-            preparedStatement.setString(4, applicationModel.getApplicationCategory());
-            preparedStatement.setString(5, applicationModel.getApplicationProducer());
-            preparedStatement.setString(6, applicationModel.getApplicationManager());
-            preparedStatement.setString(7, applicationModel.getApplicationDepartment());
-            preparedStatement.setString(8, applicationModel.getApplicationAdmin());
-            preparedStatement.execute();
-        } catch (Exception e) {
-        	e.printStackTrace();
-			if (!e.getClass().equals(SQLException.class)) {
-                Alert alertError = new Alert(Alert.AlertType.ERROR);
-                alertError.setTitle("Fehler!");
-                alertError.setHeaderText("Es konnten keine Anwendungen importiert werden.");
-                alertError.show();
-            }
-			return false;
-        }
-        return true;
+    public void exportApplications(ApplicationModel applicationModel) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(
+				"INSERT INTO anwendung (anwendungsid, anwendungsname, beschreibung, kategoriename, herstellerid, anwendungsmanagerid, fachbereichid, adminid)"
+				+"VALUES (?, ?, ?,"
+				+"(SELECT kategoriename from kategorie WHERE kategorie.kategoriename = ?),"
+				+"(SELECT herstellerid from hersteller WHERE hersteller.herstellername = ?),"
+				+"(SELECT anwendungsmanagerid from (anwendungsmanager INNER JOIN mitarbeiter ON anwendungsmanager.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?),"
+				+"(SELECT fachbereichid from fachbereich WHERE fachbereich.fachbereichname = ?),"
+				+"(SELECT adminid from (administrator INNER JOIN mitarbeiter ON administrator.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?))"
+				+"ON CONFLICT (anwendungsid) DO UPDATE "
+				+"SET anwendungsname = excluded.anwendungsname,"
+				+"beschreibung = excluded.beschreibung,"
+				+"kategoriename = excluded.kategoriename,"
+				+"herstellerid = excluded.herstellerid,"
+				+"anwendungsmanagerid = excluded.anwendungsmanagerid,"
+				+"fachbereichid = excluded.fachbereichid,"
+				+"adminid = excluded.adminid;");
+        preparedStatement.setInt(1, applicationModel.getApplicationId());
+        preparedStatement.setString(2, applicationModel.getApplicationName());
+        preparedStatement.setString(3, applicationModel.getApplicationDescription());
+        preparedStatement.setString(4, applicationModel.getApplicationCategory());
+        preparedStatement.setString(5, applicationModel.getApplicationProducer());
+        preparedStatement.setString(6, applicationModel.getApplicationManager());
+        preparedStatement.setString(7, applicationModel.getApplicationDepartment());
+        preparedStatement.setString(8, applicationModel.getApplicationAdmin());
+        preparedStatement.execute();
 	}
     
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.modelView = MainControl.getMainControl().getModelView();
+		this.modelView = MainModel.modelFXMLControl.getModelView();
 		this.databases.getItems().addAll("Alle Anwendungen", "Kernanwendungen");
 		this.databases.getSelectionModel().select(0);
 		

@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import org.postgresql.Driver;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,6 +20,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import model.ApplicationModel;
+import model.MainModel;
 
 public class ApplicationFXMLControl implements Initializable {
 	
@@ -58,11 +59,6 @@ public class ApplicationFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
-	//Konstruktor
-	public ApplicationFXMLControl() {
-		
-	}
-	
 	//Methode zum Schlieﬂen des Import-Fensters
 	@FXML
     private void cancel(ActionEvent event) {
@@ -82,8 +78,7 @@ public class ApplicationFXMLControl implements Initializable {
 			String applicationDepartment = this.department.getValue();
 			String applicationAdmin = this.admin.getValue();
 			ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
-			MainControl.getMainControl().addApplication(applicationModel.getApplicationId(), applicationModel.getApplicationName(), applicationModel.getApplicationDescription(), applicationModel.getApplicationCategory(), applicationModel.getApplicationProducer(), applicationModel.getApplicationManager(), applicationModel.getApplicationDepartment(), applicationModel.getApplicationAdmin());
-	        
+			MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(applicationModel.getApplicationId(), applicationModel.getApplicationName(), applicationModel.getApplicationDescription(), applicationModel.getApplicationCategory(), applicationModel.getApplicationProducer(), applicationModel.getApplicationManager(), applicationModel.getApplicationDepartment(), applicationModel.getApplicationAdmin());
 		}
 		catch (Exception e){
 			e.printStackTrace();
@@ -97,16 +92,17 @@ public class ApplicationFXMLControl implements Initializable {
 		this.scrollPane.getScene().getWindow().hide();
     }
 	
-	public void initializePostgresqlDatabase() {
+	//Methode zur Herstellung einer Datenbank-Verbindung
+	public void initializeDatabase() {
     	this.hostUrl = "localhost";
     	this.portNumber = 5432;
     	this.userName = "postgres";
     	this.passWord = "pw369";
     	this.dataBase = "systemtransparenz";
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -124,31 +120,31 @@ public class ApplicationFXMLControl implements Initializable {
 		try {
             PreparedStatement categoryPreparedStatement = connection.prepareStatement("SELECT k.kategoriename FROM kategorie k;");
             ResultSet categoryResultSet = categoryPreparedStatement.executeQuery();
-            categories = new LinkedList<>();
+            categories = new LinkedList<String>();
             while (categoryResultSet.next()){
             	categories.add(categoryResultSet.getString(1));
             }
             PreparedStatement producerPreparedStatement = connection.prepareStatement("SELECT h.herstellername FROM hersteller h;");
             ResultSet producerResultSet = producerPreparedStatement.executeQuery();
-            producers = new LinkedList<>();
+            producers = new LinkedList<String>();
             while (producerResultSet.next()){
             	producers.add(producerResultSet.getString(1));
             }
             PreparedStatement managerPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet managerResultSet = managerPreparedStatement.executeQuery();
-            managers = new LinkedList<>();
+            managers = new LinkedList<String>();
             while (managerResultSet.next()){
             	managers.add(managerResultSet.getString(1));
             }
             PreparedStatement departmentPreparedStatement = connection.prepareStatement("SELECT f.fachbereichname FROM fachbereich f;");
             ResultSet departmentResultSet = departmentPreparedStatement.executeQuery();
-            departments = new LinkedList<>();
+            departments = new LinkedList<String>();
             while (departmentResultSet.next()){
             	departments.add(departmentResultSet.getString(1));
             }
             PreparedStatement adminPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (administrator ad INNER JOIN mitarbeiter mb ON ad.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet adminResultSet = adminPreparedStatement.executeQuery();
-            admins = new LinkedList<>();
+            admins = new LinkedList<String>();
             while (adminResultSet.next()){
             	admins.add(adminResultSet.getString(1));
             }
@@ -166,7 +162,7 @@ public class ApplicationFXMLControl implements Initializable {
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		this.initializePostgresqlDatabase();
+		this.initializeDatabase();
 		this.importValues();
 		for(String category : this.categories) {
 			this.category.getItems().add(category);

@@ -44,13 +44,6 @@ public abstract class ElementControl {
 		}
 	}
 	
-	//Setter-Methode für die Weite und Höhe einer Elements-Ansicht
-	public void setWidthHeight(double width, double height) {
-		this.elementView.setSize(width, height);
-		this.setSaved(false);
-	}
-	
-	
 	//Methode zum Import der Attribute eines XML-Elements
 	public static void importXMLSettings(Element item, ElementView elementView) {
 		double width = Double.parseDouble(item.getAttribute("Weite"));
@@ -86,7 +79,7 @@ public abstract class ElementControl {
 	
 	//Methode zur Aktualisierung eines Elements
 	public void zoom(double factor) {
-		this.elementView.setSize(this.elementView.getWidth()*factor, this.elementView.getHeight()*factor);
+		this.elementView.setSize(this.elementView.getElementRegion().getPrefWidth()*factor, this.elementView.getElementRegion().getPrefHeight()*factor);
 		this.elementView.setLayout(this.elementView.getLayout().getX()*factor, this.elementView.getLayout().getY()*factor);
 		this.elementView.setDifferenceWidth(this.elementView.getDifferenceWidth() * factor);
 		this.elementView.setDifferenceHeight(this.elementView.getDifferenceHeight() * factor);
@@ -100,16 +93,6 @@ public abstract class ElementControl {
 		this.elementView.setLayout(layoutX, layoutY);
 		for(ElementView elementView : this.elementView.getElements()) {
 			elementView.setMoved(this.elementView.getLayout().getX(), this.elementView.getLayout().getY());
-		}
-	}
-	
-	//Methode zur Prüfung, ob eine Elements-Ansicht mit der gesteuerten übereinstimmt
-	public boolean equals(Object object) {
-		if(super.equals(object) && this.elementView.equals(((ElementControl) object).getElementView())) {
-			return true;
-		}
-		else {
-			return false;
 		}
 	}
 

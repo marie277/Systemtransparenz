@@ -10,11 +10,22 @@ public class ApplicationModel {
 
 	private String applicationName;
 	private StringProperty name;
+	private int applicationId;
+	private IntegerProperty id;
+	private String applicationDescription;
+	private StringProperty description;
+	private String applicationCategory;
+	private StringProperty category;
+	private String applicationProducer;
+	private StringProperty producer;
+	private String applicationManager;
+	private StringProperty manager;
+	private String applicationDepartment;
+	private StringProperty department;
+	private String applicationAdmin;
+	private StringProperty admin;
 	
 	//Konstruktor
-	/*public ApplicationModel(String applicationName) {
-		this.applicationName = applicationName;
-	}*/
 	public ApplicationModel(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) {
 		this.applicationId = applicationId;
 		this.applicationName = applicationName;
@@ -54,9 +65,6 @@ public class ApplicationModel {
 		return this.name;
 	}
 	
-	private int applicationId;
-	private IntegerProperty id;
-	
 	//Getter-Methode für die AnwendungsID
 	public int getApplicationId() {
 		if(this.id != null) {
@@ -84,9 +92,6 @@ public class ApplicationModel {
 		}
 		return this.id;
 	}
-	
-	private String applicationDescription;
-	private StringProperty description;
 	
 	//Getter-Methode für die Anwendungsbeschreibung
 	public String getApplicationDescription() {
@@ -116,9 +121,6 @@ public class ApplicationModel {
 		return this.description;
 	}
 	
-	private String applicationCategory;
-	private StringProperty category;
-	
 	//Getter-Methode für die Anwendungskategorie
 	public String getApplicationCategory() {
 		if(this.category != null) {
@@ -146,9 +148,6 @@ public class ApplicationModel {
 		}
 		return this.category;
 	}
-	
-	private String applicationProducer;
-	private StringProperty producer;
 	
 	//Getter-Methode für den Anwendungshersteller
 	public String getApplicationProducer() {
@@ -178,9 +177,6 @@ public class ApplicationModel {
 		return this.producer;
 	}
 	
-	private String applicationManager;
-	private StringProperty manager;
-	
 	//Getter-Methode für den Anwendungsmanager
 	public String getApplicationManager() {
 		if(this.manager != null) {
@@ -209,9 +205,6 @@ public class ApplicationModel {
 		return this.manager;
 	}
 	
-	private String applicationDepartment;
-	private StringProperty department;
-	
 	//Getter-Methode für den Anwendungsbereich
 	public String getApplicationDepartment() {
 		if(this.department != null) {
@@ -239,9 +232,6 @@ public class ApplicationModel {
 		}
 		return this.department;
 	}
-	
-	private String applicationAdmin;
-	private StringProperty admin;
 	
 	//Getter-Methode für den Anwendungsadmin
 	public String getApplicationAdmin() {

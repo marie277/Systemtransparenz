@@ -4,74 +4,91 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import view.ElementView;
+import view.ModelView;
 
 //Klasse zur Steuerung der Bewegung von Elementen
 public class MoveControl {
 
-	private Region baseRegion;
-	private Region eventRegion;
-	private Move movedRegion;
-	private boolean isMove;
-	private int minX;
-	private int minY;
+	private ModelView modelView;
+	private Region region;
+	private ElementView elementView;
+	private boolean isMovable;
+	private int x;
+	private int y;
 
 	//Konstruktor
-	public MoveControl(Region eventRegion, Region baseRegion, Move movedRegion) {
-		this.eventRegion = eventRegion;
-		this.baseRegion = baseRegion;
-		this.movedRegion = movedRegion;
+	public MoveControl() {
+
+	}
+	
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+	
+	public void setModelView(ModelView modelView) {
+		this.modelView = modelView;
+	}
+	
+	public void setElementView(ElementView elementView) {
+		this.elementView = elementView;
 	}
 	
 	//Methode zur Steuerung der Bewegung von Elementen
-	public static void makeRegionMoveable(Region eventRegion, Region baseRegion, Move moveRegion) {
-		MoveControl moveControl = new MoveControl(eventRegion, baseRegion, moveRegion);
-		eventRegion.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-			boolean isMoveable = e.getY() > 5.0 && e.getY() < moveControl.eventRegion.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.eventRegion.getWidth() - 5.0;
-			if(isMoveable) {
-				moveControl.isMove = true;
+	public static void makeRegionMoveable(Region region, ModelView modelView, ElementView elementView) {
+		MoveControl moveControl = new MoveControl();
+		moveControl.setRegion(region);
+		moveControl.setModelView(modelView);
+		moveControl.setElementView(elementView);
+		region.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+			boolean isInside = e.getY() > 5.0 && e.getY() < moveControl.region.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.region.getWidth() - 5.0;
+			if(isInside) {
+				moveControl.isMovable = true;
 			}
-			
+			else {
+				moveControl.isMovable = false;
+			}
 		});
-		eventRegion.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
-			if (moveControl.isMove && moveControl.movedRegion.isMoveable()) {
-	            Parent parent = moveControl.baseRegion.getParent();
-	            double sumX = 0.0;
-	            double sumY = 0.0;
+		region.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+			if (moveControl.isMovable && moveControl.elementView.isMoveable()) {
+	            Parent parent = moveControl.modelView.getParent();
+	            double layoutX = 0.0;
+	            double layoutY = 0.0;
 	            do {
-	                sumX += parent.getLayoutX();
-	                sumY += parent.getLayoutY();
+	                layoutX += parent.getLayoutX();
+	                layoutY += parent.getLayoutY();
 	                parent = parent.getParent();
 	            } while (parent.getParent() != null);
-	            int newX = (int)(e.getSceneX() - sumX - moveControl.eventRegion.getWidth() / 2.0);
-	            int newY = (int)(e.getSceneY() - sumY - moveControl.eventRegion.getHeight() / 2.0);
-	            if (newX > moveControl.minX && newY > moveControl.minY) {
-	            	moveControl.movedRegion.move(newX, newY);
+	            int newLayoutX = (int)(e.getSceneX() - layoutX - moveControl.region.getWidth() / 2.0);
+	            int newLayoutY = (int)(e.getSceneY() - layoutY - moveControl.region.getHeight() / 2.0);
+	            if (newLayoutX > moveControl.x && newLayoutY > moveControl.y) {
+	            	moveControl.elementView.move(newLayoutX, newLayoutY);
 	            }
-	            else if (newX > moveControl.minX) {
-	            	moveControl.movedRegion.move(newX, moveControl.minY);
+	            else if (newLayoutX > moveControl.x) {
+	            	moveControl.elementView.move(newLayoutX, moveControl.y);
 	            }
-	            else if (newY > moveControl.minY) {
-	            	moveControl.movedRegion.move(moveControl.minX, newY);
+	            else if (newLayoutY > moveControl.y) {
+	            	moveControl.elementView.move(moveControl.x, newLayoutY);
 	            }
 	            else {
-	            	moveControl.movedRegion.move(moveControl.minX, moveControl.minY);
+	            	moveControl.elementView.move(moveControl.x, moveControl.y);
 	            }
-	            moveControl.eventRegion.setCursor(Cursor.MOVE);
+	            moveControl.region.setCursor(Cursor.MOVE);
 	            e.consume();
 			}
 		});
-		eventRegion.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
-			boolean isMoveable = e.getY() > 5.0 && e.getY() < moveControl.eventRegion.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.eventRegion.getWidth() - 5.0;
-			if(isMoveable && moveControl.isMove) {
-				moveControl.eventRegion.setCursor(Cursor.MOVE);
+		region.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
+			boolean isInside = e.getY() > 5.0 && e.getY() < moveControl.region.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.region.getWidth() - 5.0;
+			if(isInside && moveControl.isMovable) {
+				moveControl.region.setCursor(Cursor.MOVE);
 			}
 			else {
-				moveControl.eventRegion.setCursor(Cursor.DEFAULT);
+				moveControl.region.setCursor(Cursor.DEFAULT);
 			}
 		});
-		eventRegion.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
-			moveControl.isMove = false;
-			moveControl.eventRegion.setCursor(Cursor.DEFAULT);
+		region.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+			moveControl.isMovable = false;
+			moveControl.region.setCursor(Cursor.DEFAULT);
 		});
 	}
 

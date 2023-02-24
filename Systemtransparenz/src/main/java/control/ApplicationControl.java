@@ -49,7 +49,9 @@ public class ApplicationControl extends ElementControl {
 	@Override
 	public void refresh() {
 		this.applicationBounds = this.applicationView.getText().getLayoutBounds();
-		this.applicationView.setLayout(this.applicationBounds.getWidth()*factor, this.applicationBounds.getHeight()*factor);
+		double x = this.applicationBounds.getWidth()*factor;
+		double y = this.applicationBounds.getHeight()*factor;
+		this.applicationView.setLayout(x, y);
 	}
 	
 	//Methode zur Aktualisierung der Schriftgröße des Elements
@@ -108,53 +110,51 @@ public class ApplicationControl extends ElementControl {
 	}
 	
 	//Methode zur Umbenennung einer (importierten) Anwendung
-	public void renameApplication(String applicationName) {
+	public void changeApplicationName(String applicationName) {
 		this.applicationView.getApplicationModel().setApplicationName(applicationName);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 	
-	//Methode zur Prüfung, ob eine Anwendungs-Ansicht mit der gesteuerten übereinstimmt
-	@Override
-	public boolean equals(Object object) {
-		if(super.equals(object) && this.getApplicationView().equals(((ApplicationControl) object).getApplicationView())) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
+	//Methode zur Änderung der ID einer Anwendung
 	public void changeApplicationId(String applicationId) {
 		this.applicationView.getApplicationModel().setApplicationId(Integer.parseInt(applicationId));
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 
+	//Methode zur Änderung der Beschreibung einer Anwendung
 	public void changeApplicationDescription(String applicationDescription) {
 		this.applicationView.getApplicationModel().setApplicationDescription(applicationDescription);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 
+	//Methode zur Änderung der Kategorie einer Anwendung
 	public void changeApplicationCategory(String applicationCategory) {
 		this.applicationView.getApplicationModel().setApplicationCategory(applicationCategory);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 
+	//Methode zur Änderung des Herstellers einer Anwendung
 	public void changeApplicationProducer(String applicationProducer) {
 		this.applicationView.getApplicationModel().setApplicationProducer(applicationProducer);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
+	
+	//Methode zur Änderung des Managers einer Anwendung
 	public void changeApplicationManager(String applicationManager) {
 		this.applicationView.getApplicationModel().setApplicationDescription(applicationManager);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
-
+	
+	//Methode zur Änderung des Fachbereichs einer Anwendung
 	public void changeApplicationDepartment(String applicationDepartment) {
 		this.applicationView.getApplicationModel().setApplicationDepartment(applicationDepartment);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 
+	//Methode zur Änderung des Admins einer Anwendung
 	public void changeApplicationAdmin(String applicationAdmin) {
 		this.applicationView.getApplicationModel().setApplicationAdmin(applicationAdmin);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
+	
 }

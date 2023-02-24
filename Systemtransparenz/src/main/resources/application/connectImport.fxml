@@ -11,21 +11,21 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.ConnectExportFXMLControl">
+<ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.ConnectImportFXMLControl">
    <content>
 		<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
 		   
 		   <top>
 		      <AnchorPane prefHeight="82.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 		         <children>
-		            <Text layoutX="4.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitte geben Sie hier die gewünschte Datenbankverbindung ein." />
+		            <Text layoutX="3.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitte geben Sie hier die gewünschte Datenbankverbindung ein." />
 		         </children>
 		      </AnchorPane>
 		   </top>
          <left>
 		      <AnchorPane prefHeight="250.0" prefWidth="600.0" BorderPane.alignment="CENTER">
 		         <children>
-		            <Label layoutX="4.0" layoutY="6.0" text="Benutzername:" />
+		         <Label layoutX="4.0" layoutY="6.0" text="Benutzername:" />
 		            <TextField fx:id="username" layoutX="112.0" layoutY="2.0" prefHeight="25.0" prefWidth="200.0" text="postgres" />
 		            <Label layoutX="4.0" layoutY="40.0" text="Passwort:" />
 		            <PasswordField fx:id="password" layoutX="112.0" layoutY="36.0" prefHeight="25.0" prefWidth="201.0" />
@@ -36,10 +36,10 @@
 		         	<Label layoutX="4.0" layoutY="142.0" text="Datenbank:" />
 		            <TextField fx:id="database" layoutX="112.0" layoutY="138.0" prefHeight="25.0" prefWidth="200.0" />
 		            <Label layoutX="4.0" layoutY="176.0" text="SQL-Anweisung:" />
-		            <TextField fx:id="statement" layoutX="112.0" layoutY="172.0" prefHeight="25.0" prefWidth="200.0" />        
-                  <AnchorPane layoutX="350.0" layoutY="6.0" prefHeight="253.0" prefWidth="217.0">
+		            <TextField fx:id="statement" layoutX="112.0" layoutY="172.0" prefHeight="25.0" prefWidth="200.0" /> 
+                  <AnchorPane layoutX="350.0" layoutY="5.0" prefHeight="253.0" prefWidth="217.0">
                      <children>
-                        <Label text="Vorschau:" />
+                     	<Label text="Vorschau:" />
                         <TableView layoutY="18.0" prefHeight="180.0" prefWidth="240.0">
                           <columns>
                             <TableColumn fx:id="applicationsColumn" prefWidth="238.0" text="Anwendung" />

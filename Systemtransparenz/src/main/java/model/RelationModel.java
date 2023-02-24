@@ -2,6 +2,7 @@ package model;
 
 import java.util.LinkedList;
 
+import control.edit.ApplicationInRelation;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -17,18 +18,18 @@ public class RelationModel {
 	private boolean relationDirection;
 	private BooleanProperty relationDirectionProperty;
 	private static int number = 0;
-	private IntegerProperty id;
+	private IntegerProperty idProperty;
 	private LinkedList<ApplicationInRelation> applications;
 	
 	//Konstruktor
-	public RelationModel(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication, String relationText, boolean arrowIncoming) {
+	public RelationModel(ApplicationInRelation firstApplication, ApplicationInRelation secondApplication, String relationType, boolean relationDirection) {
 		this.applications = new LinkedList<ApplicationInRelation>();
         this.applications.add(firstApplication);
         this.applications.add(secondApplication);
-        this.relationType = relationText;
-        this.relationDirection = arrowIncoming;
+        this.relationType = relationType;
+        this.relationDirection = relationDirection;
 		int relationId = RelationModel.number++;
-        this.id = new SimpleIntegerProperty(this, "id", relationId); 
+        this.idProperty = new SimpleIntegerProperty(this, "id", relationId); 
 	}
 
 	//Getter-Methode für die in einer Beziehung enthaltenen Anwendungen
@@ -64,6 +65,13 @@ public class RelationModel {
 		return this.relationTypeProperty;
 	}
 	
+	//Setter-Methode für die Beziehungsrichtung
+	public void setRelationDirection(boolean relationDirection) {
+		this.relationDirection = relationDirection;
+		
+	}
+	
+	//Getter-Methode für die Beziehungsrichtung
 	public boolean getRelationDirection() {
 		if(this.relationDirectionProperty != null) {
 			return this.relationDirectionProperty.get();
@@ -73,6 +81,7 @@ public class RelationModel {
 		}
 	}
 	
+	//Getter-Methode für das Property der Beziehungsrichtung
 	public BooleanProperty getRelationDirectionProperty() {
 		if(this.relationDirectionProperty == null) {
 			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", this.relationDirection);
@@ -82,29 +91,12 @@ public class RelationModel {
 	
 	//Getter-Methode für die ID der beziehung
 	public int getId() {
-		return this.id.get();
+		return this.idProperty.get();
 	}
 	
 	//Getter-Methode für das Property der ID
 	public IntegerProperty getIdProperty() {
-		return this.id;
-	}
-	
-	//Methode zum Vergleich, ob eine Beziehung mit der hier gespeicherten übereinstimmt
-	@Override
-	public boolean equals(Object object) {
-		RelationModel relationModel = (RelationModel)object;
-		if(super.equals(object) && this.getId() == relationModel.getId() && this.getRelationType().equals(relationModel.getRelationType()) && this.getApplications().equals(relationModel.getApplications())) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-	public void setRelationDirection(boolean relationDirection) {
-		this.relationDirection = relationDirection;
-		
+		return this.idProperty;
 	}
 
 }

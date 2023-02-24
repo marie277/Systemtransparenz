@@ -22,6 +22,7 @@ public class RelationArrow extends Polygon {
 		return this.selectedProperty;
 	}
 	
+	//Getter-Methode für das Property der Bezioehungs-Richtung
 	public BooleanProperty getRelationDirectionProperty() {
 		if(this.relationDirectionProperty == null) {
 			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", false);

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import control.ModelControl;
 import control.dataExport.FileExportControl;
 import control.dataExport.ImageExportControl;
-import control.edit.Zoom;
+import control.edit.RelationNode;
 import control.edit.ZoomControl;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,7 +14,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
 //Klasse zur Präsentation eines Modells, beerbt Klasse Pane und implementiert Interface Zoom
-public class ModelView extends Pane implements Zoom {
+public class ModelView extends Pane {
 	
 	private ModelControl modelControl;
 	private StringProperty modelName;
@@ -28,7 +28,8 @@ public class ModelView extends Pane implements Zoom {
 	//Konstruktor
 	public ModelView() {
 		this.zoomControl = new ZoomControl();
-		zoomControl.addObject(this);
+		this.zoomControl.setZoomCounter(0);
+		this.zoomControl.initializeObjectList();
 		this.modelName = new SimpleStringProperty(this, "modelName", "Neues Modell");
 		this.elementView = new SimpleObjectProperty<ElementView>(this, "elementView", null);
 		this.modelControl = new ModelControl(this);
@@ -116,7 +117,6 @@ public class ModelView extends Pane implements Zoom {
 	}
 
 	//Methode für die Ansichts-Vergrößerung bzw. -Verkleinerung des präsentierten Modells
-	@Override
 	public void zoom(double factor) {
 		this.setPrefWidth(this.getPrefWidth()*factor);
 		this.setPrefHeight(this.getPrefHeight()*factor);
@@ -133,7 +133,7 @@ public class ModelView extends Pane implements Zoom {
 		elementView.setModelView(null);
 		if(elementView.getClass().equals(RelationView.class)) {
 			RelationView relationView = (RelationView)elementView;
-			for(RelationLineView relationLineView : relationView.getRelationNodes()) {
+			for(RelationNode relationLineView : relationView.getRelationNodes()) {
 				this.getChildren().removeAll(relationLineView.getRelationNodes());
 			}
 		}
@@ -162,7 +162,7 @@ public class ModelView extends Pane implements Zoom {
 		elementView.setModelView(this);
 		if(elementView.getClass().equals(RelationView.class)) {
 			RelationView relationView = (RelationView)elementView;
-			for(RelationLineView relationLineView : relationView.getRelationNodes()) {
+			for(RelationNode relationLineView : relationView.getRelationNodes()) {
 				this.getChildren().addAll(0, relationLineView.getRelationNodes());
 			}
 		}

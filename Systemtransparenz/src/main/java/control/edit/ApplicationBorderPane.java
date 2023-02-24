@@ -27,13 +27,5 @@ public class ApplicationBorderPane extends BorderPane {
 		}
 		return this.selected;
 	}
-	
-	public boolean equals(Object object) {
-        if (!super.equals(object)) {
-            return false;
-        }
-        ApplicationBorderPane applicationBorderPane = (ApplicationBorderPane)object;
-        return this.selected == null || this.selected.equals(applicationBorderPane.getSelectedProperty());
-    }
 
 }

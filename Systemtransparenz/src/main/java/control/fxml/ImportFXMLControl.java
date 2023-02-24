@@ -9,7 +9,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import org.postgresql.Driver;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,10 +24,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
+import model.MainModel;
 
 public class ImportFXMLControl implements Initializable {
 	
-	private static ImportFXMLControl importFXMLControl;
 	private Connection connection = null;
 	private String userName;
 	private String passWord;
@@ -51,19 +52,6 @@ public class ImportFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
-	//Konstruktor
-	public ImportFXMLControl() {
-		
-	}
-	
-	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static ImportFXMLControl getImportFXMLControl(){
-        if (importFXMLControl == null) {
-        	importFXMLControl = new ImportFXMLControl();
-        }
-        return importFXMLControl;
-    }
-	
 	//Methode zum Schließen des Import-Fensters
 	@FXML
     private void cancel(ActionEvent event) {
@@ -73,13 +61,13 @@ public class ImportFXMLControl implements Initializable {
 	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
 	@FXML
 	private void load(ActionEvent event) {
-		this.initializePostgresqlDatabase();
+		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
         for (ApplicationModel aM : this.importApplications()) {
             applicationsList.add(aM);
         }
-        this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
+        this.applicationsColumn.getTableView().setItems(applicationsList);
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
@@ -88,7 +76,7 @@ public class ImportFXMLControl implements Initializable {
 		try {
 	        if (this.importApplications().size() != 0) {
 	        	for(ApplicationModel aM : this.applicationsList) {
-	        		MainControl.getMainControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
+	        		MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
 	        	}
 	        }
 		}
@@ -103,16 +91,9 @@ public class ImportFXMLControl implements Initializable {
 		}
 		this.scrollPane.getScene().getWindow().hide();
     }
-	
-	@FXML
-	private void selectApplications() {
-		
-        
-
-	}
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
-    public void initializePostgresqlDatabase() {
+    public void initializeDatabase() {
     	this.hostUrl = "localhost";
     	this.portNumber = 5432;
     	this.userName = "postgres";
@@ -124,9 +105,9 @@ public class ImportFXMLControl implements Initializable {
 	    	this.dataBase = "itportfolio";
     	}
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -138,13 +119,12 @@ public class ImportFXMLControl implements Initializable {
         }
 	}
     
-    
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
 		try {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
             ResultSet resultSet = preparedStatement.executeQuery();
-            applications = new LinkedList<>();
+            applications = new LinkedList<ApplicationModel>();
             while (resultSet.next()){
             	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }
@@ -166,7 +146,6 @@ public class ImportFXMLControl implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.databases.getItems().addAll("Alle Anwendungen", "Kernanwendungen");
 		this.databases.getSelectionModel().select(0);
-		
 	}
 
 }

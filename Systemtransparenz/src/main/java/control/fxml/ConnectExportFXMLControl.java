@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import org.postgresql.Driver;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,7 +29,6 @@ import view.ModelView;
 
 public class ConnectExportFXMLControl implements Initializable {
 	
-	private static ConnectExportFXMLControl connectExportFXMLControl;
 	private ModelView modelView;
 	private Connection connection = null;
 	private String userName;
@@ -65,19 +66,6 @@ public class ConnectExportFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
-	//Konstruktor
-	public ConnectExportFXMLControl() {
-		
-	}
-	
-	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static ConnectExportFXMLControl getConnectExportFXMLControl(){
-        if (connectExportFXMLControl == null) {
-        	connectExportFXMLControl = new ConnectExportFXMLControl();
-        }
-        return connectExportFXMLControl;
-    }
-	
 	//Methode zum Schließen des Import-Fensters
 	@FXML
     private void cancel(ActionEvent event) {
@@ -87,17 +75,13 @@ public class ConnectExportFXMLControl implements Initializable {
 	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
 	@FXML
 	private void load(ActionEvent event) {
-		this.initializePostgresqlDatabase();
+		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
-       
-        //im Modell vorhandene Anwendungen
         applicationsList = FXCollections.observableArrayList();
         for (ApplicationView applicationView : this.modelView.getApplications()) {
         	applicationsList.add(applicationView.getApplicationModel());
         }
-        
-        this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
-        
+        this.applicationsColumn.getTableView().setItems(applicationsList);    
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
@@ -113,7 +97,7 @@ public class ConnectExportFXMLControl implements Initializable {
 			if (!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
-	            alertError.setHeaderText("Es sind keine Anwendungen in der ausgewählten Tabelle vorhanden.");
+	            alertError.setHeaderText("Es konnten keine Anwendungen in die ausgewählten Tabelle exportiert werden.");
 	            alertError.show();
 	        }
 		}
@@ -121,16 +105,16 @@ public class ConnectExportFXMLControl implements Initializable {
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
-    public void initializePostgresqlDatabase() {
+    public void initializeDatabase() {
     	this.hostUrl = this.host.getText();
     	this.portNumber = Integer.parseInt(this.port.getText());
     	this.dataBase = this.database.getText();
     	this.userName = this.username.getText();
     	this.passWord = this.password.getText();
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -142,24 +126,11 @@ public class ConnectExportFXMLControl implements Initializable {
         }
 	}
     
-    
     //Methode zum Export der Anwendungen aus der ausgewählte Tabelle
-    public boolean exportApplications(ApplicationModel applicationModel) {
-    	try {
-    		this.sqlStatement = this.statement.getText();
-    		PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
-            preparedStatement.execute();
-        } catch (Exception e) {
-        	e.printStackTrace();
-			if (!e.getClass().equals(SQLException.class)) {
-                Alert alertError = new Alert(Alert.AlertType.ERROR);
-                alertError.setTitle("Fehler!");
-                alertError.setHeaderText("Es konnten keine Anwendungen importiert werden.");
-                alertError.show();
-            }
-			return false;
-        }
-        return true;
+    public void exportApplications(ApplicationModel applicationModel) throws SQLException {
+		this.sqlStatement = this.statement.getText();
+		PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
+        preparedStatement.execute();
 	}
     
     //Methode zur Initialisierung der Steuerung

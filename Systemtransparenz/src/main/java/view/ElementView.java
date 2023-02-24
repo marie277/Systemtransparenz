@@ -3,22 +3,20 @@ package view;
 import java.util.LinkedList;
 
 import control.ElementControl;
-import control.edit.Move;
-import control.edit.Zoom;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Region;
 
 //Abstrakte Klasse zur Präsentation eines Elements in einem Modell, implementiert Interfaces Zoom und Move
-public abstract class ElementView implements Zoom, Move {
+public abstract class ElementView {
 
 	protected ModelView modelView;
-	private LinkedList<ElementView> elements;
+	private LinkedList<ElementView> elementViews;
 	private double differenceWidth;
 	private double differenceHeight;
 	
 	//Konstruktor
 	public ElementView() {
-		this.elements = new LinkedList<ElementView>();
+		this.elementViews = new LinkedList<ElementView>();
 	}
 	
 	//Setter-Methode für die zugehörige Modell-Ansicht
@@ -50,24 +48,25 @@ public abstract class ElementView implements Zoom, Move {
 	//Methode zum Entfernen eines präsentierten Elements
 	public void removeElement(ElementView elementView) {
 		if(!containsElement(elementView)) {
-			for(ElementView elementView1 : this.elements) {
-				elementView1.removeElement(elementView);
+			for(ElementView parentElement : this.elementViews) {
+				parentElement.removeElement(elementView);
 			}
 		}
 		else {
-			this.elements.remove(elementView);
+			this.elementViews.remove(elementView);
 		}
 	}
 
 	//Setter-Methode für die X, Y-Koordinaten eines präsentierten Elements
 	public void setLayout(double x, double y) {
 		this.getElementRegion().setLayoutX(x);
-		if(this.getElementRegion().getLayoutX() + this.getWidth() > this.getModelView().getPrefWidth()) {
-			this.getModelView().setPrefWidth(this.getModelView().getPrefWidth() + 100.0);
+		double extension = 100.0;
+		if(this.getElementRegion().getLayoutX() + this.getElementRegion().getPrefWidth() > this.getModelView().getPrefWidth()) {
+			this.getModelView().setPrefWidth(this.getModelView().getPrefWidth() + extension);
 		}
 		this.getElementRegion().setLayoutY(y);
-		if(this.getElementRegion().getLayoutY() + this.getHeight() > this.getModelView().getPrefHeight()) {
-			this.getModelView().setPrefHeight(this.getModelView().getPrefHeight() + 100.0);
+		if(this.getElementRegion().getLayoutY() + this.getElementRegion().getPrefHeight() > this.getModelView().getPrefHeight()) {
+			this.getModelView().setPrefHeight(this.getModelView().getPrefHeight() + extension);
 		}
 	}
 	
@@ -79,41 +78,32 @@ public abstract class ElementView implements Zoom, Move {
 		return coordinates;
 	}
 
-	//Getter-Methode für die Höhe eines präsentierten Elements
-	public double getHeight() {
-		return this.getElementRegion().getPrefHeight();
-	}
-
 	//Getter-Methode für die zugehörige Modell-Ansicht des präsentierten Elements
 	public ModelView getModelView() {
 		return this.modelView;
 	}
 
-	//Getter-Methode für die Weite eines präsentierten Elements
-	public double getWidth() {
-		return this.getElementRegion().getPrefWidth();
-	}
-
 	//Setter-Methode für die Weite und Höhe eines präsentierten Elements
 	public void setSize(double x, double y) {
 		this.getElementRegion().setPrefSize(x, y);
-		if(this.getElementRegion().getLayoutX() + this.getWidth() > this.getModelView().getPrefWidth()) {
-			this.getModelView().setPrefWidth(this.getModelView().getPrefWidth() + 100.0);
+		double extension = 100.0;
+		if(this.getElementRegion().getLayoutX() + this.getElementRegion().getPrefWidth() > this.getModelView().getPrefWidth()) {
+			this.getModelView().setPrefWidth(this.getModelView().getPrefWidth() + extension);
 		}
-		if(this.getElementRegion().getLayoutY() + this.getHeight() > this.getModelView().getPrefHeight()) {
-			this.getModelView().setPrefHeight(this.getModelView().getPrefHeight() + 100.0);
+		if(this.getElementRegion().getLayoutY() + this.getElementRegion().getPrefHeight() > this.getModelView().getPrefHeight()) {
+			this.getModelView().setPrefHeight(this.getModelView().getPrefHeight() + extension);
 		}
 		this.getModelView().getFileExportControl().setSaved(false);
 	}
 
 	//Getter-Methode für die präsentierten Elemente
 	public LinkedList<ElementView> getElements() {
-		return this.elements;
+		return this.elementViews;
 	}
 	
 	//Methode zur Prüfung, ob ein Element in der Präsentation vorhanden ist
 	public boolean containsElement(ElementView element) {
-		if(this.elements.contains(element)) {
+		if(this.elementViews.contains(element)) {
 			return true;
 		}
 		else {
@@ -128,14 +118,14 @@ public abstract class ElementView implements Zoom, Move {
 		}
 		ElementView elementView = (ElementView)object;
 		if(this.getModelView() != null && elementView.getModelView() != null ) {
-			if(this.getModelView().equals(elementView.getModelView()) && this.getHeight() == elementView.getHeight() && this.getWidth() == elementView.getWidth() && this.getLayout().equals(elementView.getLayout()) && this.getElementRegion().equals(elementView.getElementRegion())) {
+			if(this.getModelView().equals(elementView.getModelView()) && this.getElementRegion().getPrefHeight() == elementView.getElementRegion().getPrefHeight() && this.getElementRegion().getPrefWidth() == elementView.getElementRegion().getPrefWidth() && this.getLayout().equals(elementView.getLayout()) && this.getElementRegion().equals(elementView.getElementRegion())) {
 				return true;
 			}
 			else {
 				return false;
 			}
 		}
-		else if(this.getModelView() == null && elementView.getModelView() == null && (this.getHeight() == elementView.getHeight() && this.getWidth() == elementView.getWidth() && this.getLayout().equals(elementView.getLayout()) && this.getElementRegion().equals(elementView.getElementRegion())) && this.differenceWidth == elementView.getDifferenceWidth() && this.differenceHeight == elementView.getDifferenceHeight() && this.getElements() == elementView.getElements()) {
+		else if(this.getModelView() == null && elementView.getModelView() == null && (this.getElementRegion().getPrefHeight() == elementView.getElementRegion().getPrefHeight() && this.getElementRegion().getPrefWidth() == elementView.getElementRegion().getPrefWidth() && this.getLayout().equals(elementView.getLayout()) && this.getElementRegion().equals(elementView.getElementRegion())) && this.differenceWidth == elementView.getDifferenceWidth() && this.differenceHeight == elementView.getDifferenceHeight() && this.getElements() == elementView.getElements()) {
 			return true;
 		}
 		else {

@@ -9,7 +9,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import org.postgresql.Driver;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,11 +24,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.ApplicationModel;
+import model.MainModel;
 
 //Klasse zur Steuerung des Imports von Anwendungen aus einer Datenbank, implementiert Interface Initializable
-public class DatabaseFXMLControl implements Initializable {
+public class ConnectImportFXMLControl implements Initializable {
 	
-	private static DatabaseFXMLControl databaseFXMLControl;
 	private Connection connection = null;
 	private String userName;
 	private String passWord;
@@ -61,19 +62,6 @@ public class DatabaseFXMLControl implements Initializable {
 	@FXML
 	private Button submit;
 	
-	//Konstruktor
-	public DatabaseFXMLControl() {
-		
-	}
-	
-	//Statische Getter-Methode für die Steuerung des Datenbank-Imports
-	public static DatabaseFXMLControl getDatabaseFXMLControl(){
-        if (databaseFXMLControl == null) {
-        	databaseFXMLControl = new DatabaseFXMLControl();
-        }
-        return databaseFXMLControl;
-    }
-	
 	//Methode zum Schließen des Import-Fensters
 	@FXML
     private void cancel(ActionEvent event) {
@@ -83,13 +71,13 @@ public class DatabaseFXMLControl implements Initializable {
 	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
 	@FXML
 	private void load(ActionEvent event) {
-		this.initializePostgresqlDatabase();
+		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
         for (ApplicationModel aM : this.importApplications()) {
             applicationsList.add(aM);
         }
-        this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
+        this.applicationsColumn.getTableView().setItems(applicationsList);
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
@@ -98,8 +86,7 @@ public class DatabaseFXMLControl implements Initializable {
 		try {
 	        if (this.importApplications().size() != 0) {
 	        	for(ApplicationModel aM : this.applicationsList) {
-	        		//MainControl.getMainControl().addApplication(aM.getApplicationName());
-	        		MainControl.getMainControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
+	        		MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
 	        	}
 	        }
 		}
@@ -116,17 +103,16 @@ public class DatabaseFXMLControl implements Initializable {
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
-    public void initializePostgresqlDatabase() {
+    public void initializeDatabase() {
     	this.hostUrl = this.host.getText();
     	this.portNumber = Integer.parseInt(this.port.getText());
     	this.dataBase = this.database.getText();
     	this.userName = this.username.getText();
     	this.passWord = this.password.getText();
-    	
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -144,7 +130,7 @@ public class DatabaseFXMLControl implements Initializable {
 			this.sqlStatement = this.statement.getText();
             PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
-            applications = new LinkedList<>();
+            applications = new LinkedList<ApplicationModel>();
             while (resultSet.next()){
             	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }

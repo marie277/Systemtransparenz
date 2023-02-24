@@ -19,12 +19,17 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import control.MainControl;
 import control.ModelControl;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
+import model.MainModel;
 import view.ModelView;
 
 //Klasse zur Steuerung des XML-Datei-Exports und -Imports
@@ -41,7 +46,7 @@ public class FileExportControl {
 	}
 
 	//Methode zum Öffnen eines als XML-Datei gespeicherten Modells
-	public static void openModel(MainControl mainControl) throws SAXException, IOException, ParserConfigurationException {
+	public static void openModel() throws SAXException, IOException, ParserConfigurationException {
 		FileChooser fileChooser = new FileChooser();
 		String fileExtension = "*.xml";
 		ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("XML-Dateien", fileExtension);
@@ -50,7 +55,8 @@ public class FileExportControl {
 		String systemProperty = System.getProperty("user.home");
 		File path = new File(systemProperty);
 		fileChooser.setInitialDirectory(path);
-		File file = fileChooser.showOpenDialog(mainControl.getMainWindow());
+		Window mainWindow = MainModel.modelFXMLControl.getTabPane().getScene().getWindow();
+		File file = fileChooser.showOpenDialog(mainWindow);
 		if(file != null) {
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -59,7 +65,13 @@ public class FileExportControl {
 			ModelView modelView = ModelControl.importXMLElement((Element)document.getElementsByTagName("Modell").item(0));
 			modelView.getFileExportControl().setFileLocation(file);
 			modelView.getFileExportControl().setSaved(true);
-			mainControl.importModelView(modelView);
+			ScrollPane scrollPane = new ScrollPane(modelView);
+			String modelName = modelView.getModelName();
+			Tab modelTab = new Tab(modelName, scrollPane);
+			modelTab.textProperty().bind((ObservableValue<String>)modelView.getModelNameProperty());
+			TabPane modelTabPane = MainModel.modelFXMLControl.getTabPane();
+			modelTabPane.getTabs().add(modelTab);
+			modelTabPane.getSelectionModel().select(modelTab);
 		}
 	}
 
@@ -89,32 +101,7 @@ public class FileExportControl {
 			fileChooser.getExtensionFilters().add(extensionFilter);
 			file = fileChooser.showSaveDialog(this.modelView.getScene().getWindow());
 		}
-		if(file != null) {
-			FileOutputStream fileOutputStream = new FileOutputStream(file);
-			OutputStream outputStream = new BufferedOutputStream(fileOutputStream);
-			StreamResult streamResult = new StreamResult(outputStream);
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-	        Document document = documentBuilder.newDocument();
-	        Element element = this.modelView.getModelControl().createXMLElement(document);
-	        document.appendChild(element);
-			DOMSource domSource = new DOMSource(document);
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty("omit-xml-declaration", "yes");
-            transformer.setOutputProperty("encoding", "UTF-8");
-            transformer.setOutputProperty("indent", "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.transform(domSource, streamResult);
-            outputStream.flush();
-            outputStream.close();
-            this.fileLocation = file;
-            this.setSaved(true);
-            return;
-		}
-		else {
-			throw new IOException("Achtung! Datei konnte nicht gespeichert werden.");
-		}
+		save(file);
 	}
 
 	//Methode zum Speichern einer Modell-Ansicht als eine bestimmte Datei bzw. unter einem bestimmten Pfad
@@ -130,6 +117,10 @@ public class FileExportControl {
 			fileChooser.setInitialDirectory(parentFile);
 		}
 		file = fileChooser.showSaveDialog(this.modelView.getScene().getWindow());
+		save(file);
+	}
+	
+	private void save(File file) throws IOException, TransformerException, ParserConfigurationException {
 		if(file != null) {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);
 			OutputStream outputStream = new BufferedOutputStream(fileOutputStream);

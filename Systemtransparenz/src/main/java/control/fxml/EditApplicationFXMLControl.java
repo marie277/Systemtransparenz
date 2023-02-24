@@ -9,7 +9,8 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
-import control.MainControl;
+import org.postgresql.Driver;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import model.MainModel;
 import view.ApplicationView;
 
 //Klasse zur Steuerung der Bearbeitung einer ausgewählten Anwendung, implementiert Interface Initializable
@@ -102,16 +104,17 @@ public class EditApplicationFXMLControl implements Initializable {
         }
     }
     
-    public void initializePostgresqlDatabase() {
+    //Methode zur Herstellung der Datenbank-Verbindung
+    public void initializeDatabase() {
     	this.hostUrl = "localhost";
     	this.portNumber = 5432;
     	this.userName = "postgres";
     	this.passWord = "pw369";
     	this.dataBase = "systemtransparenz";
         try {
-            DriverManager.registerDriver(new org.postgresql.Driver());
-            connection = DriverManager.getConnection("jdbc:postgresql://" + hostUrl + ":" + portNumber + "/" + dataBase, userName, passWord);
-            System.out.println("DB connected");
+        	Driver driver = new org.postgresql.Driver();
+            DriverManager.registerDriver(driver);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -129,31 +132,31 @@ public class EditApplicationFXMLControl implements Initializable {
 		try {
             PreparedStatement categoryPreparedStatement = connection.prepareStatement("SELECT k.kategoriename FROM kategorie k;");
             ResultSet categoryResultSet = categoryPreparedStatement.executeQuery();
-            categories = new LinkedList<>();
+            categories = new LinkedList<String>();
             while (categoryResultSet.next()){
             	categories.add(categoryResultSet.getString(1));
             }
             PreparedStatement producerPreparedStatement = connection.prepareStatement("SELECT h.herstellername FROM hersteller h;");
             ResultSet producerResultSet = producerPreparedStatement.executeQuery();
-            producers = new LinkedList<>();
+            producers = new LinkedList<String>();
             while (producerResultSet.next()){
             	producers.add(producerResultSet.getString(1));
             }
             PreparedStatement managerPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet managerResultSet = managerPreparedStatement.executeQuery();
-            managers = new LinkedList<>();
+            managers = new LinkedList<String>();
             while (managerResultSet.next()){
             	managers.add(managerResultSet.getString(1));
             }
             PreparedStatement departmentPreparedStatement = connection.prepareStatement("SELECT f.fachbereichname FROM fachbereich f;");
             ResultSet departmentResultSet = departmentPreparedStatement.executeQuery();
-            departments = new LinkedList<>();
+            departments = new LinkedList<String>();
             while (departmentResultSet.next()){
             	departments.add(departmentResultSet.getString(1));
             }
             PreparedStatement adminPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (administrator ad INNER JOIN mitarbeiter mb ON ad.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet adminResultSet = adminPreparedStatement.executeQuery();
-            admins = new LinkedList<>();
+            admins = new LinkedList<String>();
             while (adminResultSet.next()){
             	admins.add(adminResultSet.getString(1));
             }
@@ -170,7 +173,7 @@ public class EditApplicationFXMLControl implements Initializable {
     //Methode zur Initialisierung der Steuerung
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-        this.applicationView = (ApplicationView)MainControl.getMainControl().getSelectedElementView();
+		this.applicationView = (ApplicationView)MainModel.modelFXMLControl.getModelView().getElementView();
         String applicationNameView = this.applicationView.getApplicationModel().getApplicationName();
         this.applicationName.setText(applicationNameView);
         int applicationIdView = this.applicationView.getApplicationModel().getApplicationId();
@@ -182,7 +185,7 @@ public class EditApplicationFXMLControl implements Initializable {
     	String applicationManagerView = this.applicationView.getApplicationModel().getApplicationManager();
     	String applicationDepartmentView = this.applicationView.getApplicationModel().getApplicationDepartment();
     	String applicationAdminView = this.applicationView.getApplicationModel().getApplicationAdmin();
-    	this.initializePostgresqlDatabase();
+    	this.initializeDatabase();
 		this.importValues();
 		for(String category : this.categories) {
 			this.applicationCategory.getItems().add(category);

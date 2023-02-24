@@ -26,17 +26,17 @@
    <center>
       <AnchorPane prefHeight="214.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="42.0" layoutY="6.0" text="Neuer Beziehungstyp:" />
-            <ComboBox fx:id="relationType" layoutX="42.0" layoutY="23.0" prefHeight="25.0" prefWidth="117.0" />
-            <Label layoutX="29.0" layoutY="107.0" text="Neue Beziehungsrichtung:" />
-            <ComboBox fx:id="relationDirection" layoutX="42.0" layoutY="124.0" prefHeight="25.0" prefWidth="117.0" />
+            <Label layoutX="42.0" layoutY="4.0" text="Neuer Beziehungstyp:" />
+            <ComboBox fx:id="relationType" layoutX="42.0" layoutY="21.0" prefHeight="25.0" prefWidth="117.0" />
+            <Label layoutX="29.0" layoutY="60.0" text="Neue Beziehungsrichtung:" />
+            <ComboBox fx:id="relationDirection" layoutX="42.0" layoutY="77.0" prefHeight="25.0" prefWidth="117.0" />
          </children>
       </AnchorPane>
    </center>
    <bottom>
       <AnchorPane prefHeight="54.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="submit" layoutX="64.0" layoutY="15.0" mnemonicParsing="false" onAction="#editRelation" text="Bestätigen" />
+            <Button fx:id="submit" layoutX="64.0" layoutY="4.0" mnemonicParsing="false" onAction="#editRelation" text="Bestätigen" />
          </children>
       </AnchorPane>
    </bottom>

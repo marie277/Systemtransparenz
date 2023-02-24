@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import control.ElementControl;
 import control.RelationControl;
 import control.edit.ApplicationBorderPane;
-import control.edit.Move;
+import control.edit.ApplicationInRelation;
 import control.edit.MoveControl;
-import control.edit.RelationLine;
+import control.edit.RelationNode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -15,20 +15,17 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import model.ApplicationInRelation;
 import model.RelationModel;
 
 //Klasse zur Präsentation einer Beziehung in einem Modell, beerbt abstrakte Klasse ElementView
 public class RelationView extends ElementView{
 	
-	//private ModelView modelView;
 	private RelationControl relationControl;
-	private LinkedList<RelationLineView> relationNodes;
+	private LinkedList<RelationNode> relationNodes;
 	private ApplicationBorderPane applicationBorderPane;
 	private RelationModel relationModel;
 	private Text relationText;
@@ -44,7 +41,7 @@ public class RelationView extends ElementView{
 		this.relationText = new Text("");
 		this.relationText.textProperty().bind((ObservableValue<? extends String>)this.relationModel.getRelationTypeProperty());
 		this.stackPane = new StackPane();
-		this.relationNodes = new LinkedList<RelationLineView>();
+		this.relationNodes = new LinkedList<RelationNode>();
 		this.applicationBorderPane = new ApplicationBorderPane();
 		this.relationText.setOnMouseClicked(e -> {
 			if(modelView != null) {
@@ -62,18 +59,16 @@ public class RelationView extends ElementView{
 			this.relationControl.setSelected(true);
 			e.consume();
 		});
-		
 		this.stackPane.getChildren().add((Node)this.relationText);
 		this.stackPane.setAlignment(Pos.CENTER);
 		this.applicationBorderPane.setCenter((Node)this.stackPane);
-		this.applicationBorderPane.setPrefSize(0.0, 0.0);
+		this.applicationBorderPane.setPrefSize(10.0, 10.0);
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
 			boolean relationDirection = this.relationModel.getRelationDirection();
 			String relationType = this.relationModel.getRelationType();
-			RelationLineView relationLineView = new RelationLineView(applicationInRelation, relationType, relationDirection);
-			
+			RelationNode relationLineView = new RelationNode(applicationInRelation, relationType, relationDirection);
 			if(relationType == "Nutzt") {
-				relationLineView.getRelationLine().setStyle("-fx-stroke-dash-array: 2 12 12 2; ");
+				relationLineView.getRelationLine().setStyle("-fx-stroke-dash-array: 6 6 ; ");
 			}
 			this.relationNodes.add(relationLineView);
 			DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
@@ -84,33 +79,66 @@ public class RelationView extends ElementView{
 			DoubleBinding height = this.getElementRegion().prefHeightProperty().divide(2.0);
 			endX.bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)width));
 			endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)height));
-			
 		}
 		for(ApplicationInRelation applicationInRelation : this.relationModel.getApplications()) {
 			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-                for (RelationLineView rLV : this.relationNodes) {
-                    if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
-                        rLV.getRelationHub();
+                for (RelationNode rN : this.relationNodes) {
+                    if (rN.getApplicationInRelation().equals(applicationInRelation)) {
+                        rN.getRelationHub();
+                        rN.getRelationLine().setOnMouseClicked(e -> {
+                			if(modelView != null) {
+                				modelView.deselectElements();
+                				modelView.setElementView(this);
+                			}
+                			this.relationControl.setSelected(true);
+                			e.consume();
+                		});
+                		rN.getRelationLine().setOnMousePressed(e -> {
+                			if(modelView != null) {
+                				modelView.deselectElements();
+                				modelView.setElementView(this);
+                			}
+                			this.relationControl.setSelected(true);
+                			e.consume();
+                		});
+                		rN.getRelationArrow().setOnMouseClicked(e -> {
+                			if(modelView != null) {
+                				modelView.deselectElements();
+                				modelView.setElementView(this);
+                			}
+                			this.relationControl.setSelected(true);
+                			e.consume();
+                		});
+                		rN.getRelationArrow().setOnMousePressed(e -> {
+                			if(modelView != null) {
+                				modelView.deselectElements();
+                				modelView.setElementView(this);
+                			}
+                			this.relationControl.setSelected(true);
+                			e.consume();
+                		});
                     }
                 }
             });
         }
-		MoveControl.makeRegionMoveable(this.getElementRegion(), (Region)this.getModelView(), (Move)this);
-		this.relationText.layoutBoundsProperty().addListener((o, oldVal, newVal) -> {
-            for (RelationLineView rLV : this.relationNodes) {
+		
+		MoveControl.makeRegionMoveable(this.getElementRegion(), this.getModelView(), this);
+		this.relationText.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
+            for (RelationNode rLV : this.relationNodes) {
             	rLV.getRelationHub();
             }
         });
 		this.selected = false;
+		
 	}
-
+	
 	//Getter-Methode für die Steuerung der präsentierten Beziehung
 	public RelationControl getRelationControl() {
 		return this.relationControl;
 	}
 
 	//Getter-Methode für die Knoten der Beziehung
-	public LinkedList<RelationLineView> getRelationNodes() {
+	public LinkedList<RelationNode> getRelationNodes() {
 		return this.relationNodes;
 	}
 
@@ -182,11 +210,12 @@ public class RelationView extends ElementView{
 		else {
 			this.selected = selected;
 		}
-		for(RelationLineView relationLineView : this.relationNodes) {
+		for(RelationNode relationLineView : this.relationNodes) {
 			relationLineView.setSelected(selected);
 		}
 	}
 	
+	//Getter-Methode für das Property der Auswahl
 	public BooleanProperty getSelectedProperty() {
 		if(this.selectedProperty != null) {
 			return this.selectedProperty;

@@ -13,6 +13,13 @@
 <ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.RelationFXMLControl">
    <content>
       <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+         <top>
+            <AnchorPane prefHeight="82.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Text layoutX="4.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wählen Sie zwei Anwendungen aus, welche zu einer Beziehung hinzugefügt werden sollen." />
+               </children>
+            </AnchorPane>
+         </top>
          <left>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
@@ -24,33 +31,18 @@
                </children>
             </AnchorPane>
          </left>
-         <top>
-            <AnchorPane prefHeight="83.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Text layoutX="3.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wählen Sie zwei Anwendungen aus, welche zu einer Beziehung hinzugefï¿½gt werden sollen." />
-               </children>
-            </AnchorPane>
-         </top>
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="select" layoutX="55.0" layoutY="14.0" mnemonicParsing="false" onAction="#select" text="Auswählen" />
-                  <Button fx:id="remove" layoutX="61.0" layoutY="51.0" mnemonicParsing="false" onAction="#remove" text="Entfernen" />
-                  <Label layoutX="55.0" layoutY="88.0" text="Beziehungstyp:" />
+                  <Button fx:id="select" layoutX="57.0" layoutY="15.0" mnemonicParsing="false" onAction="#select" text="Auswählen" />
+                  <Button fx:id="remove" layoutX="61.0" layoutY="52.0" mnemonicParsing="false" onAction="#remove" text="Entfernen" />
+                  <Label layoutX="55.0" layoutY="89.0" text="Beziehungstyp:" />
                   <ComboBox fx:id="relationTypes" layoutX="25.0" layoutY="116.0" prefWidth="150.0" />
                   <Label layoutX="34.0" layoutY="155.0" text="Eingehende Anwendung:" />
                   <ComboBox fx:id="incomingRelation" layoutX="25.0" layoutY="182.0" prefWidth="150.0" />
                </children>
             </AnchorPane>
          </center>
-         <bottom>
-            <AnchorPane prefHeight="60.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button fx:id="cancel" layoutX="128.0" layoutY="13.0" mnemonicParsing="false" onAction="#cancel" text="Abbrechen" />
-                  <Button fx:id="submit" layoutX="398.0" layoutY="13.0" mnemonicParsing="false" onAction="#submit" text="Bestätigen" />
-               </children>
-            </AnchorPane>
-         </bottom>
          <right>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
@@ -62,6 +54,14 @@
                </children>
             </AnchorPane>
          </right>
+          <bottom>
+            <AnchorPane prefHeight="65.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="cancel" layoutX="128.0" layoutY="4.0" mnemonicParsing="false" onAction="#cancel" text="Abbrechen" />
+                  <Button fx:id="submit" layoutX="398.0" layoutY="4.0" mnemonicParsing="false" onAction="#submit" text="Bestätigen" />
+               </children>
+            </AnchorPane>
+         </bottom>
       </BorderPane>
    </content>
 </ScrollPane>

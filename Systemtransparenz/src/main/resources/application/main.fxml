@@ -28,7 +28,7 @@
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="saveModel" mnemonicParsing="false" onAction="#saveModel" text="Speichern" />
             <MenuItem fx:id="saveModelAs" mnemonicParsing="false" onAction="#saveModelAs" text="Speichern als..." />
-            <MenuItem fx:id="renameModel" mnemonicParsing="false" onAction="#renameModel" text="Modell umbenennen" />
+            <MenuItem fx:id="renameModel" mnemonicParsing="false" onAction="#changeModelName" text="Modell umbenennen" />
             <MenuItem fx:id="closeModel" mnemonicParsing="false" onAction="#closeModel" text="Modell schließen" />
  			<SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="saveImage" mnemonicParsing="false" onAction="#saveImage" text="Bild speichern" />
