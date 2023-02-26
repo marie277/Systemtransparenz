@@ -13,17 +13,26 @@
 
 <ScrollPane fx:id="scrollPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="control.fxml.ConnectImportFXMLControl">
    <content>
-		<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+		<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="860.0">
 		   
 		   <top>
-		      <AnchorPane prefHeight="82.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+		      <AnchorPane prefHeight="65.0" prefWidth="860.0" BorderPane.alignment="CENTER">
 		         <children>
 		            <Text layoutX="3.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitte geben Sie hier die gewünschte Datenbankverbindung ein." />
 		         </children>
 		      </AnchorPane>
 		   </top>
-         <left>
-		      <AnchorPane prefHeight="250.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <bottom>
+		      <AnchorPane prefHeight="40.0" prefWidth="860.0" BorderPane.alignment="CENTER">
+		         <children>
+		          <Button fx:id="cancel" layoutX="158.0" layoutY="4.0" mnemonicParsing="false" onAction="#cancel" text="Abbrechen" />
+                  <Button fx:id="load" layoutX="406.0" layoutY="4.0" mnemonicParsing="false" onAction="#load" text="Laden" />
+		          <Button fx:id="submit" layoutX="628.0" layoutY="4.0" mnemonicParsing="false" onAction="#submit" text="Bestätigen" />
+		         </children>
+		      </AnchorPane>
+		   </bottom>
+         <right>
+		      <AnchorPane prefHeight="600.0" prefWidth="860.0" BorderPane.alignment="CENTER">
 		         <children>
 		         <Label layoutX="4.0" layoutY="6.0" text="Benutzername:" />
 		            <TextField fx:id="username" layoutX="112.0" layoutY="2.0" prefHeight="25.0" prefWidth="200.0" text="postgres" />
@@ -35,9 +44,9 @@
 		            <TextField fx:id="port" layoutX="112.0" layoutY="104.0" prefHeight="25.0" prefWidth="200.0" text="5432" />
 		         	<Label layoutX="4.0" layoutY="142.0" text="Datenbank:" />
 		            <TextField fx:id="database" layoutX="112.0" layoutY="138.0" prefHeight="25.0" prefWidth="200.0" />
-		            <Label layoutX="4.0" layoutY="176.0" text="SQL-Anweisung:" />
-		            <TextField fx:id="statement" layoutX="112.0" layoutY="172.0" prefHeight="25.0" prefWidth="200.0" /> 
-                  <AnchorPane layoutX="350.0" layoutY="5.0" prefHeight="253.0" prefWidth="217.0">
+		            <Label layoutX="4.0" layoutY="176.0" text="Schema:" />
+		            <TextField fx:id="scheme" layoutX="112.0" layoutY="172.0" prefHeight="25.0" prefWidth="200.0" /> 
+                  <AnchorPane layoutX="350.0" layoutY="5.0" prefHeight="188.0" prefWidth="240.0">
                      <children>
                      	<Label text="Vorschau:" />
                         <TableView layoutY="18.0" prefHeight="180.0" prefWidth="240.0">
@@ -47,18 +56,64 @@
                         </TableView>
                      </children>
                   </AnchorPane>
+                  <Label layoutX="4.0" layoutY="210.0" text="Tabellenbezeichnungen:" />
+                  <Label layoutX="4.0" layoutY="244.0" text="Anwendung:" />
+                  <Label layoutX="4.0" layoutY="278.0" text="Kategorie:" />
+                  <Label layoutX="4.0" layoutY="312.0" text="Hersteller:" />
+                  <Label layoutX="4.0" layoutY="346.0" text="Fachbereich:" />
+                  <Label layoutX="4.0" layoutY="380.0" text="Anwendungsmanager:" />
+                  <Label layoutX="4.0" layoutY="414.0" text="Administrator:" />
+                  <Label layoutX="4.0" layoutY="448.0" text="Mitarbeiter:" />
+                  <TextField fx:id="application" layoutX="132.0" layoutY="240.0" prefHeight="25.0" prefWidth="150.0" text="anwendung" />
+                  <TextField fx:id="category" layoutX="132.0" layoutY="274.0" prefHeight="25.0" prefWidth="150.0" text="kategorie" />
+                  <TextField fx:id="producer" layoutX="132.0" layoutY="308.0" prefHeight="25.0" prefWidth="150.0" text="hersteller" />
+                  <TextField fx:id="department" layoutX="132.0" layoutY="342.0" prefHeight="25.0" prefWidth="150.0" text="fachbereich" />
+                  <TextField fx:id="manager" layoutX="132.0" layoutY="376.0" prefHeight="25.0" prefWidth="150.0" text="anwendungsmanager" />
+                  <TextField fx:id="admin" layoutX="132.0" layoutY="410.0" prefHeight="25.0" prefWidth="150.0" text="administrator" />
+                  <TextField fx:id="employee" layoutX="132.0" layoutY="444.0" prefHeight="25.0" prefWidth="150.0" text="mitarbeiter" />
+                  <Label layoutX="312.0" layoutY="210.0" text="Attributsbezeichnungen:" />
+                  <Label layoutX="312.0" layoutY="244.0" text="ID (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="278.0" text="Name (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="312.0" text="Beschreibung (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="346.0" text="Kategorie (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="380.0" text="Kategorie (Kategorie):" />
+                  <Label layoutX="312.0" layoutY="414.0" text="Her.-ID (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="448.0" text="Her.-ID (Hersteller):" />
+                  <Label layoutX="312.0" layoutY="482.0" text="Hersteller (Hersteller):" />
+                  <Label layoutX="312.0" layoutY="516.0" text="Fach.-ID (Anwendung):" />
+                  <Label layoutX="312.0" layoutY="550.0" text="Fach.-ID (Fachbereich):" />
+                  <Label layoutX="312.0" layoutY="584.0" text="Fachbereich (Fachbereich):" />
+                  <Label layoutX="597.0" layoutY="244.0" text="Anw.-ID (Anwendung):" />
+                  <Label layoutX="597.0" layoutY="278.0" text="Anw.-ID (Anwendungsmanager):" />
+                  <Label layoutX="597.0" layoutY="312.0" text="Admin-ID (Anwendung):" />
+                  <Label layoutX="597.0" layoutY="346.0" text="Admin-ID (Admin):" />
+                  <Label layoutX="597.0" layoutY="380.0" text="Mit.-ID (Manager):" />
+                  <Label layoutX="597.0" layoutY="414.0" text="Mit.-ID (Admin):" />
+                  <Label layoutX="597.0" layoutY="448.0" text="Mit.-ID (Mitarbeiter):" />
+                  <Label layoutX="597.0" layoutY="482.0" text="Mitarbeiter (Mitarbeiter):" />
+                  <TextField fx:id="applicationId" layoutX="466.0" layoutY="240.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsid" />
+                  <TextField fx:id="applicationName" layoutX="466.0" layoutY="274.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsname" />
+                  <TextField fx:id="description" layoutX="466.0" layoutY="308.0" prefHeight="25.0" prefWidth="120.0" text="beschreibung" />
+                  <TextField fx:id="categoryNameA" layoutX="466.0" layoutY="342.0" prefHeight="25.0" prefWidth="120.0" text="kategoriename" />
+                  <TextField fx:id="categoryName" layoutX="466.0" layoutY="376.0" prefHeight="25.0" prefWidth="120.0" text="kategoriename" />
+                  <TextField fx:id="producerIdA" layoutX="466.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="herstellerid" />
+                  <TextField fx:id="producerId" layoutX="466.0" layoutY="444.0" prefHeight="25.0" prefWidth="120.0" text="herstellerid" />
+                  <TextField fx:id="producerName" layoutX="466.0" layoutY="478.0" prefHeight="25.0" prefWidth="120.0" text="herstellername" />
+                  <TextField fx:id="departmentIdA" layoutX="466.0" layoutY="512.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichid" />
+                  <TextField fx:id="departmentId" layoutX="466.0" layoutY="546.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichid" />
+                  <TextField fx:id="departmentName" layoutX="466.0" layoutY="580.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichname" />
+                  <TextField fx:id="managerIdA" layoutX="730.0" layoutY="240.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsmanagerid" />
+                  <TextField fx:id="managerId" layoutX="730.0" layoutY="274.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsmanagerid" />
+                  <TextField fx:id="adminIdA" layoutX="730.0" layoutY="308.0" prefHeight="25.0" prefWidth="120.0" text="adminid" />
+                  <TextField fx:id="adminId" layoutX="730.0" layoutY="342.0" prefHeight="25.0" prefWidth="120.0" text="adminid" />
+                  <TextField fx:id="employeeIdM" layoutX="730.0" layoutY="376.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
+                  <TextField fx:id="employeeIdA" layoutX="730.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
+                  <TextField fx:id="employeeId" layoutX="730.0" layoutY="444.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
+                  <TextField fx:id="employeeName" layoutX="730.0" layoutY="478.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeitername" />
 		         </children>
 		      </AnchorPane>
-         </left>
-         <bottom>
-		      <AnchorPane prefHeight="65.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-		         <children>
-		          <Button fx:id="cancel" layoutX="103.0" layoutY="4.0" mnemonicParsing="false" onAction="#cancel" text="Abbrechen" />
-                  <Button fx:id="load" layoutX="276.0" layoutY="4.0" mnemonicParsing="false" onAction="#load" text="Laden" />
-		          <Button fx:id="submit" layoutX="427.0" layoutY="4.0" mnemonicParsing="false" onAction="#submit" text="Bestätigen" />
-		         </children>
-		      </AnchorPane>
-		   </bottom>
+         </right>
 		</BorderPane>
 	</content>
 </ScrollPane>
+

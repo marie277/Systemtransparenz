@@ -88,6 +88,10 @@ public class ExportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
+		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
+		alertConfirm.setTitle("Speichern erfolgreich");
+		alertConfirm.setHeaderText("Ihre Anwendungen wurden erfolgreich in die ausgewählte Datenbank exportiert.");
+		alertConfirm.show();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank

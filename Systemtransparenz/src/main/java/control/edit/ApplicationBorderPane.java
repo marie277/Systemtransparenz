@@ -2,7 +2,6 @@ package control.edit;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 
 //Klasse zur Präsentation einer Anwendung als gegliederte Fläche, beerbt Klasse BorderPane
@@ -13,11 +12,6 @@ public class ApplicationBorderPane extends BorderPane {
 	//Konstruktor
 	public ApplicationBorderPane() {
 		
-	}
-	
-	//Zweiter Konstruktor
-	public ApplicationBorderPane(Node node) {
-		super(node);
 	}
 	
 	//Getter-Methode für das Property der Auswahl

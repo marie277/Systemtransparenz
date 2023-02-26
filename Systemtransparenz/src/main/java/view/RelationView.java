@@ -6,7 +6,7 @@ import control.ElementControl;
 import control.RelationControl;
 import control.edit.ApplicationBorderPane;
 import control.edit.ApplicationInRelation;
-import control.edit.MoveControl;
+import control.ModelControl;
 import control.edit.RelationNode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
@@ -122,7 +122,7 @@ public class RelationView extends ElementView{
             });
         }
 		
-		MoveControl.makeRegionMoveable(this.getElementRegion(), this.getModelView(), this);
+		ModelControl.makeRegionMoveable(this.getElementRegion(), this.getModelView(), this);
 		this.relationText.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
             for (RelationNode rLV : this.relationNodes) {
             	rLV.getRelationHub();

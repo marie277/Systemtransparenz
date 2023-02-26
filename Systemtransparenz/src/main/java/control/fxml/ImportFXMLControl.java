@@ -90,6 +90,10 @@ public class ImportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
+		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
+		alertConfirm.setTitle("Speichern erfolgreich");
+		alertConfirm.setHeaderText("Die Anwendungen konnten erfolgreich aus der ausgewählten Datenbank importiert werden.");
+		alertConfirm.show();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank

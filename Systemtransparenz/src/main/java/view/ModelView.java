@@ -5,7 +5,6 @@ import control.ModelControl;
 import control.dataExport.FileExportControl;
 import control.dataExport.ImageExportControl;
 import control.edit.RelationNode;
-import control.edit.ZoomControl;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,27 +21,33 @@ public class ModelView extends Pane {
 	private LinkedList<ApplicationView> applications;
 	private LinkedList<RelationView> relations;
 	private FileExportControl fileExportControl;
-	private ZoomControl zoomControl;
 	private ImageExportControl imageExportControl;
 	
 	//Konstruktor
 	public ModelView() {
-		this.zoomControl = new ZoomControl();
+		/*this.zoomControl = new ZoomControl();
 		this.zoomControl.setZoomCounter(0);
-		this.zoomControl.initializeObjectList();
+		this.zoomControl.initializeObjectList();*/
+		
 		this.modelName = new SimpleStringProperty(this, "modelName", "Neues Modell");
 		this.elementView = new SimpleObjectProperty<ElementView>(this, "elementView", null);
 		this.modelControl = new ModelControl(this);
+		
+		this.modelControl.setZoomCounter(0);
+		this.modelControl.initializeObjectList();
+		
 		this.fileExportControl = new FileExportControl(this);
 		this.imageExportControl = new ImageExportControl(this);
 		this.applications = new LinkedList<ApplicationView>();
 		this.relations = new LinkedList<RelationView>();
 		this.addEventFilter(ScrollEvent.ANY, e->{
 			if(e.getDeltaY() > 0.0) {
-				this.zoomControl.zoomIn();
+				//this.zoomControl.zoomIn();
+				this.modelControl.zoomIn();
 			}
 			else {
-				this.zoomControl.zoomOut();
+				//this.zoomControl.zoomOut();
+				this.modelControl.zoomOut();
 			}
 		});
 		this.setOnMouseClicked(e -> {
@@ -111,11 +116,6 @@ public class ModelView extends Pane {
 		return this.applications;
 	}
 
-	//Getter-Methode für die Steuerung der Ansichtsvergrößerung bzw. -verkleinerung
-	public ZoomControl getZoomControl() {
-		return this.zoomControl;
-	}
-
 	//Methode für die Ansichts-Vergrößerung bzw. -Verkleinerung des präsentierten Modells
 	public void zoom(double factor) {
 		this.setPrefWidth(this.getPrefWidth()*factor);
@@ -138,7 +138,8 @@ public class ModelView extends Pane {
 			}
 		}
         this.getChildren().remove(elementView.getElementRegion());
-        this.zoomControl.removeObject(elementView);
+        //this.zoomControl.removeObject(elementView);
+        this.modelControl.removeObject(elementView);
         if (this.getElementView().equals(elementView)) {
             this.setElementView(null);
         }
@@ -167,7 +168,8 @@ public class ModelView extends Pane {
 			}
 		}
         this.getChildren().add(this.getChildren().size(), elementView.getElementRegion());
-        this.zoomControl.addObject(elementView);
+        //this.zoomControl.addObject(elementView);
+        this.modelControl.addObject(elementView);
         this.fileExportControl.setSaved(false);
 	}
 

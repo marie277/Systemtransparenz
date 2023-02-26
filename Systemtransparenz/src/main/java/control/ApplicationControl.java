@@ -141,7 +141,7 @@ public class ApplicationControl extends ElementControl {
 	
 	//Methode zur Änderung des Managers einer Anwendung
 	public void changeApplicationManager(String applicationManager) {
-		this.applicationView.getApplicationModel().setApplicationDescription(applicationManager);
+		this.applicationView.getApplicationModel().setApplicationManager(applicationManager);
 		this.applicationView.getModelView().getFileExportControl().setSaved(false);
 	}
 	
