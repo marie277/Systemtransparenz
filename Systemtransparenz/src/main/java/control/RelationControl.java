@@ -11,7 +11,7 @@ import control.edit.RelationLine;
 import control.edit.RelationNode;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ObservableNumberValue;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -29,7 +29,6 @@ public class RelationControl extends ElementControl {
 	private RelationView relationView;
 	private Bounds relationBounds;
 	private Text relationText;
-	private static final double factor = 1.2;
 	
 	//Konstruktor
 	public RelationControl(RelationView relationView) {
@@ -37,58 +36,32 @@ public class RelationControl extends ElementControl {
 		this.relationView = relationView;
 	}
 	
-	//Methode zur Festlegung, ob eine Beziehung gespeichert wurde
-	public void setSaved(boolean isSaved) {
-		this.relationView.getModelView().getFileExportControl().setSaved(isSaved);
-	}
-
-	//Methode zur Entfernung der an einer Beziehung beteiligten Anwendungen
-	public void removeApplications() {
-		for(RelationNode relationLineView : this.relationView.getRelationNodes()) {
-			ApplicationInRelation applicationInRelation = relationLineView.getApplicationInRelation();
-			relationLineView.unbindRelation();
-			this.relationView.getRelationModel().getApplications().remove(applicationInRelation);
-			RelationLine relationLine = relationLineView.getRelationLine();
-			relationLine.endXProperty().unbind();
-			relationLine.endYProperty().unbind();
-			relationLine.startXProperty().unbind();
-			relationLine.startYProperty().unbind();
-			for(Node node : relationLineView.getRelationNodes()) {
-				node.setVisible(false);
-			}
-			ModelView modelView = this.relationView.getModelView();
-			if(modelView != null) {
-				modelView.getChildren().removeAll(relationLineView.getRelationNodes());
-			}
-		}
-		LinkedList<RelationNode> relationNodes = this.relationView.getRelationNodes();
-		relationNodes.removeAll(relationNodes);
-		LinkedList<ApplicationInRelation> applications = this.relationView.getRelationModel().getApplications();
-		applications.removeAll(applications);
-		this.setSaved(false);
-	}
-
-	//Methode zur Aktualisierung der Elements-Grenzen
-	@Override
-	public void refresh() {
-		this.relationBounds = this.relationView.getRelationText().getLayoutBounds();
-		double x = this.relationBounds.getWidth()*factor;
-		double y = this.relationBounds.getHeight()*factor;
-		this.relationView.setLayout(x, y);
-		this.setSaved(false);
+	//Getter-Methode für die Beziehungs-Ansicht
+	public RelationView getRelationView() {
+		return this.relationView;
 	}
 	
 	//Getter-Methode für die zu einer Anwendung gehörige Beziehungs-Linie
-	public RelationNode getRelationLineView(ApplicationView applicationView) throws IllegalAccessException {
+	public RelationNode getRelationNode(ApplicationView applicationView) throws IllegalAccessException {
 		LinkedList<RelationNode> relationNodes = new LinkedList<RelationNode>();
-		for(RelationNode relationLineView : this.relationView.getRelationNodes()) {
-			if(relationLineView.getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName().equals(applicationView.getApplicationModel().getApplicationName())) {
-				relationNodes.add(relationLineView);
+		for(RelationNode relationNode : this.relationView.getRelationNodes()) {
+			if(relationNode.getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName().equals(applicationView.getApplicationModel().getApplicationName())) {
+				relationNodes.add(relationNode);
 			}
 		}
 		return relationNodes.get(0);
 	}
 	
+	//Methode zur Festlegung, ob eine Beziehung gespeichert wurde
+	public void setSaved(boolean isSaved) {
+		this.relationView.getModelView().getFileExportControl().setSaved(isSaved);
+	}
+	
+	//Methode zur Festlegung, ob eine Beziehungs-Ansicht ausgewählt wurde
+	public void setSelected(boolean selected) {
+		this.relationView.setSelected(selected);
+	}
+
 	//Methode zur Aktualisierung der Schriftgröße des Elements
 	@Override
 	public void zoom(double factor) {
@@ -97,29 +70,50 @@ public class RelationControl extends ElementControl {
 		String fontName = this.relationText.getFont().getName();
 		double fontSize = this.relationText.getFont().getSize();
 		this.relationText.setFont(new Font(fontName, fontSize*factor));
-		for(RelationNode rN : this.relationView.getRelationNodes()) {
-			double point2 = rN.getRelationArrow().getPoints().get(2);
-			double point3 = rN.getRelationArrow().getPoints().get(3);
-			double point4 = rN.getRelationArrow().getPoints().get(4);
-			double point5 = rN.getRelationArrow().getPoints().get(5);
-			rN.getRelationArrow().getPoints().setAll(new Double[]{
+		for(RelationNode relationNode : this.relationView.getRelationNodes()) {
+			double point2 = relationNode.getRelationArrow().getPoints().get(2);
+			double point3 = relationNode.getRelationArrow().getPoints().get(3);
+			double point4 = relationNode.getRelationArrow().getPoints().get(4);
+			double point5 = relationNode.getRelationArrow().getPoints().get(5);
+			relationNode.getRelationArrow().getPoints().setAll(new Double[]{
 					0d, 0d,
 					point2*factor, point3*factor,
 			        point4*factor, point5*factor,
 			});
+			relationNode.getRelationLine().setStrokeWidth(relationNode.getRelationLine().getStrokeWidth()*factor);
 		}
-		this.refresh();
+		this.relationBounds = this.relationView.getRelationText().getLayoutBounds();
+		double x = this.relationBounds.getWidth()*factor;
+		double y = this.relationBounds.getHeight()*factor;
+		this.relationView.setLayout(x, y);
+		this.setSaved(false);
 	}
 	
-	//Methode zur Festlegung, ob eine Beziehungs-Ansicht ausgewählt wurde
-	public void setSelected(boolean selected) {
-		this.relationView.setSelected(selected);
-	}
-	
-	//Getter-Methode für die Beziehungs-Ansicht
-	public RelationView getRelationView() {
-		return this.relationView;
-	}
+	//Methode zur Entfernung der an einer Beziehung beteiligten Anwendungen
+	public void removeApplications() {
+		for(RelationNode relationNode : this.relationView.getRelationNodes()) {
+			ApplicationInRelation applicationInRelation = relationNode.getApplicationInRelation();
+			relationNode.unbindRelation();
+			this.relationView.getRelationModel().getApplications().remove(applicationInRelation);
+			RelationLine relationLine = relationNode.getRelationLine();
+			relationLine.endXProperty().unbind();
+			relationLine.endYProperty().unbind();
+			relationLine.startXProperty().unbind();
+			relationLine.startYProperty().unbind();
+			for(Node node : relationNode.getRelationNodes()) {
+				node.setVisible(false);
+			}
+			ModelView modelView = this.relationView.getModelView();
+			if(modelView != null) {
+				modelView.getChildren().removeAll(relationNode.getRelationNodes());
+			}
+		}
+		LinkedList<RelationNode> relationNodes = this.relationView.getRelationNodes();
+		relationNodes.removeAll(relationNodes);
+		LinkedList<ApplicationInRelation> applications = this.relationView.getRelationModel().getApplications();
+		applications.removeAll(applications);
+		this.setSaved(false);
+	}	
 	
 	//Methode zum Hinzufügen einer Anwendung als Beziehungs-Teilnehmer
 	public void addPartOfRelation(ApplicationView applicationView) {
@@ -127,27 +121,29 @@ public class RelationControl extends ElementControl {
 		this.relationView.getRelationModel().getApplications().add(applicationInRelation);
 		String relationType = this.relationView.getRelationModel().getRelationType();
 		boolean relationDirection = this.relationView.getRelationModel().getRelationDirection();
-		RelationNode relationLineView = new RelationNode(applicationInRelation, relationType, relationDirection);
-		this.relationView.getRelationNodes().add(relationLineView);
+		RelationNode relationNode = new RelationNode(applicationInRelation, relationType, relationDirection);
+		this.relationView.getRelationNodes().add(relationNode);
 		Region elementRegion = this.relationView.getElementRegion();
-		DoubleProperty endX = relationLineView.getRelationLine().endXProperty();
+		DoubleProperty endX = relationNode.getRelationLine().endXProperty();
 		DoubleProperty layoutX = elementRegion.layoutXProperty();
 		DoubleBinding widthX = elementRegion.prefWidthProperty().divide(2.0);
-		endX.bind((ObservableValue<? extends Number>)layoutX.add((ObservableNumberValue)widthX));
-		DoubleProperty endY = relationLineView.getRelationLine().endYProperty();
+		endX.bind(layoutX.add(widthX));
+		DoubleProperty endY = relationNode.getRelationLine().endYProperty();
 		DoubleProperty layoutY = elementRegion.layoutYProperty();
 		DoubleBinding widthY = elementRegion.prefHeightProperty().divide(2.0);
-		endY.bind((ObservableValue<? extends Number>)layoutY.add((ObservableNumberValue)widthY));
-		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener((observable, oldValue, newValue) -> {
-            for (RelationNode rLV : this.relationView.getRelationNodes()) {
-                if (rLV.getApplicationInRelation().equals(applicationInRelation)) {
-                	rLV.getRelationHub();
-                }
-            }
+		endY.bind(layoutY.add(widthY));
+		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				for (RelationNode rN : relationView.getRelationNodes()) {
+	                if (rN.getApplicationInRelation().equals(applicationInRelation)) {
+	                	rN.getRelationHub();
+	                }
+	            }	
+			}
         });
 		if(this.relationView.getModelView() != null) {
-			this.relationView.getModelView().getChildren().addAll(0, relationLineView.getRelationNodes());
-			
+			this.relationView.getModelView().getChildren().addAll(0, relationNode.getRelationNodes());
 		}
 		this.setSaved(false);
 	}
@@ -155,11 +151,11 @@ public class RelationControl extends ElementControl {
 	//Methode zum Entfernen einer Anwendung aus einer Beziehung
 	public void removeApplication(ApplicationView applicationView) throws IllegalAccessException {
 		ApplicationInRelation applicationInRelation = null;
-		RelationNode relationLineView = this.getRelationLineView(applicationView);
-		if(relationLineView == null) {
+		RelationNode relationNode = this.getRelationNode(applicationView);
+		if(relationNode == null) {
 			return;
 		}
-		relationLineView.unbindRelation();
+		relationNode.unbindRelation();
 		for(ApplicationInRelation aIR : this.relationView.getRelationModel().getApplications()) {
 			if(aIR.getApplicationView().equals(applicationView)) {
 				applicationInRelation = aIR;
@@ -170,20 +166,20 @@ public class RelationControl extends ElementControl {
 			return;
 		}
 		this.relationView.getRelationModel().getApplications().remove(applicationInRelation);
-		this.relationView.getRelationNodes().remove(relationLineView);
-		RelationLine relationLine = relationLineView.getRelationLine();
+		this.relationView.getRelationNodes().remove(relationNode);
+		RelationLine relationLine = relationNode.getRelationLine();
 		relationLine.endXProperty().unbind();
 		relationLine.endYProperty().unbind();
 		relationLine.startXProperty().unbind();
 		relationLine.startYProperty().unbind();
-		for(Node node : relationLineView.getRelationNodes()) {
+		for(Node node : relationNode.getRelationNodes()) {
 			node.setVisible(false);
 		}
 		ModelView modelView = this.relationView.getModelView();
 		if(modelView != null) {
-			modelView.getChildren().removeAll(relationLineView.getRelationNodes());
+			modelView.getChildren().removeAll(relationNode.getRelationNodes());
 		}
-		relationLineView = null;
+		relationNode = null;
 		applicationInRelation = null;
 		modelView.getFileExportControl().setSaved(false);
 	}
@@ -191,36 +187,35 @@ public class RelationControl extends ElementControl {
 	//Methode zum Entfernen eines Beziehungs-Teilnehmers aus einer Beziehung
 	public void removePartOfRelation(ApplicationInRelation applicationInRelation) {
 		ApplicationInRelation aIR = applicationInRelation;
-		RelationNode relationLineView = null;
-		for(RelationNode rLV : this.relationView.getRelationNodes()) {
-			if(rLV.getApplicationInRelation().equals(aIR)) {
-				relationLineView = rLV;
+		RelationNode relationNode = null;
+		for(RelationNode rN : this.relationView.getRelationNodes()) {
+			if(rN.getApplicationInRelation().equals(aIR)) {
+				relationNode = rN;
 				break;
 			}
 		}
-		if(relationLineView == null) {
+		if(relationNode == null) {
 			return;
 		}
-		relationLineView.unbindRelation();
+		relationNode.unbindRelation();
 		if(aIR == null) {
 			return;
 		}
 		this.relationView.getRelationModel().getApplications().remove(aIR);
-		this.relationView.getRelationNodes().remove(relationLineView);
-		RelationLine relationLine = relationLineView.getRelationLine();
+		this.relationView.getRelationNodes().remove(relationNode);
+		RelationLine relationLine = relationNode.getRelationLine();
 		relationLine.endXProperty().unbind();
 		relationLine.endYProperty().unbind();
 		relationLine.startXProperty().unbind();
 		relationLine.startYProperty().unbind();
-		for(Node node : relationLineView.getRelationNodes()) {
+		for(Node node : relationNode.getRelationNodes()) {
 			node.setVisible(false);
 		}
 		ModelView modelView = this.relationView.getModelView();
 		if(modelView != null) {
-			modelView.getChildren().removeAll(relationLineView.getRelationNodes());
-			
+			modelView.getChildren().removeAll(relationNode.getRelationNodes());
 		}
-		relationLineView = null;
+		relationNode = null;
 		aIR = null;
 		modelView.getFileExportControl().setSaved(false);
 	}
@@ -237,6 +232,15 @@ public class RelationControl extends ElementControl {
 			}
 		}
 		return false;
+	}
+	
+	//Methode zur Bewegung einer Beziehungs-Ansicht innerhalb des Modells
+	@Override
+	public void move(double x, double y) {
+        this.setMoved(x, y);
+        for (RelationNode relationNode : this.relationView.getRelationNodes()) {
+            relationNode.getRelationHub();
+        }
 	}
 	
 	//Methode zur Erstellung einer Beziehung als XML-Element, welches in einer Datei exportiert werden kann
@@ -259,18 +263,18 @@ public class RelationControl extends ElementControl {
 	
 	//Methode zum Hinzufügen einer Beziehung aus einem XML-Dokument, welches als Modell dargestellt wird
 	public static void importXMLElement(Element element, ModelView modelView) {
-		NodeList relationNodes = element.getElementsByTagName("Beziehungslinie");
-		LinkedList<RelationNode> relationLineViews = new LinkedList<RelationNode>();
-		for(int i = 0; i < relationNodes.getLength(); i++) {
-			relationLineViews.add(RelationNode.importFromXML((Element) relationNodes.item(i), modelView));
+		NodeList nodes = element.getElementsByTagName("Beziehungslinie");
+		LinkedList<RelationNode> relationNodes = new LinkedList<RelationNode>();
+		for(int i = 0; i < nodes.getLength(); i++) {
+			relationNodes.add(RelationNode.importFromXML((Element) nodes.item(i), modelView));
 		}
 		boolean relationDirection = false;
-		if(element.getAttribute("Beziehungsrichtung").equals(relationLineViews.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName())){
+		if(element.getAttribute("Beziehungsrichtung").equals(relationNodes.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName())){
 			relationDirection = true;
 		}
-		RelationModel relationModel = new RelationModel(relationLineViews.getFirst().getApplicationInRelation(), relationLineViews.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), relationDirection);
-		for(int i = 2; i < relationLineViews.size(); i++) {
-			relationModel.getApplications().add(relationLineViews.get(i).getApplicationInRelation());
+		RelationModel relationModel = new RelationModel(relationNodes.getFirst().getApplicationInRelation(), relationNodes.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), relationDirection);
+		for(int i = 2; i < relationNodes.size(); i++) {
+			relationModel.getApplications().add(relationNodes.get(i).getApplicationInRelation());
 		}
 		RelationView relationView = new RelationView(relationModel, modelView);
 		relationView.getRelationModel().setRelationType(element.getAttribute("Beziehungstyp"));
@@ -278,13 +282,4 @@ public class RelationControl extends ElementControl {
 		modelView.addElement(relationView);
 	}
 	
-	//Methode zur Bewegung einer Beziehungs-Ansicht innerhalb des Modells
-	@Override
-	public void move(double x, double y) {
-        this.setMoved(x, y);
-        for (RelationNode rLV : this.relationView.getRelationNodes()) {
-            rLV.getRelationHub();
-        }
-	}
-
 }

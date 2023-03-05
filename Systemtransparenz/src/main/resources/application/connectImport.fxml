@@ -94,20 +94,20 @@
                   <TextField fx:id="applicationId" layoutX="466.0" layoutY="240.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsid" />
                   <TextField fx:id="applicationName" layoutX="466.0" layoutY="274.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsname" />
                   <TextField fx:id="description" layoutX="466.0" layoutY="308.0" prefHeight="25.0" prefWidth="120.0" text="beschreibung" />
-                  <TextField fx:id="categoryNameA" layoutX="466.0" layoutY="342.0" prefHeight="25.0" prefWidth="120.0" text="kategoriename" />
+                  <TextField fx:id="applicationCategoryName" layoutX="466.0" layoutY="342.0" prefHeight="25.0" prefWidth="120.0" text="kategoriename" />
                   <TextField fx:id="categoryName" layoutX="466.0" layoutY="376.0" prefHeight="25.0" prefWidth="120.0" text="kategoriename" />
-                  <TextField fx:id="producerIdA" layoutX="466.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="herstellerid" />
+                  <TextField fx:id="applicationProducerId" layoutX="466.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="herstellerid" />
                   <TextField fx:id="producerId" layoutX="466.0" layoutY="444.0" prefHeight="25.0" prefWidth="120.0" text="herstellerid" />
                   <TextField fx:id="producerName" layoutX="466.0" layoutY="478.0" prefHeight="25.0" prefWidth="120.0" text="herstellername" />
-                  <TextField fx:id="departmentIdA" layoutX="466.0" layoutY="512.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichid" />
+                  <TextField fx:id="applicationDepartmentId" layoutX="466.0" layoutY="512.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichid" />
                   <TextField fx:id="departmentId" layoutX="466.0" layoutY="546.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichid" />
                   <TextField fx:id="departmentName" layoutX="466.0" layoutY="580.0" prefHeight="25.0" prefWidth="120.0" text="fachbereichname" />
-                  <TextField fx:id="managerIdA" layoutX="730.0" layoutY="240.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsmanagerid" />
+                  <TextField fx:id="applicationManagerId" layoutX="730.0" layoutY="240.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsmanagerid" />
                   <TextField fx:id="managerId" layoutX="730.0" layoutY="274.0" prefHeight="25.0" prefWidth="120.0" text="anwendungsmanagerid" />
-                  <TextField fx:id="adminIdA" layoutX="730.0" layoutY="308.0" prefHeight="25.0" prefWidth="120.0" text="adminid" />
+                  <TextField fx:id="applicationAdminId" layoutX="730.0" layoutY="308.0" prefHeight="25.0" prefWidth="120.0" text="adminid" />
                   <TextField fx:id="adminId" layoutX="730.0" layoutY="342.0" prefHeight="25.0" prefWidth="120.0" text="adminid" />
-                  <TextField fx:id="employeeIdM" layoutX="730.0" layoutY="376.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
-                  <TextField fx:id="employeeIdA" layoutX="730.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
+                  <TextField fx:id="managerEmployeeId" layoutX="730.0" layoutY="376.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
+                  <TextField fx:id="adminEmployeeId" layoutX="730.0" layoutY="410.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
                   <TextField fx:id="employeeId" layoutX="730.0" layoutY="444.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeiterid" />
                   <TextField fx:id="employeeName" layoutX="730.0" layoutY="478.0" prefHeight="25.0" prefWidth="120.0" text="mitarbeitername" />
 		         </children>

@@ -123,12 +123,12 @@ public class ModelFXMLControl implements Initializable{
 	//Methode zum Ändern eines Modell-Namens
 	@FXML
 	public void changeModelName(ActionEvent event) {
-		TextInputDialog modelNameInput = new TextInputDialog();
-		modelNameInput.setTitle("Modell umbenennen");
-		modelNameInput.setHeaderText("Geben Sie einen neuen Namen ein:");
-		modelNameInput.setContentText("Hier Namen eingeben");
-		modelNameInput.showAndWait();
-		this.getModelView().setModelName(modelNameInput.getEditor().getText());
+		TextInputDialog newModelNameInput = new TextInputDialog();
+		newModelNameInput.setTitle("Modell umbenennen");
+		newModelNameInput.setHeaderText("Geben Sie einen neuen Namen ein:");
+		newModelNameInput.setContentText("Hier Namen eingeben");
+		newModelNameInput.showAndWait();
+		this.getModelView().setModelName(newModelNameInput.getEditor().getText());
 	}
 	
 	//Methode zum Öffnen eines Modells
@@ -148,12 +148,12 @@ public class ModelFXMLControl implements Initializable{
 		Tab tab = new Tab(modelName, scrollPane);
 		tab.textProperty().bind((ObservableValue<String>)modelView.getModelNameProperty());
 		this.getTabPane().getTabs().add(tab);
-		TextInputDialog input = new TextInputDialog("Neues Modell");
-		input.setTitle("Modellnamen festlegen");
-		input.setHeaderText("Bitte geben Sie den Namen des Modells an.");
-		input.setContentText("Hier Modellnamen einfügen.");
-		input.showAndWait();
-		modelView.setModelName(input.getEditor().getText());
+		TextInputDialog modelNameInput = new TextInputDialog("Neues Modell");
+		modelNameInput.setTitle("Modellnamen festlegen");
+		modelNameInput.setHeaderText("Bitte geben Sie den Namen des Modells an.");
+		modelNameInput.setContentText("Hier Modellnamen einfügen.");
+		modelNameInput.showAndWait();
+		modelView.setModelName(modelNameInput.getEditor().getText());
 	}
 	
 	//Methode zum Schließen eines Modells
@@ -218,10 +218,10 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void saveImage(ActionEvent event) throws IOException {
 		this.getModelView().getImageExportControl().saveImage();
-		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
-		alertConfirm.setTitle("Speichern erfolgreich");
-		alertConfirm.setHeaderText("Ihr Model wurde erfolgreich als Bild gespeichert");
-		alertConfirm.show();
+		Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+		alertInformation.setTitle("Speichern erfolgreich");
+		alertInformation.setHeaderText("Ihr Model wurde erfolgreich als Bild gespeichert");
+		alertInformation.show();
 	}
 	
 	//Methode zum Öffnen des Fensters für die Hilfestellung
@@ -293,14 +293,14 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void addApplication(ActionEvent event) throws IllegalAccessException, IOException {
 		if(this.getModelView() != null) {
-			Stage addRelationStage = new Stage();
+			Stage addApplicationStage = new Stage();
 			Parent loader = FXMLLoader.load(Main.class.getResource("application.fxml"));
 			Scene addApplicationScene = new Scene(loader);
-			addRelationStage.initModality(Modality.APPLICATION_MODAL);
-			addRelationStage.setTitle("Anwendung hinzufügen");
-			addRelationStage.setScene(addApplicationScene);
-			addRelationStage.centerOnScreen();
-			addRelationStage.show();
+			addApplicationStage.initModality(Modality.APPLICATION_MODAL);
+			addApplicationStage.setTitle("Anwendung hinzufügen");
+			addApplicationStage.setScene(addApplicationScene);
+			addApplicationStage.centerOnScreen();
+			addApplicationStage.show();
 		}
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
@@ -352,13 +352,13 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void importApplications(ActionEvent event) throws IOException, IllegalAccessException {
 		if(this.getModelView() != null) {
-			Stage applicationImport = new Stage();
+			Stage applicationImportStage = new Stage();
 	    	Parent loader = FXMLLoader.load(Main.class.getResource("connectImport.fxml"));
-	    	Scene scene = new Scene(loader);
-	    	applicationImport.setTitle("Anwendungen importieren");
-	    	applicationImport.setScene(scene);
-	    	applicationImport.centerOnScreen();
-	    	applicationImport.show();
+	    	Scene applicationImportScene = new Scene(loader);
+	    	applicationImportStage.setTitle("Anwendungen importieren");
+	    	applicationImportStage.setScene(applicationImportScene);
+	    	applicationImportStage.centerOnScreen();
+	    	applicationImportStage.show();
 		}
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
@@ -369,13 +369,13 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void importData(ActionEvent event) throws IOException, IllegalAccessException {
 		if(this.getModelView() != null) {
-			Stage applicationImport = new Stage();
+			Stage applicationImportStage = new Stage();
 	    	Parent loader = FXMLLoader.load(Main.class.getResource("import.fxml"));
-	    	Scene scene = new Scene(loader);
-	    	applicationImport.setTitle("Anwendungen importieren");
-	    	applicationImport.setScene(scene);
-	    	applicationImport.centerOnScreen();
-	    	applicationImport.show();
+	    	Scene applicationImportScene = new Scene(loader);
+	    	applicationImportStage.setTitle("Anwendungen importieren");
+	    	applicationImportStage.setScene(applicationImportScene);
+	    	applicationImportStage.centerOnScreen();
+	    	applicationImportStage.show();
 		}
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
@@ -386,13 +386,13 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void exportApplications(ActionEvent event) throws IOException, IllegalAccessException {
 		if(this.getModelView() != null) {
-			Stage applicationExport = new Stage();
+			Stage applicationExportStage = new Stage();
 	    	Parent loader = FXMLLoader.load(Main.class.getResource("connectExport.fxml"));
-	    	Scene scene = new Scene(loader);
-	    	applicationExport.setTitle("Anwendungen exportieren");
-	    	applicationExport.setScene(scene);
-	    	applicationExport.centerOnScreen();
-	    	applicationExport.show();
+	    	Scene applicationExportScene = new Scene(loader);
+	    	applicationExportStage.setTitle("Anwendungen exportieren");
+	    	applicationExportStage.setScene(applicationExportScene);
+	    	applicationExportStage.centerOnScreen();
+	    	applicationExportStage.show();
 		}
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
@@ -403,13 +403,13 @@ public class ModelFXMLControl implements Initializable{
 	@FXML
 	public void exportData(ActionEvent event) throws IOException, IllegalAccessException {
 		if(this.getModelView() != null) {
-			Stage applicationExport = new Stage();
+			Stage applicationExportStage = new Stage();
 	    	Parent loader = FXMLLoader.load(Main.class.getResource("export.fxml"));
-	    	Scene scene = new Scene(loader);
-	    	applicationExport.setTitle("Anwendungen exportieren");
-	    	applicationExport.setScene(scene);
-	    	applicationExport.centerOnScreen();
-	    	applicationExport.show();
+	    	Scene applicationExportScene = new Scene(loader);
+	    	applicationExportStage.setTitle("Anwendungen exportieren");
+	    	applicationExportStage.setScene(applicationExportScene);
+	    	applicationExportStage.centerOnScreen();
+	    	applicationExportStage.show();
 		}
 		else {
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
@@ -446,69 +446,66 @@ public class ModelFXMLControl implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		this.setMainModel(MainModel.getMainModel(this));
-        this.model.getSelectionModel().selectedItemProperty().addListener(
-    		new ChangeListener<Object>() {
-				@Override
-				public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-					if (newValue != null) {
-    	                Tab modelTab = (Tab) newValue;
-    	                ScrollPane scrollPane = (ScrollPane)modelTab.getContent();
-    	                ModelView modelViewTab = (ModelView)scrollPane.getContent();
-    	                modelView.set(modelViewTab);
-    	            }
-    	            else {
-    	                modelView.set(null);
-    	            }
-				}
-    		});
+        this.model.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+				if (newValue != null) {
+	                Tab modelTab = (Tab) newValue;
+	                ScrollPane scrollPane = (ScrollPane)modelTab.getContent();
+	                ModelView modelViewTab = (ModelView)scrollPane.getContent();
+	                modelView.set(modelViewTab);
+	            }
+	            else {
+	                modelView.set(null);
+	            }
+			}
+		});
         this.modelView = new SimpleObjectProperty<ModelView>(this, "selected", null);
-        this.modelView.addListener(
-    		new ChangeListener<Object>() {
-				@Override
-				public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-					if (newValue != null) {
-		            	elementView.unbind();
-		                elementView.bind(((ModelView) newValue).getSelectedElementProperty());
-		                ContextMenu menu = new ContextMenu();
-		        		model.setContextMenu(menu);
-		        		setDisable(false);
-		            }
-		            else {
-		                elementView.unbind();
-		                elementView.set(null);
-		                model.setContextMenu(null);
-		        		setDisable(true);
-		            }
-				}
-    		});
+        this.modelView.addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+				if (newValue != null) {
+	            	elementView.unbind();
+	                elementView.bind(((ModelView) newValue).getSelectedElementProperty());
+	                ContextMenu menu = new ContextMenu();
+	        		model.setContextMenu(menu);
+	        		setDisable(false);
+	            }
+	            else {
+	                elementView.unbind();
+	                elementView.set(null);
+	                model.setContextMenu(null);
+	        		setDisable(true);
+	            }
+			}
+		});
         this.elementView = new SimpleObjectProperty<ElementView>(this, "selected", null);
-        this.elementView.addListener(
-    		new ChangeListener<Object>() {
-				@Override
-				public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-					try {
-		                if (newValue == null) {
-		                    details.setContent(new BorderPane());
-		                }
-		                else if (newValue.getClass().equals(ApplicationView.class)) {
-		                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
-		                    details.setContent(parent);
-		                }
-		                else if (newValue.getClass().equals(RelationView.class)) {
-		                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
-		                    details.setContent(parent);
-		                }
-		            } catch (Exception e) {
-		            	e.printStackTrace();
-		    			if(!e.getClass().equals(NullPointerException.class)) {
-		    				Alert alertError = new Alert(Alert.AlertType.ERROR);
-		    				alertError.setTitle("Fehler!");
-		    				alertError.setHeaderText(e.getMessage());
-		    				alertError.show();
-		    			}
-		            }
-				}
-    		});
+        this.elementView.addListener(new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+				try {
+	                if (newValue == null) {
+	                    details.setContent(new BorderPane());
+	                }
+	                else if (newValue.getClass().equals(ApplicationView.class)) {
+	                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
+	                    details.setContent(parent);
+	                }
+	                else if (newValue.getClass().equals(RelationView.class)) {
+	                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
+	                    details.setContent(parent);
+	                }
+	            } catch (Exception e) {
+	            	e.printStackTrace();
+	    			if(!e.getClass().equals(NullPointerException.class)) {
+	    				Alert alertError = new Alert(Alert.AlertType.ERROR);
+	    				alertError.setTitle("Fehler!");
+	    				alertError.setHeaderText(e.getMessage());
+	    				alertError.show();
+	    			}
+	            }
+			}
+		});
         this.model.setContextMenu(null);
 		this.setDisable(true);
 	}

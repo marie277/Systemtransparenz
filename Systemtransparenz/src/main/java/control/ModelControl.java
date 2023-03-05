@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import control.edit.ApplicationInRelation;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
@@ -27,12 +28,13 @@ public class ModelControl {
 	
 	private ModelView modelView;
 	private int zoomCounter;
-	private LinkedList<ElementView> objects;
+	private LinkedList<ElementView> elementViews;
 	private Region region;
 	private ElementView elementView;
 	private boolean isMovable;
 	private int x;
 	private int y;
+	private static final double deduction = 5.0;
 	
 	//Konstruktor
 	public ModelControl(ModelView modelView) {
@@ -42,6 +44,31 @@ public class ModelControl {
 	//Getter-Methode für die Modell-Ansicht
 	public ModelView getModelView() {
 		return this.modelView;
+	}
+	
+	//Getter-Methode für den Zähler der Ansichts-Vergrößerungen bzw. -Verkleinerungen
+	public int getZoomCounter() {
+		return this.zoomCounter;
+	}
+	
+	//Setter-Methode für die Region einer Elements-Ansicht
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+	
+	//Setter-Methode für die Modell-Ansicht
+	public void setModelView(ModelView modelView) {
+		this.modelView = modelView;
+	}
+	
+	//Setter-Methode für die Elements-Ansicht
+	public void setElementView(ElementView elementView) {
+		this.elementView = elementView;
+	}
+	
+	//Setter-Methode für den Zähler der Ansichts-Vergrößerungen bzw. -Verkleinerungen
+	public void setZoomCounter(int zoomCounter) {
+		this.zoomCounter = zoomCounter;
 	}
 
 	//Methode zum Speichern des Modells
@@ -58,80 +85,6 @@ public class ModelControl {
 	public void removeRelationView(RelationView relationView) {
 		relationView.getRelationControl().removeApplications();
 		this.modelView.removeElement(relationView);
-	}
-
-	//Methode zum Hinzufügen eines XML-Elements aus einer Datei in das Modell
-	public static ModelView importXMLElement(Element item) {
-		ModelView modelView = new ModelView();
-		String modelName = item.getAttribute("Modellname");
-		modelView.setModelName(modelName);
-		modelView.setPrefHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
-		modelView.setMinHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
-		modelView.setPrefWidth(Double.parseDouble(item.getAttribute("Modellweite")));
-		modelView.setMinWidth(Double.parseDouble(item.getAttribute("Modellweite")));
-		NodeList applications = item.getElementsByTagName("Anwendung");
-		for(int i=0; i<applications.getLength(); i++) {
-			ApplicationControl.importXMLElement((Element)applications.item(i), modelView);
-		}
-		NodeList relations = item.getElementsByTagName("Beziehung");
-		for(int i=0; i<relations.getLength(); i++) {
-			RelationControl.importXMLElement((Element)relations.item(i), modelView);
-		}
-		return modelView;
-	}
-
-	//Methode zum Erstellen eines XML-Elements zum Speichern in einer Datei
-	public Element createXMLElement(Document doc) {
-		for(ApplicationView applicationView : this.modelView.getApplications()) {
-			//this.modelView.getZoomControl().removeObject(applicationView);
-			this.modelView.getModelControl().removeObject(applicationView);
-		}
-		for(RelationView relationView : this.modelView.getRelations()) {
-			//this.modelView.getZoomControl().removeObject(relationView);
-			this.modelView.getModelControl().removeObject(relationView);
-		}
-		Element model = doc.createElement("Modell");
-		try {
-			String modelName = this.modelView.getModelName();
-			model.setAttribute("Modellname", modelName);
-			String widthAttribute = new StringBuilder().append(this.modelView.getPrefWidth()).toString();
-			model.setAttribute("Modellweite", widthAttribute);
-			String heightAttribute = new StringBuilder().append(this.modelView.getPrefHeight()).toString();
-			model.setAttribute("Modellhöhe", heightAttribute);
-			//String zoomAttribute = new StringBuilder().append(this.modelView.getZoomControl().getZoomCounter()).toString();
-			String zoomAttribute = new StringBuilder().append(this.modelView.getModelControl().getZoomCounter()).toString();
-			model.setAttribute("Zoom", zoomAttribute);
-			Element applications = doc.createElement("Anwendungen");
-			Element relations = doc.createElement("Beziehungen");
-			for(ApplicationView applicationView: this.modelView.getApplications()) {
-				applications.appendChild(applicationView.getApplicationControl().createXMLElement(doc));
-			}
-			for(RelationView relationView: this.modelView.getRelations()) {
-				relations.appendChild(relationView.getRelationControl().createXMLElement(doc));
-			}
-			model.appendChild(applications);
-			model.appendChild(relations);
-			for(ApplicationView applicationView : this.modelView.getApplications()) {
-				//this.modelView.getZoomControl().addObject(applicationView);
-				this.modelView.getModelControl().addObject(applicationView);
-			}
-			for(RelationView relationView : this.modelView.getRelations()) {
-				//this.modelView.getZoomControl().addObject(relationView);
-				this.modelView.getModelControl().addObject(relationView);
-			};
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			for(ApplicationView applicationView : this.modelView.getApplications()) {
-				//this.modelView.getZoomControl().addObject(applicationView);
-				this.modelView.getModelControl().addObject(applicationView);
-			}
-			for(RelationView relationView : this.modelView.getRelations()) {
-				//this.modelView.getZoomControl().addObject(relationView);
-				this.modelView.getModelControl().addObject(relationView);
-			}
-		}
-		return model;
 	}
 	
 	//Methode zum Hinzufügen einer Beziehungs-Ansicht zum Modell
@@ -157,19 +110,14 @@ public class ModelControl {
 
 	//Methode zum Hinzufügen einer Anwendungs-Ansicht in das Modell
 	public void addApplication(int applicationId, String applicationName, String applicationDescription, String applicationCategory, String applicationProducer, String applicationManager, String applicationDepartment, String applicationAdmin) {
-		for (ApplicationView applicationView : this.modelView.getApplications()) {
-            if (applicationView.getApplicationModel().getApplicationId() == applicationId) {
+		for(ApplicationView applicationView : this.modelView.getApplications()) {
+            if(applicationView.getApplicationModel().getApplicationId() == applicationId) {
                 throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit dieser ID vorhanden.");
             }
         }
 		ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
         ApplicationView applicationView = new ApplicationView(applicationModel, this.modelView);
         this.modelView.addElement(applicationView);;
-	}
-
-	//Methode zum Umbenennen einer Anwendungs-Ansicht im Modell
-	public void renameApplication(ApplicationView applicationView, String applicationName) {
-        applicationView.getApplicationControl().changeApplicationName(applicationName);
 	}
 
 	//Methode zur Änderung des Beziehungstyps einer Beziehung in dem Modell
@@ -183,6 +131,11 @@ public class ModelControl {
 		this.removeRelationView(relationView);
 		RelationModel relationModel = new RelationModel(firstApplication, secondApplication, relationType, arrowIncoming);
 		this.addRelationView(relationModel);	
+	}
+	
+	//Methode zum Umbenennen einer Anwendungs-Ansicht im Modell
+	public void changeApplicationName(ApplicationView applicationView, String applicationName) {
+        applicationView.getApplicationControl().changeApplicationName(applicationName);
 	}
 
 	//Methode zur Änderung der ID einer Anwendung
@@ -225,93 +178,78 @@ public class ModelControl {
 		applicationView.getApplicationControl().changeApplicationAdmin(applicationAdmin);
 	}
 	
-	public void setRegion(Region region) {
-		this.region = region;
-	}
-	
-	public void setModelView(ModelView modelView) {
-		this.modelView = modelView;
-	}
-	
-	public void setElementView(ElementView elementView) {
-		this.elementView = elementView;
-	}
-	
 	//Methode zur Steuerung der Bewegung von Elementen
 	public static void makeRegionMoveable(Region region, ModelView modelView, ElementView elementView) {
-		ModelControl moveControl = new ModelControl(modelView);
-		moveControl.setRegion(region);
-		moveControl.setModelView(modelView);
-		moveControl.setElementView(elementView);
-		region.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-			boolean isInside = e.getY() > 5.0 && e.getY() < moveControl.region.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.region.getWidth() - 5.0;
-			if(isInside) {
-				moveControl.isMovable = true;
-			}
-			else {
-				moveControl.isMovable = false;
-			}
-		});
-		region.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
-			if (moveControl.isMovable && moveControl.elementView.isMoveable()) {
-	            Parent parent = moveControl.modelView.getParent();
-	            double layoutX = 0.0;
-	            double layoutY = 0.0;
-	            do {
-	                layoutX += parent.getLayoutX();
-	                layoutY += parent.getLayoutY();
-	                parent = parent.getParent();
-	            } while (parent.getParent() != null);
-	            int newLayoutX = (int)(e.getSceneX() - layoutX - moveControl.region.getWidth() / 2.0);
-	            int newLayoutY = (int)(e.getSceneY() - layoutY - moveControl.region.getHeight() / 2.0);
-	            if (newLayoutX > moveControl.x && newLayoutY > moveControl.y) {
-	            	moveControl.elementView.move(newLayoutX, newLayoutY);
-	            }
-	            else if (newLayoutX > moveControl.x) {
-	            	moveControl.elementView.move(newLayoutX, moveControl.y);
-	            }
-	            else if (newLayoutY > moveControl.y) {
-	            	moveControl.elementView.move(moveControl.x, newLayoutY);
-	            }
-	            else {
-	            	moveControl.elementView.move(moveControl.x, moveControl.y);
-	            }
-	            moveControl.region.setCursor(Cursor.MOVE);
-	            e.consume();
+		ModelControl modelControl = new ModelControl(modelView);
+		modelControl.setRegion(region);
+		modelControl.setModelView(modelView);
+		modelControl.setElementView(elementView);
+		region.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				boolean fitsHeight = event.getY() > deduction && event.getY() < modelControl.region.getHeight() - deduction;
+				boolean fitsWidth = event.getX() > deduction && event.getX() < modelControl.region.getWidth() - deduction;
+				if(fitsHeight && fitsWidth) {
+					modelControl.isMovable = true;
+				}
+				else {
+					modelControl.isMovable = false;
+				}
 			}
 		});
-		region.addEventFilter(MouseEvent.MOUSE_MOVED, e -> {
-			boolean isInside = e.getY() > 5.0 && e.getY() < moveControl.region.getHeight() - 5.0 && e.getX() > 5.0 && e.getX() < moveControl.region.getWidth() - 5.0;
-			if(isInside && moveControl.isMovable) {
-				moveControl.region.setCursor(Cursor.MOVE);
-			}
-			else {
-				moveControl.region.setCursor(Cursor.DEFAULT);
+		region.addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (modelControl.isMovable && modelControl.elementView.isMoveable()) {
+		            Parent parent = modelControl.modelView.getParent();
+		            double layoutX = parent.getLayoutX();
+		            double layoutY = parent.getLayoutY();
+		            while(parent.getParent() != null) {
+		            	parent = parent.getParent();
+		            	layoutX += parent.getLayoutX();
+		                layoutY += parent.getLayoutY();
+		            }
+		            int newLayoutX = (int)(event.getSceneX() - layoutX - modelControl.region.getWidth() / 2.0);
+		            int newLayoutY = (int)(event.getSceneY() - layoutY - modelControl.region.getHeight() / 2.0);
+		            if (newLayoutX > modelControl.x && newLayoutY > modelControl.y) {
+		            	modelControl.elementView.move(newLayoutX, newLayoutY);
+		            }
+		            else if (newLayoutX > modelControl.x) {
+		            	modelControl.elementView.move(newLayoutX, modelControl.y);
+		            }
+		            else if (newLayoutY > modelControl.y) {
+		            	modelControl.elementView.move(modelControl.x, newLayoutY);
+		            }
+		            else {
+		            	modelControl.elementView.move(modelControl.x, modelControl.y);
+		            }
+		            event.consume();
+				}
 			}
 		});
-		region.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
-			moveControl.isMovable = false;
-			moveControl.region.setCursor(Cursor.DEFAULT);
+		region.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				modelControl.region.setCursor(Cursor.DEFAULT);
+			}
+		});
+		region.addEventFilter(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				modelControl.isMovable = false;
+				modelControl.region.setCursor(Cursor.DEFAULT);
+			}
 		});
 	}
 	
-	
-	
-	public void setZoomCounter(int zoomCounter) {
-		this.zoomCounter = zoomCounter;
-	}
-	
-	public void initializeObjectList() {
-		this.objects = new LinkedList<ElementView>();
-	}
-	//Getter-Methode für den Zähler der Ansichts-Vergrößerungen bzw. -Verkleinerungen
-	public int getZoomCounter() {
-		return this.zoomCounter;
+	//Methode zur Initialisierung einer Liste von Elements-Ansichten
+	public void initializeElementViewList() {
+		this.elementViews = new LinkedList<ElementView>();
 	}
 
 	//Methode zum Berücksichtigen eines Elements bei der Ansichts-Vergrößerung bzw. -Verkleinerung
-	public void addObject(ElementView zoom) {
-		this.objects.add(zoom);
+	public void addObject(ElementView elementView) {
+		this.elementViews.add(elementView);
 		double factor;
 		if(this.zoomCounter>=1) {
 			factor = 1.2;
@@ -320,14 +258,13 @@ public class ModelControl {
 			factor = 0.8;
 		}
 		for(int i=0; i<this.zoomCounter; i++) {
-			zoom.zoom(factor);
+			elementView.zoom(factor);
 		}
 	}
 
 	//Methode zum Entfernen eines berücksichtigten Elements bei der Ansichts-Vergrößerung bzw. -Verkleinerung
-	//public void removeObject(Zoom zoom) {
-	public void removeObject(ElementView zoom) {
-		this.objects.remove(zoom);
+	public void removeObject(ElementView elementView) {
+		this.elementViews.remove(elementView);
 		double factor;
 		if(this.zoomCounter>=1) {
 			factor = 0.8;
@@ -336,15 +273,15 @@ public class ModelControl {
 			factor = 1.2;
 		}
 		for(int i=0; i<this.zoomCounter; i++) {
-			zoom.zoom(factor);
+			elementView.zoom(factor);
 		}
 	}
 	
 	//Methode zur Durchführung einer Ansichts-Vergrößerung
 	public void zoomIn() {
 		this.zoomCounter++;
-		for(ElementView zoom: this.objects) {
-			zoom.zoom(1.2);
+		for(ElementView elementView : this.elementViews) {
+			elementView.zoom(1.2);
 		}
 	}
 
@@ -352,10 +289,76 @@ public class ModelControl {
 	public void zoomOut() {
 		if(this.zoomCounter>=-10) {
 			this.zoomCounter--;
-			for(ElementView zoom: this.objects) {
-				zoom.zoom(0.8);
+			for(ElementView elementView : this.elementViews) {
+				elementView.zoom(0.8);
 			}
 		}
 	}
 	
+	//Methode zum Hinzufügen eines XML-Elements aus einer Datei in das Modell
+	public static ModelView importXMLElement(Element item) {
+		ModelView modelView = new ModelView();
+		String modelName = item.getAttribute("Modellname");
+		modelView.setModelName(modelName);
+		modelView.setPrefHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
+		modelView.setMinHeight(Double.parseDouble(item.getAttribute("Modellhöhe")));
+		modelView.setPrefWidth(Double.parseDouble(item.getAttribute("Modellweite")));
+		modelView.setMinWidth(Double.parseDouble(item.getAttribute("Modellweite")));
+		NodeList applications = item.getElementsByTagName("Anwendung");
+		for(int i=0; i<applications.getLength(); i++) {
+			ApplicationControl.importXMLElement((Element)applications.item(i), modelView);
+		}
+		NodeList relations = item.getElementsByTagName("Beziehung");
+		for(int i=0; i<relations.getLength(); i++) {
+			RelationControl.importXMLElement((Element)relations.item(i), modelView);
+		}
+		return modelView;
+	}
+
+	//Methode zum Erstellen eines XML-Elements zum Speichern in einer Datei
+	public Element createXMLElement(Document doc) {
+		for(ApplicationView applicationView : this.modelView.getApplications()) {
+			this.modelView.getModelControl().removeObject(applicationView);
+		}
+		for(RelationView relationView : this.modelView.getRelations()) {
+			this.modelView.getModelControl().removeObject(relationView);
+		}
+		Element model = doc.createElement("Modell");
+		try {
+			String modelName = this.modelView.getModelName();
+			model.setAttribute("Modellname", modelName);
+			String widthAttribute = new StringBuilder().append(this.modelView.getPrefWidth()).toString();
+			model.setAttribute("Modellweite", widthAttribute);
+			String heightAttribute = new StringBuilder().append(this.modelView.getPrefHeight()).toString();
+			model.setAttribute("Modellhöhe", heightAttribute);
+			String zoomAttribute = new StringBuilder().append(this.modelView.getModelControl().getZoomCounter()).toString();
+			model.setAttribute("Zoom", zoomAttribute);
+			Element applications = doc.createElement("Anwendungen");
+			Element relations = doc.createElement("Beziehungen");
+			for(ApplicationView applicationView: this.modelView.getApplications()) {
+				applications.appendChild(applicationView.getApplicationControl().createXMLElement(doc));
+			}
+			for(RelationView relationView: this.modelView.getRelations()) {
+				relations.appendChild(relationView.getRelationControl().createXMLElement(doc));
+			}
+			model.appendChild(applications);
+			model.appendChild(relations);
+			for(ApplicationView applicationView : this.modelView.getApplications()) {
+				this.modelView.getModelControl().addObject(applicationView);
+			}
+			for(RelationView relationView : this.modelView.getRelations()) {
+				this.modelView.getModelControl().addObject(relationView);
+			};
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			for(ApplicationView applicationView : this.modelView.getApplications()) {
+				this.modelView.getModelControl().addObject(applicationView);
+			}
+			for(RelationView relationView : this.modelView.getRelations()) {
+				this.modelView.getModelControl().addObject(relationView);
+			}
+		}
+		return model;
+	}
 }

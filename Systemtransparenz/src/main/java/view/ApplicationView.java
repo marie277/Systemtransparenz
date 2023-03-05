@@ -1,15 +1,18 @@
 package view;
 
+import java.util.LinkedList;
+
 import control.ApplicationControl;
 import control.ElementControl;
 import control.edit.ApplicationBorderPane;
 import control.ModelControl;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -26,6 +29,13 @@ public class ApplicationView extends ElementView {
 	private ApplicationBorderPane applicationBorderPane;
 	private BooleanProperty selectedProperty;
 	private boolean isSelected;
+	private Label idLabel;
+	private Label descriptionLabel;
+	private Label categoryLabel;
+	private Label producerLabel;
+	private Label managerLabel;
+	private Label departmentLabel;
+	private Label adminLabel;
 	private Text name;
 	private Text id;
 	private Text description;
@@ -47,40 +57,40 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.getStyleClass().add("applicationBorderPane");
         this.applicationBorderPane.setPrefSize(200.0, 100.0);
         this.name = new Text("");
-        this.name.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getNameProperty());
-        Label idLabel = new Label("ID: ");
+        this.name.textProperty().bind(this.applicationModel.getNameProperty());
+        this.idLabel = new Label("ID: ");
         this.id = new Text("");
-        this.id.textProperty().bind(((ObservableValue<? extends String>)this.applicationModel.getIdProperty().asString()));
+        this.id.textProperty().bind((this.applicationModel.getIdProperty().asString()));
         HBox hBoxId = new HBox();
         hBoxId.getChildren().addAll(idLabel, this.id);
-        Label descriptionLabel = new Label("Beschreibung: ");
+        this.descriptionLabel = new Label("Beschreibung: ");
         this.description = new Text("");
-        this.description.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getDescriptionProperty());
+        this.description.textProperty().bind(this.applicationModel.getDescriptionProperty());
         HBox hBoxDescription = new HBox();
         hBoxDescription.getChildren().addAll(descriptionLabel, this.description);
-        Label categoryLabel = new Label("Kategorie: ");
+        this.categoryLabel = new Label("Kategorie: ");
         this.category = new Text("");
-        this.category.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getCategoryProperty());
+        this.category.textProperty().bind(this.applicationModel.getCategoryProperty());
         HBox hBoxCategory = new HBox();
         hBoxCategory.getChildren().addAll(categoryLabel, this.category);
-        Label producerLabel = new Label("Hersteller: ");
+        this.producerLabel = new Label("Hersteller: ");
         this.producer = new Text("");
-        this.producer.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getProducerProperty());
+        this.producer.textProperty().bind(this.applicationModel.getProducerProperty());
         HBox hBoxProducer = new HBox();
         hBoxProducer.getChildren().addAll(producerLabel, this.producer);
-        Label managerLabel = new Label("Anwendungsmanager: ");
+        this.managerLabel = new Label("Anwendungsmanager: ");
         this.manager = new Text("");
-        this.manager.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getManagerProperty());
+        this.manager.textProperty().bind(this.applicationModel.getManagerProperty());
         HBox hBoxManager = new HBox();
         hBoxManager.getChildren().addAll(managerLabel, this.manager);
-        Label departmentLabel = new Label("Fachbereich: ");
+        this.departmentLabel = new Label("Fachbereich: ");
         this.department = new Text("");
-        this.department.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getDepartmentProperty());
+        this.department.textProperty().bind(this.applicationModel.getDepartmentProperty());
         HBox hBoxDepartment = new HBox();
         hBoxDepartment.getChildren().addAll(departmentLabel, this.department);
-        Label adminLabel = new Label("Admin: ");
+        this.adminLabel = new Label("Admin: ");
         this.admin = new Text("");
-        this.admin.textProperty().bind((ObservableValue<? extends String>)this.applicationModel.getAdminProperty());
+        this.admin.textProperty().bind(this.applicationModel.getAdminProperty());
         HBox hBoxAdmin = new HBox();
         hBoxAdmin.getChildren().addAll(adminLabel, this.admin);
         this.vbox = new VBox();
@@ -93,21 +103,28 @@ public class ApplicationView extends ElementView {
         ModelControl.makeRegionMoveable((Region)this.applicationBorderPane, this.getModelView(), this);
         this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("/application/application.css").toExternalForm());
         this.applicationBorderPane.getSelectedProperty().bind(this.getSelectedProperty());
-        this.applicationBorderPane.setOnMouseClicked(e -> {
-            if (modelView != null) {
-            	modelView.deselectElements();
-                modelView.setElementView(this);
-            }
-            this.applicationControl.setSelected(true);
-            e.consume();
+        this.applicationBorderPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (modelView != null) {
+	            	modelView.deselectElements();
+	                modelView.setElementView(ApplicationView.this);
+	            }
+				applicationControl.setSelected(true);
+	            event.consume();
+			}
+            
         });
-        this.applicationBorderPane.setOnMousePressed(e -> {
-            if (modelView != null) {
-            	modelView.deselectElements();
-                modelView.setElementView(this);
-            }
-            this.applicationControl.setSelected(true);
-            e.consume();
+        this.applicationBorderPane.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (modelView != null) {
+	            	modelView.deselectElements();
+	                modelView.setElementView(ApplicationView.this);
+	            }
+				applicationControl.setSelected(true);
+	            event.consume();
+			}
         });
         this.isSelected = false;
 	}
@@ -152,8 +169,29 @@ public class ApplicationView extends ElementView {
 	}
 
 	//Getter-Methode für den Text der präsentierten Anwendung
-	public Text getText() {
-		return this.name;
+	public LinkedList<Text> getAttributes() {
+		LinkedList<Text> texts = new LinkedList<Text>();
+		texts.add(this.name);
+		texts.add(this.id);
+		texts.add(this.description);
+		texts.add(this.category);
+		texts.add(this.producer);
+		texts.add(this.manager);
+		texts.add(this.department);
+		texts.add(this.admin);
+		return texts;
+	}
+	
+	public LinkedList<Label> getAttributeLabels(){
+		LinkedList<Label> labels = new LinkedList<Label>();
+		labels.add(this.idLabel);
+		labels.add(this.descriptionLabel);
+		labels.add(this.categoryLabel);
+		labels.add(this.producerLabel);
+		labels.add(this.managerLabel);
+		labels.add(this.departmentLabel);
+		labels.add(this.adminLabel);
+		return labels;
 	}
 	
 	//Getter-Methode für das gegliederte Feld einer präsentierten Anwendung

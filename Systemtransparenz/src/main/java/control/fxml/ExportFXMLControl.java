@@ -35,6 +35,7 @@ public class ExportFXMLControl implements Initializable {
 	private String hostUrl;
 	private int portNumber;
 	private String dataBase;
+	private String dataScheme;
 	private ObservableList<ApplicationModel> applicationsList;
 	
 	@FXML
@@ -88,10 +89,10 @@ public class ExportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
-		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
-		alertConfirm.setTitle("Speichern erfolgreich");
-		alertConfirm.setHeaderText("Ihre Anwendungen wurden erfolgreich in die ausgewählte Datenbank exportiert.");
-		alertConfirm.show();
+		Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+		alertInformation.setTitle("Speichern erfolgreich");
+		alertInformation.setHeaderText("Ihre Anwendungen wurden erfolgreich in die ausgewählte Datenbank exportiert.");
+		alertInformation.show();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
@@ -100,6 +101,7 @@ public class ExportFXMLControl implements Initializable {
     	this.portNumber = 5432;
     	this.userName = "postgres";
     	this.passWord = "pw369";
+    	this.dataScheme = "public";
     	if(this.databases.getValue() == "Alle Anwendungen") {
 	    	this.dataBase = "systemtransparenz";
     	}
@@ -109,7 +111,7 @@ public class ExportFXMLControl implements Initializable {
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -156,7 +158,6 @@ public class ExportFXMLControl implements Initializable {
 		this.modelView = MainModel.modelFXMLControl.getModelView();
 		this.databases.getItems().addAll("Alle Anwendungen", "Kernanwendungen");
 		this.databases.getSelectionModel().select(0);
-		
 	}
 
 }

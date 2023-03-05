@@ -4,7 +4,10 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.postgresql.Driver;
@@ -49,22 +52,22 @@ public class ConnectExportFXMLControl implements Initializable {
 	private String applicationIdAttribute;
 	private String applicationNameAttribute;
 	private String descriptionAttribute;
-	private String categoryNameAAttribute;
+	private String applicationCategoryNameAttribute;
 	private String categoryNameAttribute;
-	private String producerIdAAttribute;
+	private String applicationProducerIdAttribute;
 	private String producerIdAttribute;
 	private String producerNameAttribute;
-	private String departmentIdAAttribute;
+	private String applicationDepartmentIdAttribute;
 	private String departmentIdAttribute;
 	private String departmentNameAttribute;
 	private String employeeIdAttribute;
 	private String employeeNameAttribute;
-	private String managerIdAAttribute;
+	private String applicationManagerIdAttribute;
 	private String managerIdAttribute;
-	private String adminIdAAttribute;
+	private String applicationAdminIdAttribute;
 	private String adminIdAttribute;
-	private String employeeIdMAttribute;
-	private String employeeIdAAttribute;
+	private String managerEmployeeIdAttribute;
+	private String adminEmployeeIdAttribute;
 	private ObservableList<ApplicationModel> applicationsList;
 	
 	@FXML
@@ -102,17 +105,17 @@ public class ConnectExportFXMLControl implements Initializable {
 	@FXML
 	private TextField description;
 	@FXML
-	private TextField categoryNameA;
+	private TextField applicationCategoryName;
 	@FXML
 	private TextField categoryName;
 	@FXML
-	private TextField producerIdA;
+	private TextField applicationProducerId;
 	@FXML
 	private TextField producerId;
 	@FXML
 	private TextField producerName;
 	@FXML
-	private TextField departmentIdA;
+	private TextField applicationDepartmentId;
 	@FXML
 	private TextField departmentId;
 	@FXML
@@ -122,15 +125,15 @@ public class ConnectExportFXMLControl implements Initializable {
 	@FXML
 	private TextField employeeName;
 	@FXML
-	private TextField managerIdA;
+	private TextField applicationManagerId;
 	@FXML
 	private TextField managerId;
 	@FXML
-	private TextField adminIdA;
+	private TextField applicationAdminId;
 	@FXML
 	private TextField adminId;
 	@FXML
-	private TextField employeeIdM;
+	private TextField managerEmployeeId;
 	@FXML
 	private TextField employeeIdA;
 	@FXML
@@ -152,13 +155,58 @@ public class ConnectExportFXMLControl implements Initializable {
         this.scrollPane.getScene().getWindow().hide();
     }
 	
-	//Methode zum Laden der Anwendungen aus der ausgewählten Datenbank
+	//Methode zum Laden der Anwendungen aus dem ausgewählten Modell
 	@FXML
-	private void load(ActionEvent event) {
+	private void load(ActionEvent event) throws SQLException {
 		this.initializeDatabase();
+		this.applicationTable = this.application.getText();
+		this.categoryTable = this.category.getText();
+		this.producerTable = this.producer.getText();
+		this.departmentTable = this.department.getText();
+		this.managerTable = this.manager.getText();
+		this.adminTable = this.admin.getText();
+		this.employeeTable = this.employee.getText();
+		this.applicationIdAttribute = this.applicationId.getText();
+		this.applicationNameAttribute = this.applicationName.getText();
+		this.descriptionAttribute = this.description.getText();
+		this.applicationCategoryNameAttribute = this.applicationCategoryName.getText();
+		this.categoryNameAttribute = this.categoryName.getText();
+		this.applicationProducerIdAttribute = this.applicationProducerId.getText();
+		this.producerIdAttribute = this.producerId.getText();
+		this.producerNameAttribute = this.producerName.getText();
+		this.applicationDepartmentIdAttribute = this.applicationDepartmentId.getText();
+		this.departmentIdAttribute = this.departmentId.getText();
+		this.departmentNameAttribute = this.departmentName.getText();
+		this.employeeIdAttribute = this.employeeId.getText();
+		this.employeeNameAttribute = this.employeeName.getText();
+		this.applicationManagerIdAttribute = this.applicationManagerId.getText();
+		this.managerIdAttribute = this.managerId.getText();
+		this.applicationAdminIdAttribute = this.applicationAdminId.getText();
+		this.adminIdAttribute = this.adminId.getText();
+		this.managerEmployeeIdAttribute = this.managerEmployeeId.getText();
+		this.adminEmployeeIdAttribute = this.employeeIdA.getText();
+		String categoryStatement = "CREATE TABLE IF NOT EXISTS " + this.dataScheme + "." + this.categoryTable + "(" + this.categoryNameAttribute + " TEXT PRIMARY KEY);";
+		String producerStatement = "CREATE TABLE IF NOT EXISTS " + this.producerTable + "(" + this.producerIdAttribute  + " SERIAL PRIMARY KEY, " + this.producerNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String departmentStatement = "CREATE TABLE IF NOT EXISTS " + this.departmentTable + "(" + this.departmentIdAttribute + " SERIAL PRIMARY KEY, " + this.departmentNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String employeeStatement = "CREATE TABLE IF NOT EXISTS " + this.employeeTable + "(" + this.employeeIdAttribute + " SERIAL PRIMARY KEY, " + this.employeeNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String managerStatement = "CREATE TABLE IF NOT EXISTS " + this.managerTable + "(" + this.managerIdAttribute + " SERIAL PRIMARY KEY, " + this.managerEmployeeIdAttribute + " INT	NOT NULL UNIQUE, FOREIGN KEY(" + this.managerEmployeeIdAttribute + ") REFERENCES " + this.employeeTable + "(" + this.employeeIdAttribute + "));";
+		String adminStatement = "CREATE TABLE IF NOT EXISTS " + this.adminTable + "(" + this.adminIdAttribute + " SERIAL PRIMARY KEY, " + this.adminEmployeeIdAttribute + " INT	NOT NULL UNIQUE, FOREIGN KEY(" + this.adminEmployeeIdAttribute + ") REFERENCES " + this.employeeTable + "(" + this.employeeIdAttribute + "));";
+		String applicationStatement = "CREATE TABLE IF NOT EXISTS " + this.applicationTable + "(" + this.applicationIdAttribute + " INT PRIMARY KEY, " + this.applicationNameAttribute + " TEXT NOT NULL, " + this.descriptionAttribute + " TEXT, " + this.applicationCategoryNameAttribute + " TEXT NOT NULL, " + this.applicationProducerIdAttribute + " INT NOT NULL, " + this.applicationManagerIdAttribute + " INT	NOT NULL, " + this.applicationDepartmentIdAttribute	+ " INT	NOT NULL, " + this.applicationAdminIdAttribute + "	INT	NOT NULL, FOREIGN KEY(" + this.applicationCategoryNameAttribute + ") REFERENCES " + this.categoryTable + "(" + this.categoryNameAttribute + "), FOREIGN KEY(" + this.applicationProducerIdAttribute + ") REFERENCES " + this.producerTable + "(" + this.producerIdAttribute + "), FOREIGN KEY(" + this.applicationManagerIdAttribute + ") REFERENCES " + this.managerTable + "(" + this.managerIdAttribute + "), FOREIGN KEY(" + this.applicationDepartmentIdAttribute + ") REFERENCES " + this.departmentTable + "(" + this.departmentIdAttribute + "),FOREIGN KEY(" + this.applicationAdminIdAttribute + ") REFERENCES " + this.adminTable + "(" + this.adminIdAttribute + "));";
+		ArrayList<String> statements = new ArrayList<>();
+		statements.add(categoryStatement);
+		statements.add(producerStatement);
+		statements.add(departmentStatement);
+		statements.add(employeeStatement);
+		statements.add(managerStatement);
+		statements.add(adminStatement);
+		statements.add(applicationStatement);
+		for(String statement : statements) {
+			PreparedStatement preparedStatement = connection.prepareStatement(statement);
+	        preparedStatement.execute();
+		}
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
-        for (ApplicationView applicationView : this.modelView.getApplications()) {
+        for(ApplicationView applicationView : this.modelView.getApplications()) {
         	applicationsList.add(applicationView.getApplicationModel());
         }
         this.applicationsColumn.getTableView().setItems(applicationsList);    
@@ -182,10 +230,10 @@ public class ConnectExportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
-		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
-		alertConfirm.setTitle("Speichern erfolgreich");
-		alertConfirm.setHeaderText("Ihre Anwendungen wurden erfolgreich in die ausgewählte Datenbank exportiert.");
-		alertConfirm.show();
+		Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+		alertInformation.setTitle("Exportieren erfolgreich");
+		alertInformation.setHeaderText("Ihre Anwendungen wurden erfolgreich in die ausgewählte Datenbank exportiert.");
+		alertInformation.show();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
@@ -199,7 +247,33 @@ public class ConnectExportFXMLControl implements Initializable {
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/?", this.userName, this.passWord);
+            PreparedStatement ps = connection.prepareStatement("SELECT datname FROM pg_database WHERE datistemplate = false;");
+            ResultSet rs = ps.executeQuery();
+            boolean databaseExists = false;
+            while (rs.next()) {
+                if(rs.getString(1).equals(this.dataBase)) {
+                	databaseExists = true;
+                	break;
+                }
+                else {
+                	databaseExists = false;
+                }
+            }
+            if(databaseExists == true) {
+            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            	Statement stmt = connection.createStatement();
+            	stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
+            	stmt.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
+            }
+            else {
+            	Statement stmt = connection.createStatement();
+            	stmt.executeUpdate("CREATE DATABASE " + this.dataBase + ";");
+            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            	Statement stmt1 = connection.createStatement();
+            	stmt1.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
+            	stmt1.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
+            }
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -213,47 +287,65 @@ public class ConnectExportFXMLControl implements Initializable {
     
     //Methode zum Export der Anwendungen aus der ausgewählte Tabelle
     public void exportApplications(ApplicationModel applicationModel) throws SQLException {
-    	this.applicationTable = this.application.getText();
-		this.categoryTable = this.category.getText();
-		this.producerTable = this.producer.getText();
-		this.departmentTable = this.department.getText();
-		this.managerTable = this.manager.getText();
-		this.adminTable = this.admin.getText();
-		this.employeeTable = this.employee.getText();
-		this.applicationIdAttribute = this.applicationId.getText();
-		this.applicationNameAttribute = this.applicationName.getText();
-		this.descriptionAttribute = this.description.getText();
-		this.categoryNameAAttribute = this.categoryNameA.getText();
-		this.categoryNameAttribute = this.categoryName.getText();
-		this.producerIdAAttribute = this.producerIdA.getText();
-		this.producerIdAttribute = this.producerId.getText();
-		this.producerNameAttribute = this.producerName.getText();
-		this.departmentIdAAttribute = this.departmentIdA.getText();
-		this.departmentIdAttribute = this.departmentId.getText();
-		this.departmentNameAttribute = this.departmentName.getText();
-		this.employeeIdAttribute = this.employeeId.getText();
-		this.employeeNameAttribute = this.employeeName.getText();
-		this.managerIdAAttribute = this.managerIdA.getText();
-		this.managerIdAttribute = this.managerId.getText();
-		this.adminIdAAttribute = this.adminIdA.getText();
-		this.adminIdAttribute = this.adminId.getText();
-		this.employeeIdMAttribute = this.employeeIdM.getText();
-		this.employeeIdAAttribute = this.employeeIdA.getText();
-		this.sqlStatement = "INSERT INTO " + this.applicationTable + "(" + this.applicationIdAttribute + ", " + this.applicationNameAttribute + ", " + this.descriptionAttribute + ", " + this.categoryNameAAttribute + ", " + this.producerIdAAttribute + ", " + this.managerIdAAttribute + ", " + this.departmentIdAAttribute + ", " + this.adminIdAAttribute + ")"
+		String categoryStatement = "INSERT INTO " + this.categoryTable + "(" + this.categoryNameAttribute + ")"
+				+ "VALUES (?) "
+				+ "ON CONFLICT (" + this.categoryNameAttribute + ") DO UPDATE "
+				+ "SET " + this.categoryNameAttribute + " = excluded." + this.categoryNameAttribute + ";";
+		PreparedStatement categoryPreparedStatement = connection.prepareStatement(categoryStatement);
+		categoryPreparedStatement.setString(1, applicationModel.getApplicationCategory());
+		categoryPreparedStatement.execute();
+		String producerStatement = "INSERT INTO " + this.producerTable + "("+ this.producerIdAttribute + ", " + this.producerNameAttribute + ")"
+				+ "VALUES (default, ?) "
+				+ "ON CONFLICT (" + this.producerNameAttribute + ") DO UPDATE "
+				+ "SET " + this.producerNameAttribute + " = excluded." + this.producerNameAttribute + ";";
+		PreparedStatement producerPreparedStatement = connection.prepareStatement(producerStatement);
+		producerPreparedStatement.setString(1, applicationModel.getApplicationProducer());
+		producerPreparedStatement.execute();
+		String departmentStatement = "INSERT INTO " + this.departmentTable + "(" + this.departmentIdAttribute + ", " + this.departmentNameAttribute + ")"
+				+ "VALUES (default, ?) "
+				+ "ON CONFLICT (" + this.departmentNameAttribute + ") DO UPDATE "
+				+ "SET " + this.departmentNameAttribute + " = excluded." + this.departmentNameAttribute + ";";
+		PreparedStatement departmentPreparedStatement = connection.prepareStatement(departmentStatement);
+		departmentPreparedStatement.setString(1, applicationModel.getApplicationDepartment());
+		departmentPreparedStatement.execute();
+		String employeeStatement = "INSERT INTO " + this.employeeTable + "(" + this.employeeIdAttribute + ", " + this.employeeNameAttribute + ")"
+				+ "VALUES (default, ?) "
+				+ "ON CONFLICT (" + this.employeeNameAttribute + ") DO UPDATE "
+				+ "SET " + this.employeeNameAttribute + " = excluded." + this.employeeNameAttribute + ";";
+		PreparedStatement employeePreparedStatement = connection.prepareStatement(employeeStatement);
+		employeePreparedStatement.setString(1,  applicationModel.getApplicationManager());
+		employeePreparedStatement.execute();
+		employeePreparedStatement.setString(1,  applicationModel.getApplicationAdmin());
+		employeePreparedStatement.execute();
+		String statement4 = "INSERT INTO " + this.managerTable + "(" + this.managerIdAttribute + ", " + this.managerEmployeeIdAttribute + ")"
+				+"VALUES (default, (SELECT " + this.employeeIdAttribute + " FROM " + this.employeeTable + " WHERE " + this.employeeNameAttribute + " = ?))"
+				+ " ON CONFLICT (" + this.managerEmployeeIdAttribute + ") DO UPDATE "
+				+ "SET " + this.managerEmployeeIdAttribute + " = excluded." + this.managerEmployeeIdAttribute +";";
+		PreparedStatement preparedStatement5 = connection.prepareStatement(statement4);
+		preparedStatement5.setString(1, applicationModel.getApplicationManager());
+		preparedStatement5.execute();
+		String statement5 = "INSERT INTO " + this.adminTable + "(" + this.adminIdAttribute + ", " + this.adminEmployeeIdAttribute + ")"
+				+"VALUES (default, (SELECT " + this.employeeIdAttribute + " FROM " + this.employeeTable + " WHERE " + this.employeeNameAttribute + " = ?))"
+				+ " ON CONFLICT (" + this.adminEmployeeIdAttribute + ") DO UPDATE "
+				+ "SET " + this.adminEmployeeIdAttribute + " = excluded." + this.adminEmployeeIdAttribute + ";";
+		PreparedStatement preparedStatement6 = connection.prepareStatement(statement5);
+		preparedStatement6.setString(1, applicationModel.getApplicationAdmin());
+		preparedStatement6.execute();
+		this.sqlStatement = "INSERT INTO " + this.applicationTable + "(" + this.applicationIdAttribute + ", " + this.applicationNameAttribute + ", " + this.descriptionAttribute + ", " + this.applicationCategoryNameAttribute + ", " + this.applicationProducerIdAttribute + ", " + this.applicationManagerIdAttribute + ", " + this.applicationDepartmentIdAttribute + ", " + this.applicationAdminIdAttribute + ")"
 				+"VALUES (?, ?, ?,"
 				+"(SELECT " + this.categoryNameAttribute + " FROM " + this.categoryTable + " k WHERE k." + this.categoryNameAttribute + " = ?),"
 				+"(SELECT " + this.producerIdAttribute + " FROM " + this.producerTable + " h WHERE h." + this.producerNameAttribute + " = ?),"
-				+"(SELECT " + this.managerIdAttribute + " FROM (" + this.managerTable + " am INNER JOIN " + this.employeeTable + " ma ON am." + this.employeeIdMAttribute + " = ma." + this.employeeIdAttribute + ") WHERE ma." + this.employeeNameAttribute + " = ?),"
+				+"(SELECT " + this.managerIdAttribute + " FROM (" + this.managerTable + " am INNER JOIN " + this.employeeTable + " ma ON am." + this.managerEmployeeIdAttribute + " = ma." + this.employeeIdAttribute + ") WHERE ma." + this.employeeNameAttribute + " = ?),"
 				+"(SELECT " + this.departmentIdAttribute + " FROM " + this.departmentTable + " f WHERE f." + this.departmentNameAttribute + " = ?),"
-				+"(SELECT " + this.adminIdAttribute + " FROM (" + this.adminTable + " ad INNER JOIN " + this.employeeTable + " mb ON ad." + this.employeeIdAAttribute + " = mb." + this.employeeIdAttribute + ") WHERE mb." + this.employeeNameAttribute + "= ?))"
+				+"(SELECT " + this.adminIdAttribute + " FROM (" + this.adminTable + " ad INNER JOIN " + this.employeeTable + " mb ON ad." + this.adminEmployeeIdAttribute + " = mb." + this.employeeIdAttribute + ") WHERE mb." + this.employeeNameAttribute + "= ?))"
 				+"ON CONFLICT (" + this.applicationIdAttribute + ") DO UPDATE "
 				+"SET " + this.applicationNameAttribute + " = excluded." + this.applicationNameAttribute + ", "
 				+ this.descriptionAttribute + " = excluded." + this.descriptionAttribute + ", "
-				+ this.categoryNameAAttribute + " = excluded." + this.categoryNameAAttribute + ", "
-				+ this.producerIdAAttribute + " = excluded." + this.producerIdAAttribute + ", "
-				+ this.managerIdAAttribute + " = excluded." + this.managerIdAAttribute + ", "
-				+ this.departmentIdAAttribute + " = excluded." + this.departmentIdAAttribute + ", "
-				+ this.adminIdAAttribute + " = excluded." + this.adminIdAAttribute + ";";
+				+ this.applicationCategoryNameAttribute + " = excluded." + this.applicationCategoryNameAttribute + ", "
+				+ this.applicationProducerIdAttribute + " = excluded." + this.applicationProducerIdAttribute + ", "
+				+ this.applicationManagerIdAttribute + " = excluded." + this.applicationManagerIdAttribute + ", "
+				+ this.applicationDepartmentIdAttribute + " = excluded." + this.applicationDepartmentIdAttribute + ", "
+				+ this.applicationAdminIdAttribute + " = excluded." + this.applicationAdminIdAttribute + ";";
 		PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
         preparedStatement.setInt(1, applicationModel.getApplicationId());
         preparedStatement.setString(2, applicationModel.getApplicationName());

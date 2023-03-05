@@ -6,7 +6,7 @@ import control.ElementControl;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Region;
 
-//Abstrakte Klasse zur Präsentation eines Elements in einem Modell, implementiert Interfaces Zoom und Move
+//Abstrakte Klasse zur Präsentation eines Elements in einem Modell
 public abstract class ElementView {
 
 	protected ModelView modelView;
@@ -19,11 +19,51 @@ public abstract class ElementView {
 		this.elementViews = new LinkedList<ElementView>();
 	}
 	
+	//Getter-Methode für die präsentierten Elemente
+	public LinkedList<ElementView> getElements() {
+		return this.elementViews;
+	}
+	
+	//Getter-Methode für die zugehörige Modell-Ansicht des präsentierten Elements
+	public ModelView getModelView() {
+		return this.modelView;
+	}
+	
+	//Getter-Methode für den Unterschied in der Weite eines präsentierten Elements
+	public double getDifferenceWidth() {
+		return this.differenceWidth;
+	}
+	
+	//Getter-Methode für den Unterschied in der Höhe eines präsentierten Elements
+	public double getDifferenceHeight() {
+		return this.differenceHeight;
+	}
+	
 	//Setter-Methode für die zugehörige Modell-Ansicht
 	public void setModelView(ModelView modelView) {
 		this.modelView = modelView;
 	}
+		
+	//Setter-Methode für den Unterschied in der Weite eines präsentierten Elements
+	public void setDifferenceWidth(double differenceWidth) {
+		this.differenceWidth = differenceWidth;
+	}
+	
+	//Setter-Methode für den Unterschied in der Höhe eines präsentierten Elements
+	public void setDifferenceHeight(double differenceHeight) {
+		this.differenceHeight = differenceHeight;
+	}
 
+	//Methode zur Prüfung, ob ein Element in der Präsentation vorhanden ist
+	public boolean containsElement(ElementView element) {
+		if(this.elementViews.contains(element)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
 	//Abstrakte Getter-Methode für die Fläche des präsentierten Elements
 	public abstract Region getElementRegion();
 	
@@ -48,8 +88,8 @@ public abstract class ElementView {
 	//Methode zum Entfernen eines präsentierten Elements
 	public void removeElement(ElementView elementView) {
 		if(!containsElement(elementView)) {
-			for(ElementView parentElement : this.elementViews) {
-				parentElement.removeElement(elementView);
+			for(ElementView eV : this.elementViews) {
+				eV.removeElement(elementView);
 			}
 		}
 		else {
@@ -78,11 +118,6 @@ public abstract class ElementView {
 		return coordinates;
 	}
 
-	//Getter-Methode für die zugehörige Modell-Ansicht des präsentierten Elements
-	public ModelView getModelView() {
-		return this.modelView;
-	}
-
 	//Setter-Methode für die Weite und Höhe eines präsentierten Elements
 	public void setSize(double x, double y) {
 		this.getElementRegion().setPrefSize(x, y);
@@ -94,21 +129,6 @@ public abstract class ElementView {
 			this.getModelView().setPrefHeight(this.getModelView().getPrefHeight() + extension);
 		}
 		this.getModelView().getFileExportControl().setSaved(false);
-	}
-
-	//Getter-Methode für die präsentierten Elemente
-	public LinkedList<ElementView> getElements() {
-		return this.elementViews;
-	}
-	
-	//Methode zur Prüfung, ob ein Element in der Präsentation vorhanden ist
-	public boolean containsElement(ElementView element) {
-		if(this.elementViews.contains(element)) {
-			return true;
-		}
-		else {
-			return false;
-		}
 	}
 	
 	//Methode zur Prüfung, ob eine Elements-Ansicht der hier präsentierten entspricht
@@ -131,26 +151,6 @@ public abstract class ElementView {
 		else {
 			return false;
 		}
-	}
-
-	//Getter-Methode für den Unterschied in der Weite eines präsentierten Elements
-	public double getDifferenceWidth() {
-		return this.differenceWidth;
-	}
-	
-	//Getter-Methode für den Unterschied in der Höhe eines präsentierten Elements
-	public double getDifferenceHeight() {
-		return this.differenceHeight;
-	}
-	
-	//Setter-Methode für den Unterschied in der Weite eines präsentierten Elements
-	public void setDifferenceWidth(double differenceWidth) {
-		this.differenceWidth = differenceWidth;
-	}
-	
-	//Setter-Methode für den Unterschied in der Höhe eines präsentierten Elements
-	public void setDifferenceHeight(double differenceHeight) {
-		this.differenceHeight = differenceHeight;
 	}
 
 }

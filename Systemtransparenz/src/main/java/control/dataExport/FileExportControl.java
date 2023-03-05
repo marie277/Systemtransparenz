@@ -36,13 +36,28 @@ import view.ModelView;
 public class FileExportControl {
 
 	private ModelView modelView;
-	private BooleanProperty isSaved;
+	private BooleanProperty savedProperty;
 	private File fileLocation;
 
 	//Konstruktor
 	public FileExportControl(ModelView modelView) {
 		this.modelView = modelView;
-		this.isSaved = new SimpleBooleanProperty(this, "saved", false);
+		this.savedProperty = new SimpleBooleanProperty(this, "saved", false);
+	}
+	
+	//Methode zur Festlegung, ob eine Modell-Ansicht gespeichert wurde
+	public void setSaved(boolean saved) {
+		this.savedProperty.set(saved);
+	}
+
+	//Setter-Methode für den Speicherort der XML-Datei
+	public void setFileLocation(File fileLocation) {
+		this.fileLocation = fileLocation;
+	}
+
+	//Methode zur Prüfung, ob eine Modellansicht gespeichert wurde
+	public boolean isSaved() {
+		return this.savedProperty.get();
 	}
 
 	//Methode zum Öffnen eines als XML-Datei gespeicherten Modells
@@ -73,21 +88,6 @@ public class FileExportControl {
 			modelTabPane.getTabs().add(modelTab);
 			modelTabPane.getSelectionModel().select(modelTab);
 		}
-	}
-
-	//Methode zur Festlegung, ob eine Modell-Ansicht gespeichert wurde
-	public void setSaved(boolean isSaved) {
-		this.isSaved.set(isSaved);
-	}
-
-	//Setter-Methode für den Speicherort der XML-Datei
-	public void setFileLocation(File fileLocation) {
-		this.fileLocation = fileLocation;
-	}
-
-	//Methode zur Prüfung, ob eine Modellansicht gespeichert wurde
-	public boolean isSaved() {
-		return this.isSaved.get();
 	}
 
 	//Methode zum Speichern einer Modell-Ansicht als XML-Datei

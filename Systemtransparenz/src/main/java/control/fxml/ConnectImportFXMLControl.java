@@ -47,23 +47,22 @@ public class ConnectImportFXMLControl implements Initializable {
 	private String applicationIdAttribute;
 	private String applicationNameAttribute;
 	private String descriptionAttribute;
-	private String categoryNameAAttribute;
+	private String applicationCategoryNameAttribute;
 	private String categoryNameAttribute;
-	private String producerIdAAttribute;
+	private String applicationProducerIdAttribute;
 	private String producerIdAttribute;
 	private String producerNameAttribute;
-	private String departmentIdAAttribute;
+	private String applicationDepartmentIdAttribute;
 	private String departmentIdAttribute;
 	private String departmentNameAttribute;
 	private String employeeIdAttribute;
 	private String employeeNameAttribute;
-	private String managerIdAAttribute;
+	private String applicationManagerIdAttribute;
 	private String managerIdAttribute;
-	private String adminIdAAttribute;
+	private String applicationAdminIdAttribute;
 	private String adminIdAttribute;
-	private String employeeIdMAttribute;
-	private String employeeIdAAttribute;
-	
+	private String managerEmployeeIdAttribute;
+	private String adminEmployeeIdAttribute;
 	private LinkedList<ApplicationModel> applications;
 	private ObservableList<ApplicationModel> applicationsList;
 	
@@ -102,17 +101,17 @@ public class ConnectImportFXMLControl implements Initializable {
 	@FXML
 	private TextField description;
 	@FXML
-	private TextField categoryNameA;
+	private TextField applicationCategoryName;
 	@FXML
 	private TextField categoryName;
 	@FXML
-	private TextField producerIdA;
+	private TextField applicationProducerId;
 	@FXML
 	private TextField producerId;
 	@FXML
 	private TextField producerName;
 	@FXML
-	private TextField departmentIdA;
+	private TextField applicationDepartmentId;
 	@FXML
 	private TextField departmentId;
 	@FXML
@@ -122,17 +121,17 @@ public class ConnectImportFXMLControl implements Initializable {
 	@FXML
 	private TextField employeeName;
 	@FXML
-	private TextField managerIdA;
+	private TextField applicationManagerId;
 	@FXML
 	private TextField managerId;
 	@FXML
-	private TextField adminIdA;
+	private TextField applicationAdminId;
 	@FXML
 	private TextField adminId;
 	@FXML
-	private TextField employeeIdM;
+	private TextField managerEmployeeId;
 	@FXML
-	private TextField employeeIdA;
+	private TextField adminEmployeeId;
 	@FXML
     private TableColumn<ApplicationModel, String> applicationsColumn;
 	@FXML
@@ -180,10 +179,6 @@ public class ConnectImportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
-		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
-		alertConfirm.setTitle("Speichern erfolgreich");
-		alertConfirm.setHeaderText("Die Anwendungen konnten erfolgreich aus der ausgewählten Datenbank importiert werden.");
-		alertConfirm.show();
     }
     
 	//Methode zur Initialisierung der ausgewählten PostgreSQL-Datenbank
@@ -212,7 +207,6 @@ public class ConnectImportFXMLControl implements Initializable {
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
 		try {
-			//this.sqlStatement = this.statement.getText();
 			this.applicationTable = this.application.getText();
 			this.categoryTable = this.category.getText();
 			this.producerTable = this.producer.getText();
@@ -223,35 +217,35 @@ public class ConnectImportFXMLControl implements Initializable {
 			this.applicationIdAttribute = this.applicationId.getText();
 			this.applicationNameAttribute = this.applicationName.getText();
 			this.descriptionAttribute = this.description.getText();
-			this.categoryNameAAttribute = this.categoryNameA.getText();
+			this.applicationCategoryNameAttribute = this.applicationCategoryName.getText();
 			this.categoryNameAttribute = this.categoryName.getText();
-			this.producerIdAAttribute = this.producerIdA.getText();
+			this.applicationProducerIdAttribute = this.applicationProducerId.getText();
 			this.producerIdAttribute = this.producerId.getText();
 			this.producerNameAttribute = this.producerName.getText();
-			this.departmentIdAAttribute = this.departmentIdA.getText();
+			this.applicationDepartmentIdAttribute = this.applicationDepartmentId.getText();
 			this.departmentIdAttribute = this.departmentId.getText();
 			this.departmentNameAttribute = this.departmentName.getText();
 			this.employeeIdAttribute = this.employeeId.getText();
 			this.employeeNameAttribute = this.employeeName.getText();
-			this.managerIdAAttribute = this.managerIdA.getText();
+			this.applicationManagerIdAttribute = this.applicationManagerId.getText();
 			this.managerIdAttribute = this.managerId.getText();
-			this.adminIdAAttribute = this.adminIdA.getText();
+			this.applicationAdminIdAttribute = this.applicationAdminId.getText();
 			this.adminIdAttribute = this.adminId.getText();
-			this.employeeIdMAttribute = this.employeeIdM.getText();
-			this.employeeIdAAttribute = this.employeeIdA.getText();
+			this.managerEmployeeIdAttribute = this.managerEmployeeId.getText();
+			this.adminEmployeeIdAttribute = this.adminEmployeeId.getText();
 			this.sqlStatement = "SELECT a." + this.applicationIdAttribute + ", a." + this.applicationNameAttribute + ", a."
 			+ this.descriptionAttribute + ", k." + this.categoryNameAttribute + ", h." + this.producerNameAttribute 
 					+ ", mb." + this.employeeNameAttribute + ", f." + this.departmentNameAttribute + ", ma." + this.employeeNameAttribute + " FROM " + this.applicationTable
 					+ " a, " + this.categoryTable + " k, " + this.producerTable + " h, (" + this.managerTable
-					+ " am INNER JOIN " + this.employeeTable + " mb ON am." + this.employeeIdMAttribute + " = mb." + this.employeeIdAttribute + "), "
+					+ " am INNER JOIN " + this.employeeTable + " mb ON am." + this.managerEmployeeIdAttribute + " = mb." + this.employeeIdAttribute + "), "
 					+ this.departmentTable + " f, (" + this.adminTable + " ad INNER JOIN " + this.employeeTable + " ma ON ad."
-					+ this.employeeIdAAttribute + " = ma." + this.employeeIdMAttribute + ") WHERE a." + this.categoryNameAAttribute + " = k." + this.categoryNameAttribute
-					+ " AND a." + this.producerIdAAttribute + " = h." + this.producerIdAttribute + " AND a." + this.managerIdAAttribute + " = am." + this.managerIdAttribute
-					+ " AND a." + this.departmentIdAAttribute + " = f." + this.departmentIdAttribute + " AND a." + this.adminIdAAttribute + " = ad." + this.adminIdAttribute + ";";
+					+ this.adminEmployeeIdAttribute + " = ma." + this.managerEmployeeIdAttribute + ") WHERE a." + this.applicationCategoryNameAttribute + " = k." + this.categoryNameAttribute
+					+ " AND a." + this.applicationProducerIdAttribute + " = h." + this.producerIdAttribute + " AND a." + this.applicationManagerIdAttribute + " = am." + this.managerIdAttribute
+					+ " AND a." + this.applicationDepartmentIdAttribute + " = f." + this.departmentIdAttribute + " AND a." + this.applicationAdminIdAttribute + " = ad." + this.adminIdAttribute + ";";
             PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<ApplicationModel>();
-            while (resultSet.next()){
+            while(resultSet.next()){
             	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }
             return applications;

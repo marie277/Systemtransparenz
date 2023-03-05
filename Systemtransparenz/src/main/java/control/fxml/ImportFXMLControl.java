@@ -34,6 +34,7 @@ public class ImportFXMLControl implements Initializable {
 	private String hostUrl;
 	private int portNumber;
 	private String dataBase;
+	private String dataScheme;
 	private LinkedList<ApplicationModel> applications;
 	private ObservableList<ApplicationModel> applicationsList;
 	
@@ -51,6 +52,7 @@ public class ImportFXMLControl implements Initializable {
 	private Button load;
 	@FXML
 	private Button submit;
+	
 	
 	//Methode zum Schlieﬂen des Import-Fensters
 	@FXML
@@ -90,10 +92,6 @@ public class ImportFXMLControl implements Initializable {
 	        }
 		}
 		this.scrollPane.getScene().getWindow().hide();
-		Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
-		alertConfirm.setTitle("Speichern erfolgreich");
-		alertConfirm.setHeaderText("Die Anwendungen konnten erfolgreich aus der ausgew‰hlten Datenbank importiert werden.");
-		alertConfirm.show();
     }
     
 	//Methode zur Initialisierung der ausgew‰hlten PostgreSQL-Datenbank
@@ -102,6 +100,7 @@ public class ImportFXMLControl implements Initializable {
     	this.portNumber = 5432;
     	this.userName = "postgres";
     	this.passWord = "pw369";
+    	this.dataScheme = "public";
     	if(this.databases.getValue() == "Alle Anwendungen") {
 	    	this.dataBase = "systemtransparenz";
     	}
@@ -111,7 +110,7 @@ public class ImportFXMLControl implements Initializable {
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -129,7 +128,7 @@ public class ImportFXMLControl implements Initializable {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<ApplicationModel>();
-            while (resultSet.next()){
+            while(resultSet.next()){
             	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }
             return applications;

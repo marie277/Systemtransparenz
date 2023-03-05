@@ -30,6 +30,7 @@ public class EditApplicationFXMLControl implements Initializable {
 	private String hostUrl;
 	private int portNumber;
 	private String dataBase;
+	private String dataScheme;
 	private LinkedList<String> categories;
 	private LinkedList<String> producers;
 	private LinkedList<String> managers;
@@ -72,7 +73,7 @@ public class EditApplicationFXMLControl implements Initializable {
                 this.applicationView.getModelView().getModelControl().changeApplicationId(this.applicationView, this.applicationId.getText());
             }
             if (!this.applicationName.getText().equals(applicationNameView)) {
-                this.applicationView.getModelView().getModelControl().renameApplication(this.applicationView, this.applicationName.getText());
+                this.applicationView.getModelView().getModelControl().changeApplicationName(this.applicationView, this.applicationName.getText());
             }
             if (!this.applicationDescription.getText().equals(applicationDescriptionView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationDescription(this.applicationView, this.applicationDescription.getText());
@@ -111,10 +112,11 @@ public class EditApplicationFXMLControl implements Initializable {
     	this.userName = "postgres";
     	this.passWord = "pw369";
     	this.dataBase = "systemtransparenz";
+    	this.dataScheme = "public";
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if (!e.getClass().equals(IllegalArgumentException.class)) {
@@ -125,7 +127,6 @@ public class EditApplicationFXMLControl implements Initializable {
             }  
         }
 	}
-    
     
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public void importValues() {

@@ -21,12 +21,43 @@ public abstract class ElementControl {
 		return this.elementView;
 	}
 	
-	//Abstrakte Methode zur Aktualisierung der Elements-Grenzen
-	public abstract void refresh();
-	
 	//Setter-Methode zur Festlegung, ob eine Anwendung gespeichert wurde
 	private void setSaved(boolean saved) {
 		this.elementView.getModelView().getFileExportControl().setSaved(saved);
+	}
+	
+	//Setter-Methode zur Festlegung, ob eine Elements-Ansicht bewegt wurde
+	public void setMoved(double x, double y) {
+		double layoutX = x + this.elementView.getDifferenceWidth();
+		double layoutY =  y + this.elementView.getDifferenceHeight();
+		this.elementView.setLayout(layoutX, layoutY);
+		for(ElementView elementView : this.elementView.getElements()) {
+			elementView.setMoved(this.elementView.getLayout().getX(), this.elementView.getLayout().getY());
+		}
+	}
+	
+	//Setter-Methode für die Attribute eines XML-Elements
+	private Element setXMLAttributes(Document doc) {
+		Element element = doc.createElement("Element");
+		Region region = this.elementView.getElementRegion();
+		String xAttribute = new StringBuilder().append(region.getLayoutX()).toString();
+		element.setAttribute("X-Koordinate", xAttribute);
+		String yAttribute = new StringBuilder().append(region.getLayoutY()).toString();
+		element.setAttribute("Y-Koordinate", yAttribute);
+		String widthAttribute = new StringBuilder().append(region.getWidth()).toString();
+		element.setAttribute("Weite",widthAttribute);
+		String heightAttribute = new StringBuilder().append(region.getHeight()).toString();
+		element.setAttribute("Höhe", heightAttribute);
+		return element;
+	}
+	
+	//Methode zur Aktualisierung eines Elements
+	public void zoom(double factor) {
+		this.elementView.setSize(this.elementView.getElementRegion().getPrefWidth()*factor, this.elementView.getElementRegion().getPrefHeight()*factor);
+		this.elementView.setLayout(this.elementView.getLayout().getX()*factor, this.elementView.getLayout().getY()*factor);
+		this.elementView.setDifferenceWidth(this.elementView.getDifferenceWidth() * factor);
+		this.elementView.setDifferenceHeight(this.elementView.getDifferenceHeight() * factor);
+		this.setSaved(false);
 	}
 	
 	//Methode zur Bewegung einer Elements-Ansicht innerhalb des Modells
@@ -60,40 +91,6 @@ public abstract class ElementControl {
 		Element parentElement = doc.createElement("XML-Element");
 		parentElement.appendChild(element);
 		return parentElement;
-	}
-
-	//Setter-Methode für die Attribute eines XML-Elements
-	private Element setXMLAttributes(Document doc) {
-		Element element = doc.createElement("Element");
-		Region region = this.elementView.getElementRegion();
-		String xAttribute = new StringBuilder().append(region.getLayoutX()).toString();
-		element.setAttribute("X-Koordinate", xAttribute);
-		String yAttribute = new StringBuilder().append(region.getLayoutY()).toString();
-		element.setAttribute("Y-Koordinate", yAttribute);
-		String widthAttribute = new StringBuilder().append(region.getWidth()).toString();
-		element.setAttribute("Weite",widthAttribute);
-		String heightAttribute = new StringBuilder().append(region.getHeight()).toString();
-		element.setAttribute("Höhe", heightAttribute);
-		return element;
-	}
-	
-	//Methode zur Aktualisierung eines Elements
-	public void zoom(double factor) {
-		this.elementView.setSize(this.elementView.getElementRegion().getPrefWidth()*factor, this.elementView.getElementRegion().getPrefHeight()*factor);
-		this.elementView.setLayout(this.elementView.getLayout().getX()*factor, this.elementView.getLayout().getY()*factor);
-		this.elementView.setDifferenceWidth(this.elementView.getDifferenceWidth() * factor);
-		this.elementView.setDifferenceHeight(this.elementView.getDifferenceHeight() * factor);
-		this.setSaved(false);
-	}
-	
-	//Setter-Methode zur Festlegung, ob eine Elements-Ansicht bewegt wurde
-	public void setMoved(double x, double y) {
-		double layoutX = x + this.elementView.getDifferenceWidth();
-		double layoutY =  y + this.elementView.getDifferenceHeight();
-		this.elementView.setLayout(layoutX, layoutY);
-		for(ElementView elementView : this.elementView.getElements()) {
-			elementView.setMoved(this.elementView.getLayout().getX(), this.elementView.getLayout().getY());
-		}
 	}
 
 }

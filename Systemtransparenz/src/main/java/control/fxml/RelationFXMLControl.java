@@ -8,6 +8,7 @@ import control.edit.ApplicationInRelation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -16,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import model.ApplicationModel;
 import model.MainModel;
@@ -78,18 +80,7 @@ public class RelationFXMLControl implements Initializable{
 	    		RelationModel relationModel = new RelationModel(firstApplication, secondApplication, relationType, arrowIncoming);
 	    		LinkedList<RelationView> relations = MainModel.modelFXMLControl.getModelView().getRelations();
 	    		if(relations.size() == 0) {
-	    			MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
-	    			LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
-		            double x = 0.0;
-		            double y = 0.0;
-		            for (ApplicationInRelation applicationInRelation : applications) {
-		                x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
-		                y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
-		            }
-		            x /= 2.0;
-		            y /= 2.0;
-		            MainModel.modelFXMLControl.getModelView().getRelations().getLast().move(x, y);
-		            this.borderPane.getScene().getWindow().hide();
+	    			this.addRelationView(relationModel, 0.0, 0.0);
 	    		}
 	    		else {
 		    		boolean isDuplicate = false;
@@ -111,18 +102,7 @@ public class RelationFXMLControl implements Initializable{
 		            	}
 		            }
 			    	if(!isDuplicate) {
-			    		MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
-			            LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
-			            double x = 0.0;
-			            double y = 0.0;
-			            for (ApplicationInRelation applicationInRelation : applications) {
-			                x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
-			                y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
-			            }
-			            x /= 2.0;
-			            y /= 2.0;
-			            MainModel.modelFXMLControl.getModelView().getRelations().getLast().move(x, y);
-			            this.borderPane.getScene().getWindow().hide();
+			    		this.addRelationView(relationModel, 0.0, 0.0);
 			    	}	
 			    }
 			}
@@ -133,6 +113,20 @@ public class RelationFXMLControl implements Initializable{
             alertError.setHeaderText("Es müssen genau zwei Anwendungen ausgewählt werden.");
             alertError.show();
     	}
+    }
+    
+    //Methode zum Hinzufügen der Beziehung zur Modell-Steuerung und Platzierung in der Modell-Ansicht
+    private void addRelationView(RelationModel relationModel, double x, double y) {
+    	MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
+        LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
+        for (ApplicationInRelation applicationInRelation : applications) {
+            x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
+            y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
+        }
+        x /= 2.0;
+        y /= 2.0;
+        MainModel.modelFXMLControl.getModelView().getRelations().getLast().move(x, y);
+        this.borderPane.getScene().getWindow().hide();
     }
     
     //Methode zur Auswahl von einer verfügbaren Anwendung als Teil der zu erstellenden Beziehung
@@ -188,23 +182,29 @@ public class RelationFXMLControl implements Initializable{
         }
         this.availableApplications.getTableView().setItems(applications);
         this.availableApplications.getTableView().getSelectionModel().select(0);
-        this.availableApplications.getTableView().setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && this.availableApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
-                try {
-					this.select(null);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-            }
+        this.availableApplications.getTableView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2 && availableApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
+	                try {
+						select(null);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+	            }
+			}
         });
-        this.selectedApplications.getTableView().setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && this.selectedApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
-                try {
-					this.remove(null);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-            }
+        this.selectedApplications.getTableView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getClickCount() == 2 && selectedApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
+	                try {
+	                	remove(null);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+	            }
+			}
         });
 	}
 

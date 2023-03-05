@@ -25,17 +25,27 @@ public class ApplicationInRelation {
 		this.id = new SimpleIntegerProperty(this, "id", applicationId);
 	}
 	
+	//Getter-Methode für das Property der zugehörigen ID
+	public IntegerProperty getIdProperty() {
+		return this.id;
+	}
+	
+	//Getter-Methode für die zugehörige Anwendungs-Ansicht
+	public ApplicationView getApplicationView() {
+		return this.applicationView;
+	}
+	
+	//Setter-Methode für die zugehörige Anwendungs-Ansicht
+	public void setApplicationView(ApplicationView applicationView) {
+		this.applicationView = applicationView;
+	}
+	
 	//Getter-Methode für das Property der Beziehungspfeil-Richtung
 	public BooleanProperty getRelationDirectionProperty() {
 		if(this.relationDirectionProperty == null) {
 			this.relationDirectionProperty = new SimpleBooleanProperty(this, "relationDirection", false);
 		}
 		return this.relationDirectionProperty;
-	}
-	
-	//Getter-Methode für die zugehörige Anwendungs-Ansicht
-	public ApplicationView getApplicationView() {
-		return this.applicationView;
 	}
 	
 	//Methode zum Hinzufügen einer an einer Beziehung beteiligten Anwendung aus einem XML-Dokument, welches als Modell dargestellt wird
@@ -59,16 +69,6 @@ public class ApplicationInRelation {
 		String applicationName = this.getApplicationView().getApplicationModel().getApplicationName();
 	    element.setAttribute("Anwendungsname", applicationName);
 	    return element;
-	}
-	
-	//Setter-Methode für die zugehörige Anwendungs-Ansicht
-	public void setApplicationView(ApplicationView applicationView) {
-		this.applicationView = applicationView;
-	}
-	
-	//Getter-Methode für das Property der zugehörigen ID
-	public IntegerProperty getIdProperty() {
-		return this.id;
 	}
 	
 }
