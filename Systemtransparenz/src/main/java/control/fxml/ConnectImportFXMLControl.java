@@ -174,7 +174,7 @@ public class ConnectImportFXMLControl implements Initializable {
 			if (!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
-	            alertError.setHeaderText("Es sind keine Anwendungen in der ausgewählten Tabelle vorhanden.");
+	            alertError.setHeaderText("Die Anwendungen sind bereits im Modell vorhanden.");
 	            alertError.show();
 	        }
 		}

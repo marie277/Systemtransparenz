@@ -427,19 +427,22 @@ public class ModelFXMLControl implements Initializable{
 	}
 
 	//Methode zum Deaktivieren von Menüpunkten
-	private void setDisable(boolean b) {
-		this.saveModel.setDisable(b);
-		this.saveModelAs.setDisable(b);
-		this.renameModel.setDisable(b);
-		this.closeModel.setDisable(b);
-		this.saveImage.setDisable(b);
-		this.importApplications.setDisable(b);
-		this.addRelation.setDisable(b);
-		this.deleteRelation.setDisable(b);
-		this.addApplication.setDisable(b);
-		this.deleteApplication.setDisable(b);
-		this.zoomIn.setDisable(b);
-		this.zoomOut.setDisable(b);
+	private void setDisable(boolean disabled) {
+		this.saveModel.setDisable(disabled);
+		this.saveModelAs.setDisable(disabled);
+		this.renameModel.setDisable(disabled);
+		this.closeModel.setDisable(disabled);
+		this.saveImage.setDisable(disabled);
+		this.importApplications.setDisable(disabled);
+		this.importData.setDisable(disabled);
+		this.exportApplications.setDisable(disabled);
+		this.exportData.setDisable(disabled);
+		this.addRelation.setDisable(disabled);
+		this.deleteRelation.setDisable(disabled);
+		this.addApplication.setDisable(disabled);
+		this.deleteApplication.setDisable(disabled);
+		this.zoomIn.setDisable(disabled);
+		this.zoomOut.setDisable(disabled);
 	}
 	
 	//Methode zur Initialisierung der Steuerung
