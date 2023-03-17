@@ -106,7 +106,7 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (modelView != null) {
+				if(modelView != null) {
 	            	modelView.deselectElements();
 	                modelView.setElementView(ApplicationView.this);
 	            }
@@ -118,7 +118,7 @@ public class ApplicationView extends ElementView {
         this.applicationBorderPane.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (modelView != null) {
+				if(modelView != null) {
 	            	modelView.deselectElements();
 	                modelView.setElementView(ApplicationView.this);
 	            }

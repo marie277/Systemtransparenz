@@ -129,11 +129,11 @@ public class ModelView extends Pane {
 
 	//Methode zum Hinzufügen einer Elements-Ansicht zum Modell
 	public void addElement(ElementView elementView) {
-		if (elementView.getClass().equals(ApplicationView.class)) {
+		if(elementView.getClass().equals(ApplicationView.class)) {
             this.applications.add((ApplicationView)elementView);
         }
         
-        else if (elementView.getClass().equals(RelationView.class)) {
+        else if(elementView.getClass().equals(RelationView.class)) {
         	RelationView relationView = (RelationView)elementView;
 			for(RelationNode relationNode : relationView.getRelationNodes()) {
 				this.getChildren().addAll(0, relationNode.getRelationNodes());

@@ -153,7 +153,7 @@ public class ConnectImportFXMLControl implements Initializable {
 		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
-        for (ApplicationModel aM : this.importApplications()) {
+        for(ApplicationModel aM : this.importApplications()) {
             applicationsList.add(aM);
         }
         this.applicationsColumn.getTableView().setItems(applicationsList);
@@ -163,15 +163,14 @@ public class ConnectImportFXMLControl implements Initializable {
 	@FXML
     private void submit(ActionEvent event) {
 		try {
-	        if (this.importApplications().size() != 0) {
+	        if(this.importApplications().size() != 0) {
 	        	for(ApplicationModel aM : this.applicationsList) {
 	        		MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
 	        	}
 	        }
-		}
-		catch (Exception e){
+		} catch (Exception e){
 			e.printStackTrace();
-			if (!e.getClass().equals(NullPointerException.class)) {
+			if(!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
 	            alertError.setHeaderText("Die Anwendungen sind bereits im Modell vorhanden.");
@@ -251,7 +250,7 @@ public class ConnectImportFXMLControl implements Initializable {
             return applications;
         } catch(Exception e) {
         	e.printStackTrace();
-			if (!e.getClass().equals(SQLException.class)) {
+			if(!e.getClass().equals(SQLException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnten keine Anwendungen importiert werden.");

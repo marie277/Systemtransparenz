@@ -135,8 +135,8 @@ public class RelationControl extends ElementControl {
 		applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener(new ChangeListener<Object>() {
 			@Override
 			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				for (RelationNode rN : relationView.getRelationNodes()) {
-	                if (rN.getApplicationInRelation().equals(applicationInRelation)) {
+				for(RelationNode rN : relationView.getRelationNodes()) {
+	                if(rN.getApplicationInRelation().equals(applicationInRelation)) {
 	                	rN.getRelationHub();
 	                }
 	            }	

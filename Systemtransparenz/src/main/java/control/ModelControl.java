@@ -96,8 +96,8 @@ public class ModelControl {
 	//Methode zum Entfernen einer Anwendungs-Ansicht aus dem Modell
 	public void removeApplicationView(ApplicationView applicationView) throws IllegalAccessException {
 		LinkedList<RelationView> relationViews = new LinkedList<RelationView>();
-        for (RelationView relationView : this.modelView.getRelations()) {
-            if (relationView.getRelationControl().isPartOfRelation(applicationView)) {
+        for(RelationView relationView : this.modelView.getRelations()) {
+            if(relationView.getRelationControl().isPartOfRelation(applicationView)) {
             	relationView.getRelationControl().removeApplication(applicationView);
                 relationViews.add(relationView);
             }
@@ -140,8 +140,8 @@ public class ModelControl {
 
 	//Methode zur Änderung der ID einer Anwendung
 	public void changeApplicationId(ApplicationView applicationView, String applicationId) {
-		for (ApplicationView applicationViewModel : this.modelView.getApplications()) {
-            if (applicationViewModel.getApplicationModel().getApplicationName().equals(applicationId) && !applicationViewModel.equals(applicationView)) {
+		for(ApplicationView applicationViewModel : this.modelView.getApplications()) {
+            if(applicationViewModel.getApplicationModel().getApplicationName().equals(applicationId) && !applicationViewModel.equals(applicationView)) {
                 throw new IllegalArgumentException("Achtung! Es ist bereits eine Anwendung mit dieser ID vorhanden.");
             }
         }
@@ -200,7 +200,7 @@ public class ModelControl {
 		region.addEventFilter(MouseEvent.MOUSE_DRAGGED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (modelControl.isMovable && modelControl.elementView.isMoveable()) {
+				if(modelControl.isMovable && modelControl.elementView.isMoveable()) {
 		            Parent parent = modelControl.modelView.getParent();
 		            double layoutX = parent.getLayoutX();
 		            double layoutY = parent.getLayoutY();
@@ -214,10 +214,10 @@ public class ModelControl {
 		            if (newLayoutX > modelControl.x && newLayoutY > modelControl.y) {
 		            	modelControl.elementView.move(newLayoutX, newLayoutY);
 		            }
-		            else if (newLayoutX > modelControl.x) {
+		            else if(newLayoutX > modelControl.x) {
 		            	modelControl.elementView.move(newLayoutX, modelControl.y);
 		            }
-		            else if (newLayoutY > modelControl.y) {
+		            else if(newLayoutY > modelControl.y) {
 		            	modelControl.elementView.move(modelControl.x, newLayoutY);
 		            }
 		            else {

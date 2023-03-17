@@ -49,7 +49,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für den Anwendungsnamen
 	public void setApplicationName(String applicationName) {
-		if (this.name != null) {
+		if(this.name != null) {
             this.name.set(applicationName);
         }
         else {
@@ -77,7 +77,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für die AnwendungsID
 	public void setApplicationId(int applicationId) {
-		if (this.id != null) {
+		if(this.id != null) {
             this.id.set(applicationId);
         }
         else {
@@ -105,7 +105,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für die Anwendungsbeschreibung
 	public void setApplicationDescription(String applicationDescription) {
-		if (this.description != null) {
+		if(this.description != null) {
             this.description.set(applicationDescription);
         }
         else {
@@ -133,7 +133,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für die Anwendungskategorie
 	public void setApplicationCategory(String applicationCategory) {
-		if (this.category != null) {
+		if(this.category != null) {
             this.category.set(applicationCategory);
         }
         else {
@@ -161,7 +161,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für den Anwendungshersteller
 	public void setApplicationProducer(String applicationProducer) {
-		if (this.producer != null) {
+		if(this.producer != null) {
             this.producer.set(applicationProducer);
         }
         else {
@@ -189,7 +189,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für den Anwendungsmanager
 	public void setApplicationManager(String applicationManager) {
-		if (this.manager != null) {
+		if(this.manager != null) {
             this.manager.set(applicationManager);
         }
         else {
@@ -217,7 +217,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für den Anwendungsbereich
 	public void setApplicationDepartment(String applicationDepartment) {
-		if (this.department != null) {
+		if(this.department != null) {
             this.department.set(applicationDepartment);
         }
         else {
@@ -245,7 +245,7 @@ public class ApplicationModel {
 	
 	//Setter-Methode für den Anwendungsadmin
 	public void setApplicationAdmin(String applicationAdmin) {
-		if (this.admin != null) {
+		if(this.admin != null) {
             this.admin.set(applicationAdmin);
         }
         else {

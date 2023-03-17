@@ -81,9 +81,9 @@ public class ApplicationFXMLControl implements Initializable {
 			ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
 			MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(applicationModel.getApplicationId(), applicationModel.getApplicationName(), applicationModel.getApplicationDescription(), applicationModel.getApplicationCategory(), applicationModel.getApplicationProducer(), applicationModel.getApplicationManager(), applicationModel.getApplicationDepartment(), applicationModel.getApplicationAdmin());
 		}
-		catch (Exception e){
+		catch(Exception e){
 			e.printStackTrace();
-			if (!e.getClass().equals(NullPointerException.class)) {
+			if(!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
 	            alertError.setHeaderText("Die gewünschte Anwendung konnte nicht angelegt werden.");
@@ -107,7 +107,7 @@ public class ApplicationFXMLControl implements Initializable {
             connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
-        	if (!e.getClass().equals(IllegalArgumentException.class)) {
+        	if(!e.getClass().equals(IllegalArgumentException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");
@@ -122,36 +122,36 @@ public class ApplicationFXMLControl implements Initializable {
             PreparedStatement categoryPreparedStatement = connection.prepareStatement("SELECT k.kategoriename FROM kategorie k;");
             ResultSet categoryResultSet = categoryPreparedStatement.executeQuery();
             categories = new LinkedList<String>();
-            while (categoryResultSet.next()){
+            while(categoryResultSet.next()){
             	categories.add(categoryResultSet.getString(1));
             }
             PreparedStatement producerPreparedStatement = connection.prepareStatement("SELECT h.herstellername FROM hersteller h;");
             ResultSet producerResultSet = producerPreparedStatement.executeQuery();
             producers = new LinkedList<String>();
-            while (producerResultSet.next()){
+            while(producerResultSet.next()){
             	producers.add(producerResultSet.getString(1));
             }
             PreparedStatement managerPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet managerResultSet = managerPreparedStatement.executeQuery();
             managers = new LinkedList<String>();
-            while (managerResultSet.next()){
+            while(managerResultSet.next()){
             	managers.add(managerResultSet.getString(1));
             }
             PreparedStatement departmentPreparedStatement = connection.prepareStatement("SELECT f.fachbereichname FROM fachbereich f;");
             ResultSet departmentResultSet = departmentPreparedStatement.executeQuery();
             departments = new LinkedList<String>();
-            while (departmentResultSet.next()){
+            while(departmentResultSet.next()){
             	departments.add(departmentResultSet.getString(1));
             }
             PreparedStatement adminPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (administrator ad INNER JOIN mitarbeiter mb ON ad.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet adminResultSet = adminPreparedStatement.executeQuery();
             admins = new LinkedList<String>();
-            while (adminResultSet.next()){
+            while(adminResultSet.next()){
             	admins.add(adminResultSet.getString(1));
             }
         } catch(Exception e) {
         	e.printStackTrace();
-			if (!e.getClass().equals(SQLException.class)) {
+			if(!e.getClass().equals(SQLException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnten keine Werte geladen werden.");

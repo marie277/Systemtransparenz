@@ -121,15 +121,15 @@ public class RelationNode {
         double applicationLayoutY = this.applicationInRelation.getApplicationView().getLayout().getY();
         double applicationPrefWidth = this.applicationInRelation.getApplicationView().getElementRegion().getPrefWidth();
         double applicationPrefHeight = this.applicationInRelation.getApplicationView().getElementRegion().getPrefHeight();
-        if (this.relationLine.getStartY() > this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
+        if(this.relationLine.getStartY() > this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
             y = applicationLayoutY;
             x = (y - point) / slope;
         }
-        else if (this.relationLine.getStartY() < this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
+        else if(this.relationLine.getStartY() < this.relationLine.getEndY() && Math.abs(this.relationLine.getStartX() - this.relationLine.getEndX()) < Math.abs(this.relationLine.getStartY() - this.relationLine.getEndY())) {
             y = applicationLayoutY + applicationPrefHeight;
             x = (y - point) / slope;
         }
-        else if (this.relationLine.getStartX() > this.relationLine.getEndX()) {
+        else if(this.relationLine.getStartX() > this.relationLine.getEndX()) {
             x = applicationLayoutX;
             y = slope * x + point;
         }

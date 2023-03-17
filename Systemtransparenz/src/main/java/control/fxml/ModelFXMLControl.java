@@ -188,8 +188,7 @@ public class ModelFXMLControl implements Initializable{
 						Tab tab = this.getTabPane().getSelectionModel().getSelectedItem();
 						this.getTabPane().getTabs().remove(tab);
 					}
-				}
-				catch(Exception e) {
+				} catch(Exception e) {
 					e.printStackTrace();
 					if(!e.getClass().equals(NullPointerException.class)) {
 						Alert alertError = new Alert(Alert.AlertType.ERROR);
@@ -284,7 +283,6 @@ public class ModelFXMLControl implements Initializable{
 			}
 		}
 		else {
-			
 			throw new IllegalAccessException("Achtung! Es wurde noch kein Modell erstellt.");
 		}
 	}
@@ -452,7 +450,7 @@ public class ModelFXMLControl implements Initializable{
         this.model.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Object>() {
 			@Override
 			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-				if (newValue != null) {
+				if(newValue != null) {
 	                Tab modelTab = (Tab) newValue;
 	                ScrollPane scrollPane = (ScrollPane)modelTab.getContent();
 	                ModelView modelViewTab = (ModelView)scrollPane.getContent();
@@ -467,7 +465,7 @@ public class ModelFXMLControl implements Initializable{
         this.modelView.addListener(new ChangeListener<Object>() {
 			@Override
 			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-				if (newValue != null) {
+				if(newValue != null) {
 	            	elementView.unbind();
 	                elementView.bind(((ModelView) newValue).getSelectedElementProperty());
 	                ContextMenu menu = new ContextMenu();
@@ -487,18 +485,18 @@ public class ModelFXMLControl implements Initializable{
 			@Override
 			public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
 				try {
-	                if (newValue == null) {
+	                if(newValue == null) {
 	                    details.setContent(new BorderPane());
 	                }
-	                else if (newValue.getClass().equals(ApplicationView.class)) {
+	                else if(newValue.getClass().equals(ApplicationView.class)) {
 	                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editApplication.fxml"));
 	                    details.setContent(parent);
 	                }
-	                else if (newValue.getClass().equals(RelationView.class)) {
+	                else if(newValue.getClass().equals(RelationView.class)) {
 	                    Parent parent = (Parent)FXMLLoader.load(Main.class.getResource("editRelation.fxml"));
 	                    details.setContent(parent);
 	                }
-	            } catch (Exception e) {
+	            } catch(Exception e) {
 	            	e.printStackTrace();
 	    			if(!e.getClass().equals(NullPointerException.class)) {
 	    				Alert alertError = new Alert(Alert.AlertType.ERROR);

@@ -120,6 +120,7 @@ public class FileExportControl {
 		save(file);
 	}
 	
+	//Methode zum Speichern eines Modells in einer XML-Datei
 	private void save(File file) throws IOException, TransformerException, ParserConfigurationException {
 		if(file != null) {
 			FileOutputStream fileOutputStream = new FileOutputStream(file);

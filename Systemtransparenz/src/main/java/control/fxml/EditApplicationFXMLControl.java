@@ -69,34 +69,33 @@ public class EditApplicationFXMLControl implements Initializable {
     	String applicationDepartmentView = this.applicationView.getApplicationModel().getApplicationDepartment();
     	String applicationAdminView = this.applicationView.getApplicationModel().getApplicationAdmin();
         try {
-        	if (!this.applicationId.getText().equals(String.valueOf(applicationIdView))) {
+        	if(!this.applicationId.getText().equals(String.valueOf(applicationIdView))) {
                 this.applicationView.getModelView().getModelControl().changeApplicationId(this.applicationView, this.applicationId.getText());
             }
-            if (!this.applicationName.getText().equals(applicationNameView)) {
+            if(!this.applicationName.getText().equals(applicationNameView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationName(this.applicationView, this.applicationName.getText());
             }
-            if (!this.applicationDescription.getText().equals(applicationDescriptionView)) {
+            if(!this.applicationDescription.getText().equals(applicationDescriptionView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationDescription(this.applicationView, this.applicationDescription.getText());
             }
-            if (!this.applicationCategory.getValue().equals(applicationCategoryView)) {
+            if(!this.applicationCategory.getValue().equals(applicationCategoryView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationCategory(this.applicationView, this.applicationCategory.getValue());
             }
-            if (!this.applicationProducer.getValue().equals(applicationProducerView)) {
+            if(!this.applicationProducer.getValue().equals(applicationProducerView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationProducer(this.applicationView, this.applicationProducer.getValue());
             }
-            if (!this.applicationManager.getValue().equals(applicationManagerView)) {
+            if(!this.applicationManager.getValue().equals(applicationManagerView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationManager(this.applicationView, this.applicationManager.getValue());
             }
-            if (!this.applicationDepartment.getValue().equals(applicationDepartmentView)) {
+            if(!this.applicationDepartment.getValue().equals(applicationDepartmentView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationDepartment(this.applicationView, this.applicationDepartment.getValue());
             }
-            if (!this.applicationAdmin.getValue().equals(applicationAdminView)) {
+            if(!this.applicationAdmin.getValue().equals(applicationAdminView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationAdmin(this.applicationView, this.applicationAdmin.getValue());
             }
-        }
-        catch (Exception e) {
+        } catch(Exception e) {
         	e.printStackTrace();
-        	if (!e.getClass().equals(NullPointerException.class)) {
+        	if(!e.getClass().equals(NullPointerException.class)) {
                 Alert alertEerror = new Alert(Alert.AlertType.ERROR);
                 alertEerror.setTitle("Fehler!");
                 alertEerror.setHeaderText(e.getMessage());
@@ -119,7 +118,7 @@ public class EditApplicationFXMLControl implements Initializable {
             connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme, this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
-        	if (!e.getClass().equals(IllegalArgumentException.class)) {
+        	if(!e.getClass().equals(IllegalArgumentException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");
@@ -134,36 +133,36 @@ public class EditApplicationFXMLControl implements Initializable {
             PreparedStatement categoryPreparedStatement = connection.prepareStatement("SELECT k.kategoriename FROM kategorie k;");
             ResultSet categoryResultSet = categoryPreparedStatement.executeQuery();
             categories = new LinkedList<String>();
-            while (categoryResultSet.next()){
+            while(categoryResultSet.next()){
             	categories.add(categoryResultSet.getString(1));
             }
             PreparedStatement producerPreparedStatement = connection.prepareStatement("SELECT h.herstellername FROM hersteller h;");
             ResultSet producerResultSet = producerPreparedStatement.executeQuery();
             producers = new LinkedList<String>();
-            while (producerResultSet.next()){
+            while(producerResultSet.next()){
             	producers.add(producerResultSet.getString(1));
             }
             PreparedStatement managerPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet managerResultSet = managerPreparedStatement.executeQuery();
             managers = new LinkedList<String>();
-            while (managerResultSet.next()){
+            while(managerResultSet.next()){
             	managers.add(managerResultSet.getString(1));
             }
             PreparedStatement departmentPreparedStatement = connection.prepareStatement("SELECT f.fachbereichname FROM fachbereich f;");
             ResultSet departmentResultSet = departmentPreparedStatement.executeQuery();
             departments = new LinkedList<String>();
-            while (departmentResultSet.next()){
+            while(departmentResultSet.next()){
             	departments.add(departmentResultSet.getString(1));
             }
             PreparedStatement adminPreparedStatement = connection.prepareStatement("SELECT mb.mitarbeitername FROM (administrator ad INNER JOIN mitarbeiter mb ON ad.mitarbeiterid = mb.mitarbeiterid);");
             ResultSet adminResultSet = adminPreparedStatement.executeQuery();
             admins = new LinkedList<String>();
-            while (adminResultSet.next()){
+            while(adminResultSet.next()){
             	admins.add(adminResultSet.getString(1));
             }
         } catch(Exception e) {
         	e.printStackTrace();
-			if (!e.getClass().equals(SQLException.class)) {
+			if(!e.getClass().equals(SQLException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnten keine Werte geladen werden.");

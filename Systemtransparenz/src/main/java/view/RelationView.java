@@ -74,8 +74,8 @@ public class RelationView extends ElementView{
 			applicationInRelation.getApplicationView().getElementRegion().boundsInParentProperty().addListener(new ChangeListener<Object>() {
 				@Override
 				public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-					for (RelationNode rN : relationNodes) {
-	                    if (rN.getApplicationInRelation().equals(applicationInRelation)) {
+					for(RelationNode rN : relationNodes) {
+	                    if(rN.getApplicationInRelation().equals(applicationInRelation)) {
 	                        rN.getRelationHub();
 	                        rN.getRelationLine().setOnMouseClicked(new EventHandler<MouseEvent>() {
 	                			@Override
@@ -110,7 +110,7 @@ public class RelationView extends ElementView{
 		this.relationText.layoutBoundsProperty().addListener(new ChangeListener<Object>() {
 			@Override
 			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				for (RelationNode rN : relationNodes) {
+				for(RelationNode rN : relationNodes) {
 	            	rN.getRelationHub();
 	            }
 			}
@@ -186,7 +186,7 @@ public class RelationView extends ElementView{
 	
 	//Methode zur Auswahl einer Beziehung durch den Nutzer
 	private void select(MouseEvent event) {
-		if (modelView != null) {
+		if(modelView != null) {
         	modelView.deselectElements();
             modelView.setElementView(RelationView.this);
         }

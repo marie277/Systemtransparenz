@@ -68,7 +68,6 @@ public class RelationModel {
 	//Setter-Methode für die Beziehungsrichtung
 	public void setRelationDirection(boolean relationDirection) {
 		this.relationDirection = relationDirection;
-		
 	}
 	
 	//Getter-Methode für die Beziehungsrichtung

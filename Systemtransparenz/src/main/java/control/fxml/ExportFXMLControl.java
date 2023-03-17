@@ -67,7 +67,7 @@ public class ExportFXMLControl implements Initializable {
 		this.initializeDatabase();
 		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
-        for (ApplicationView applicationView : this.modelView.getApplications()) {
+        for(ApplicationView applicationView : this.modelView.getApplications()) {
         	applicationsList.add(applicationView.getApplicationModel());
         }
         this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
@@ -80,10 +80,9 @@ public class ExportFXMLControl implements Initializable {
 	        for(ApplicationModel applicationModel : this.applicationsList) {
 	        	this.exportApplications(applicationModel);
 	        }
-		}
-		catch (Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
-			if (!e.getClass().equals(NullPointerException.class)) {
+			if(!e.getClass().equals(NullPointerException.class)) {
 	            Alert alertError = new Alert(Alert.AlertType.ERROR);
 	            alertError.setTitle("Fehler!");
 	            alertError.setHeaderText("Es konnten keine Anwendungen in die ausgewählte Tabelle exportiert werden.");
@@ -117,7 +116,7 @@ public class ExportFXMLControl implements Initializable {
             PreparedStatement ps = connection.prepareStatement("SELECT datname FROM pg_database WHERE datistemplate = false;");
             ResultSet rs = ps.executeQuery();
             boolean databaseExists = false;
-            while (rs.next()) {
+            while(rs.next()) {
                 if(rs.getString(1).equals(this.dataBase)) {
                 	databaseExists = true;
                 	break;
@@ -142,7 +141,7 @@ public class ExportFXMLControl implements Initializable {
             }
         } catch(Exception e){
         	e.printStackTrace();
-        	if (!e.getClass().equals(IllegalArgumentException.class)) {
+        	if(!e.getClass().equals(IllegalArgumentException.class)) {
                 Alert alertError = new Alert(Alert.AlertType.ERROR);
                 alertError.setTitle("Fehler!");
                 alertError.setHeaderText("Es konnte keine Datenbank-Verbindung hergestellt werden.");

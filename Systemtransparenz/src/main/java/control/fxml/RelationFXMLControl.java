@@ -119,7 +119,7 @@ public class RelationFXMLControl implements Initializable{
     private void addRelationView(RelationModel relationModel, double x, double y) {
     	MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
         LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
-        for (ApplicationInRelation applicationInRelation : applications) {
+        for(ApplicationInRelation applicationInRelation : applications) {
             x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
             y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();
         }
@@ -133,13 +133,13 @@ public class RelationFXMLControl implements Initializable{
     @FXML
     private void select(ActionEvent event) throws Exception {
     	ApplicationModel applicationModel = this.availableApplications.getTableView().getSelectionModel().getSelectedItem();
-        if (applicationModel != null) {
+        if(applicationModel != null) {
             this.availableApplications.getTableView().getItems().remove(applicationModel);
             this.selectedApplications.getTableView().getItems().add(applicationModel);
             this.incomingRelation.getItems().addAll(applicationModel.getApplicationName());
             ApplicationView applicationView = null;
             LinkedList<ApplicationView> applicationViews = MainModel.modelFXMLControl.getModelView().getApplications();
-            for (ApplicationView aV : applicationViews) {
+            for(ApplicationView aV : applicationViews) {
                 if (aV.getApplicationModel().equals(applicationModel)) {
                     applicationView = aV;
                 }
@@ -159,7 +159,7 @@ public class RelationFXMLControl implements Initializable{
     @FXML
     private void remove(ActionEvent event) throws Exception {
     	ApplicationModel applicationModel = this.selectedApplications.getTableView().getSelectionModel().getSelectedItem();
-        if (applicationModel != null) {
+        if(applicationModel != null) {
             this.selectedApplications.getTableView().getItems().remove(applicationModel);
             this.availableApplications.getTableView().getItems().add(applicationModel);  
         }
@@ -177,7 +177,7 @@ public class RelationFXMLControl implements Initializable{
         this.availableApplications.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
 		this.selectedApplications.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
         ObservableList<ApplicationModel> applications = FXCollections.observableArrayList();
-        for (ApplicationView applicationView : this.modelView.getApplications()) {
+        for(ApplicationView applicationView : this.modelView.getApplications()) {
             applications.add(applicationView.getApplicationModel());
         }
         this.availableApplications.getTableView().setItems(applications);
@@ -185,10 +185,10 @@ public class RelationFXMLControl implements Initializable{
         this.availableApplications.getTableView().setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2 && availableApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
+				if(event.getClickCount() == 2 && availableApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
 	                try {
 						select(null);
-					} catch (Exception e) {
+					} catch(Exception e) {
 						e.printStackTrace();
 					}
 	            }
@@ -197,10 +197,10 @@ public class RelationFXMLControl implements Initializable{
         this.selectedApplications.getTableView().setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2 && selectedApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
+				if(event.getClickCount() == 2 && selectedApplications.getTableView().getSelectionModel().getSelectedItem() != null) {
 	                try {
 	                	remove(null);
-					} catch (Exception e) {
+					} catch(Exception e) {
 						e.printStackTrace();
 					}
 	            }
