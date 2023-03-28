@@ -185,13 +185,43 @@ public class ConnectExportFXMLControl implements Initializable {
 		this.adminIdAttribute = this.adminId.getText();
 		this.managerEmployeeIdAttribute = this.managerEmployeeId.getText();
 		this.adminEmployeeIdAttribute = this.employeeIdA.getText();
-		String categoryStatement = "CREATE TABLE IF NOT EXISTS " + this.dataScheme + "." + this.categoryTable + "(" + this.categoryNameAttribute + " TEXT PRIMARY KEY);";
-		String producerStatement = "CREATE TABLE IF NOT EXISTS " + this.producerTable + "(" + this.producerIdAttribute  + " SERIAL PRIMARY KEY, " + this.producerNameAttribute + " TEXT NOT NULL UNIQUE);";
-		String departmentStatement = "CREATE TABLE IF NOT EXISTS " + this.departmentTable + "(" + this.departmentIdAttribute + " SERIAL PRIMARY KEY, " + this.departmentNameAttribute + " TEXT NOT NULL UNIQUE);";
-		String employeeStatement = "CREATE TABLE IF NOT EXISTS " + this.employeeTable + "(" + this.employeeIdAttribute + " SERIAL PRIMARY KEY, " + this.employeeNameAttribute + " TEXT NOT NULL UNIQUE);";
-		String managerStatement = "CREATE TABLE IF NOT EXISTS " + this.managerTable + "(" + this.managerIdAttribute + " SERIAL PRIMARY KEY, " + this.managerEmployeeIdAttribute + " INT	NOT NULL UNIQUE, FOREIGN KEY(" + this.managerEmployeeIdAttribute + ") REFERENCES " + this.employeeTable + "(" + this.employeeIdAttribute + "));";
-		String adminStatement = "CREATE TABLE IF NOT EXISTS " + this.adminTable + "(" + this.adminIdAttribute + " SERIAL PRIMARY KEY, " + this.adminEmployeeIdAttribute + " INT	NOT NULL UNIQUE, FOREIGN KEY(" + this.adminEmployeeIdAttribute + ") REFERENCES " + this.employeeTable + "(" + this.employeeIdAttribute + "));";
-		String applicationStatement = "CREATE TABLE IF NOT EXISTS " + this.applicationTable + "(" + this.applicationIdAttribute + " INT PRIMARY KEY, " + this.applicationNameAttribute + " TEXT NOT NULL, " + this.descriptionAttribute + " TEXT, " + this.applicationCategoryNameAttribute + " TEXT NOT NULL, " + this.applicationProducerIdAttribute + " INT NOT NULL, " + this.applicationManagerIdAttribute + " INT	NOT NULL, " + this.applicationDepartmentIdAttribute	+ " INT	NOT NULL, " + this.applicationAdminIdAttribute + "	INT	NOT NULL, FOREIGN KEY(" + this.applicationCategoryNameAttribute + ") REFERENCES " + this.categoryTable + "(" + this.categoryNameAttribute + "), FOREIGN KEY(" + this.applicationProducerIdAttribute + ") REFERENCES " + this.producerTable + "(" + this.producerIdAttribute + "), FOREIGN KEY(" + this.applicationManagerIdAttribute + ") REFERENCES " + this.managerTable + "(" + this.managerIdAttribute + "), FOREIGN KEY(" + this.applicationDepartmentIdAttribute + ") REFERENCES " + this.departmentTable + "(" + this.departmentIdAttribute + "),FOREIGN KEY(" + this.applicationAdminIdAttribute + ") REFERENCES " + this.adminTable + "(" + this.adminIdAttribute + "));";
+		String categoryStatement = "CREATE TABLE IF NOT EXISTS " + this.dataScheme + "." 
+		+ this.categoryTable + "(" + this.categoryNameAttribute + " TEXT PRIMARY KEY);";
+		String producerStatement = "CREATE TABLE IF NOT EXISTS " + this.producerTable 
+				+ "(" + this.producerIdAttribute  + " SERIAL PRIMARY KEY, " 
+				+ this.producerNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String departmentStatement = "CREATE TABLE IF NOT EXISTS " + this.departmentTable 
+				+ "(" + this.departmentIdAttribute + " SERIAL PRIMARY KEY, " 
+				+ this.departmentNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String employeeStatement = "CREATE TABLE IF NOT EXISTS " + this.employeeTable 
+				+ "(" + this.employeeIdAttribute + " SERIAL PRIMARY KEY, " 
+				+ this.employeeNameAttribute + " TEXT NOT NULL UNIQUE);";
+		String managerStatement = "CREATE TABLE IF NOT EXISTS " + this.managerTable 
+				+ "(" + this.managerIdAttribute + " SERIAL PRIMARY KEY, " 
+				+ this.managerEmployeeIdAttribute + " INT	NOT NULL UNIQUE, FOREIGN KEY(" 
+				+ this.managerEmployeeIdAttribute + ") REFERENCES " 
+				+ this.employeeTable + "(" + this.employeeIdAttribute + "));";
+		String adminStatement = "CREATE TABLE IF NOT EXISTS " + this.adminTable + "(" 
+				+ this.adminIdAttribute + " SERIAL PRIMARY KEY, " + this.adminEmployeeIdAttribute 
+				+ " INT	NOT NULL UNIQUE, FOREIGN KEY(" + this.adminEmployeeIdAttribute + ") REFERENCES "
+				+ this.employeeTable + "(" + this.employeeIdAttribute + "));";
+		String applicationStatement = "CREATE TABLE IF NOT EXISTS " + this.applicationTable + "(" 
+				+ this.applicationIdAttribute + " INT PRIMARY KEY, " + this.applicationNameAttribute 
+				+ " TEXT NOT NULL, " + this.descriptionAttribute + " TEXT, " 
+				+ this.applicationCategoryNameAttribute + " TEXT NOT NULL, " 
+				+ this.applicationProducerIdAttribute + " INT NOT NULL, " 
+				+ this.applicationManagerIdAttribute + " INT	NOT NULL, " 
+				+ this.applicationDepartmentIdAttribute	+ " INT	NOT NULL, " 
+				+ this.applicationAdminIdAttribute + "	INT	NOT NULL, FOREIGN KEY(" 
+				+ this.applicationCategoryNameAttribute + ") REFERENCES " 
+				+ this.categoryTable + "(" + this.categoryNameAttribute + "), FOREIGN KEY(" 
+				+ this.applicationProducerIdAttribute + ") REFERENCES " + this.producerTable + "(" 
+				+ this.producerIdAttribute + "), FOREIGN KEY(" + this.applicationManagerIdAttribute + ")"
+						+ " REFERENCES " + this.managerTable + "(" + this.managerIdAttribute + "), "
+								+ "FOREIGN KEY(" + this.applicationDepartmentIdAttribute + ") REFERENCES " 
+						+ this.departmentTable + "(" + this.departmentIdAttribute + "),FOREIGN KEY(" 
+								+ this.applicationAdminIdAttribute + ") REFERENCES " + this.adminTable 
+								+ "(" + this.adminIdAttribute + "));";
 		ArrayList<String> statements = new ArrayList<>();
 		statements.add(categoryStatement);
 		statements.add(producerStatement);
@@ -247,8 +277,10 @@ public class ConnectExportFXMLControl implements Initializable {
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/?", this.userName, this.passWord);
-            PreparedStatement ps = connection.prepareStatement("SELECT datname FROM pg_database WHERE datistemplate = false;");
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":"
+            + this.portNumber + "/?", this.userName, this.passWord);
+            PreparedStatement ps = connection.prepareStatement("SELECT datname "
+            		+ "FROM pg_database WHERE datistemplate = false;");
             ResultSet rs = ps.executeQuery();
             boolean databaseExists = false;
             while(rs.next()) {
@@ -261,7 +293,8 @@ public class ConnectExportFXMLControl implements Initializable {
                 }
             }
             if(databaseExists == true) {
-            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" 
+            + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
             	Statement stmt = connection.createStatement();
             	stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
             	stmt.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
@@ -269,7 +302,8 @@ public class ConnectExportFXMLControl implements Initializable {
             else {
             	Statement stmt = connection.createStatement();
             	stmt.executeUpdate("CREATE DATABASE " + this.dataBase + ";");
-            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
+            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" 
+            	+ this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
             	Statement stmt1 = connection.createStatement();
             	stmt1.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
             	stmt1.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
@@ -324,20 +358,34 @@ public class ConnectExportFXMLControl implements Initializable {
 		PreparedStatement preparedStatement5 = connection.prepareStatement(statement4);
 		preparedStatement5.setString(1, applicationModel.getApplicationManager());
 		preparedStatement5.execute();
-		String statement5 = "INSERT INTO " + this.adminTable + "(" + this.adminIdAttribute + ", " + this.adminEmployeeIdAttribute + ")"
-				+"VALUES (default, (SELECT " + this.employeeIdAttribute + " FROM " + this.employeeTable + " WHERE " + this.employeeNameAttribute + " = ?))"
+		String statement5 = "INSERT INTO " + this.adminTable + "(" + this.adminIdAttribute 
+				+ ", " + this.adminEmployeeIdAttribute + ")"
+				+"VALUES (default, (SELECT " + this.employeeIdAttribute + " FROM " 
+				+ this.employeeTable + " WHERE " + this.employeeNameAttribute + " = ?))"
 				+ " ON CONFLICT (" + this.adminEmployeeIdAttribute + ") DO UPDATE "
-				+ "SET " + this.adminEmployeeIdAttribute + " = excluded." + this.adminEmployeeIdAttribute + ";";
+				+ "SET " + this.adminEmployeeIdAttribute + " = excluded." 
+				+ this.adminEmployeeIdAttribute + ";";
 		PreparedStatement preparedStatement6 = connection.prepareStatement(statement5);
 		preparedStatement6.setString(1, applicationModel.getApplicationAdmin());
 		preparedStatement6.execute();
-		this.sqlStatement = "INSERT INTO " + this.applicationTable + "(" + this.applicationIdAttribute + ", " + this.applicationNameAttribute + ", " + this.descriptionAttribute + ", " + this.applicationCategoryNameAttribute + ", " + this.applicationProducerIdAttribute + ", " + this.applicationManagerIdAttribute + ", " + this.applicationDepartmentIdAttribute + ", " + this.applicationAdminIdAttribute + ")"
+		this.sqlStatement = "INSERT INTO " + this.applicationTable + "(" + this.applicationIdAttribute + ", " 
+		+ this.applicationNameAttribute + ", " + this.descriptionAttribute + ", " 
+				+ this.applicationCategoryNameAttribute + ", " + this.applicationProducerIdAttribute 
+				+ ", " + this.applicationManagerIdAttribute + ", " + this.applicationDepartmentIdAttribute 
+				+ ", " + this.applicationAdminIdAttribute + ")"
 				+"VALUES (?, ?, ?,"
-				+"(SELECT " + this.categoryNameAttribute + " FROM " + this.categoryTable + " k WHERE k." + this.categoryNameAttribute + " = ?),"
-				+"(SELECT " + this.producerIdAttribute + " FROM " + this.producerTable + " h WHERE h." + this.producerNameAttribute + " = ?),"
-				+"(SELECT " + this.managerIdAttribute + " FROM (" + this.managerTable + " am INNER JOIN " + this.employeeTable + " ma ON am." + this.managerEmployeeIdAttribute + " = ma." + this.employeeIdAttribute + ") WHERE ma." + this.employeeNameAttribute + " = ?),"
-				+"(SELECT " + this.departmentIdAttribute + " FROM " + this.departmentTable + " f WHERE f." + this.departmentNameAttribute + " = ?),"
-				+"(SELECT " + this.adminIdAttribute + " FROM (" + this.adminTable + " ad INNER JOIN " + this.employeeTable + " mb ON ad." + this.adminEmployeeIdAttribute + " = mb." + this.employeeIdAttribute + ") WHERE mb." + this.employeeNameAttribute + "= ?))"
+				+"(SELECT " + this.categoryNameAttribute + " FROM " + this.categoryTable + " k WHERE k." 
+				+ this.categoryNameAttribute + " = ?),"
+				+"(SELECT " + this.producerIdAttribute + " FROM " + this.producerTable + " h WHERE h." 
+				+ this.producerNameAttribute + " = ?),"
+				+"(SELECT " + this.managerIdAttribute + " FROM (" + this.managerTable + " am INNER JOIN " 
+				+ this.employeeTable + " ma ON am." + this.managerEmployeeIdAttribute + " = ma." 
+				+ this.employeeIdAttribute + ") WHERE ma." + this.employeeNameAttribute + " = ?),"
+				+"(SELECT " + this.departmentIdAttribute + " FROM " + this.departmentTable + " f WHERE f." 
+				+ this.departmentNameAttribute + " = ?),"
+				+"(SELECT " + this.adminIdAttribute + " FROM (" + this.adminTable + " ad INNER JOIN " 
+				+ this.employeeTable + " mb ON ad." + this.adminEmployeeIdAttribute + " = mb." 
+				+ this.employeeIdAttribute + ") WHERE mb." + this.employeeNameAttribute + "= ?))"
 				+"ON CONFLICT (" + this.applicationIdAttribute + ") DO UPDATE "
 				+"SET " + this.applicationNameAttribute + " = excluded." + this.applicationNameAttribute + ", "
 				+ this.descriptionAttribute + " = excluded." + this.descriptionAttribute + ", "

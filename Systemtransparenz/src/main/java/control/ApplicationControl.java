@@ -114,7 +114,8 @@ public class ApplicationControl extends ElementControl {
 		application.setAttribute("ID", String.valueOf(this.applicationId));
 		this.applicationName = this.applicationView.getApplicationModel().getApplicationName();
 		application.setAttribute("Anwendungsname", this.applicationName);
-		this.applicationDescription = this.applicationView.getApplicationModel().getApplicationDescription();
+		this.applicationDescription = this.applicationView.getApplicationModel()
+				.getApplicationDescription();
 		application.setAttribute("Beschreibung", this.applicationDescription);
 		this.applicationCategory = this.applicationView.getApplicationModel().getApplicationCategory();
 		application.setAttribute("Kategorie", this.applicationCategory);
@@ -122,7 +123,8 @@ public class ApplicationControl extends ElementControl {
 		application.setAttribute("Hersteller", this.applicationProducer);
 		this.applicationManager = this.applicationView.getApplicationModel().getApplicationManager();
 		application.setAttribute("Anwendungsmanager", this.applicationManager);
-		this.applicationDepartment = this.applicationView.getApplicationModel().getApplicationDepartment();
+		this.applicationDepartment = this.applicationView.getApplicationModel()
+				.getApplicationDepartment();
 		application.setAttribute("Fachbereich", this.applicationDepartment);
 		this.applicationAdmin = this.applicationView.getApplicationModel().getApplicationAdmin();
 		application.setAttribute("Admin", this.applicationAdmin);

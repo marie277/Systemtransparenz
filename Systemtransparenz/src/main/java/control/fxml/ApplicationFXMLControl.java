@@ -78,8 +78,17 @@ public class ApplicationFXMLControl implements Initializable {
 			String applicationManager = this.manager.getValue();
 			String applicationDepartment = this.department.getValue();
 			String applicationAdmin = this.admin.getValue();
-			ApplicationModel applicationModel = new ApplicationModel(applicationId, applicationName, applicationDescription, applicationCategory, applicationProducer, applicationManager, applicationDepartment, applicationAdmin);
-			MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(applicationModel.getApplicationId(), applicationModel.getApplicationName(), applicationModel.getApplicationDescription(), applicationModel.getApplicationCategory(), applicationModel.getApplicationProducer(), applicationModel.getApplicationManager(), applicationModel.getApplicationDepartment(), applicationModel.getApplicationAdmin());
+			ApplicationModel applicationModel = new ApplicationModel(applicationId, 
+					applicationName, applicationDescription, applicationCategory, 
+					applicationProducer, applicationManager, applicationDepartment, 
+					applicationAdmin);
+			MainModel.modelFXMLControl.getModelView().getModelControl()
+			.addApplication(applicationModel.getApplicationId(), 
+					applicationModel.getApplicationName(), applicationModel
+					.getApplicationDescription(), applicationModel.getApplicationCategory(),
+					applicationModel.getApplicationProducer(), applicationModel
+					.getApplicationManager(), applicationModel.getApplicationDepartment(),
+					applicationModel.getApplicationAdmin());
 		}
 		catch(Exception e){
 			e.printStackTrace();

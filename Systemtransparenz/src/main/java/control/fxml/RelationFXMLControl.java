@@ -117,8 +117,10 @@ public class RelationFXMLControl implements Initializable{
     
     //Methode zum Hinzufügen der Beziehung zur Modell-Steuerung und Platzierung in der Modell-Ansicht
     private void addRelationView(RelationModel relationModel, double x, double y) {
-    	MainModel.modelFXMLControl.getModelView().getModelControl().addRelationView(relationModel);
-        LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl.getModelView().getRelations().getLast().getRelationModel().getApplications();
+    	MainModel.modelFXMLControl.getModelView().getModelControl()
+    	.addRelationView(relationModel);
+        LinkedList<ApplicationInRelation> applications = MainModel.modelFXMLControl
+        		.getModelView().getRelations().getLast().getRelationModel().getApplications();
         for(ApplicationInRelation applicationInRelation : applications) {
             x += applicationInRelation.getApplicationView().getElementRegion().getLayoutX();
             y += applicationInRelation.getApplicationView().getElementRegion().getLayoutY();

@@ -4,9 +4,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ResourceBundle;
 
 import org.postgresql.Driver;
@@ -65,12 +63,14 @@ public class ExportFXMLControl implements Initializable {
 	@FXML
 	private void load(ActionEvent event) {
 		this.initializeDatabase();
-		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
+		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory
+				<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
         for(ApplicationView applicationView : this.modelView.getApplications()) {
         	applicationsList.add(applicationView.getApplicationModel());
         }
-        this.applicationsColumn.getTableView().setItems((ObservableList<ApplicationModel>)applicationsList);
+        this.applicationsColumn.getTableView()
+        .setItems((ObservableList<ApplicationModel>)applicationsList);
 	}
     
 	//Methode zum Bestätigen der geladenen Anwendungen, welche dem geöffneten Modell hinzugefügt werden
@@ -112,33 +112,9 @@ public class ExportFXMLControl implements Initializable {
         try {
         	Driver driver = new org.postgresql.Driver();
             DriverManager.registerDriver(driver);
-            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/?", this.userName, this.passWord);
-            PreparedStatement ps = connection.prepareStatement("SELECT datname FROM pg_database WHERE datistemplate = false;");
-            ResultSet rs = ps.executeQuery();
-            boolean databaseExists = false;
-            while(rs.next()) {
-                if(rs.getString(1).equals(this.dataBase)) {
-                	databaseExists = true;
-                	break;
-                }
-                else {
-                	databaseExists = false;
-                }
-            }
-            if(databaseExists == true) {
-            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
-            	Statement stmt = connection.createStatement();
-            	stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
-            	stmt.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
-            }
-            else {
-            	Statement stmt = connection.createStatement();
-            	stmt.executeUpdate("CREATE DATABASE " + this.dataBase + ";");
-            	connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" + this.portNumber + "/" + this.dataBase, this.userName, this.passWord);
-            	Statement stmt1 = connection.createStatement();
-            	stmt1.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + this.dataScheme + ";");
-            	stmt1.executeUpdate("SET SEARCH_PATH TO " + this.dataScheme + ";");
-            }
+            connection = DriverManager.getConnection("jdbc:postgresql://" + this.hostUrl + ":" 
+            + this.portNumber + "/" + this.dataBase + "?search_path=" + this.dataScheme,
+            this.userName, this.passWord);
         } catch(Exception e){
         	e.printStackTrace();
         	if(!e.getClass().equals(IllegalArgumentException.class)) {
@@ -153,13 +129,18 @@ public class ExportFXMLControl implements Initializable {
     //Methode zum Export der Anwendungen aus der ausgewählte Tabelle
     public void exportApplications(ApplicationModel applicationModel) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement(
-				"INSERT INTO anwendung (anwendungsid, anwendungsname, beschreibung, kategoriename, herstellerid, anwendungsmanagerid, fachbereichid, adminid)"
+				"INSERT INTO anwendung (anwendungsid, anwendungsname, beschreibung,"
+				+ " kategoriename, herstellerid, anwendungsmanagerid, fachbereichid, adminid)"
 				+"VALUES (?, ?, ?,"
 				+"(SELECT kategoriename from kategorie WHERE kategorie.kategoriename = ?),"
 				+"(SELECT herstellerid from hersteller WHERE hersteller.herstellername = ?),"
-				+"(SELECT anwendungsmanagerid from (anwendungsmanager INNER JOIN mitarbeiter ON anwendungsmanager.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?),"
-				+"(SELECT fachbereichid from fachbereich WHERE fachbereich.fachbereichname = ?),"
-				+"(SELECT adminid from (administrator INNER JOIN mitarbeiter ON administrator.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE mitarbeiter.mitarbeitername = ?))"
+				+"(SELECT anwendungsmanagerid from (anwendungsmanager INNER JOIN mitarbeiter "
+				+ "ON anwendungsmanager.mitarbeiterid = mitarbeiter.mitarbeiterid) WHERE "
+				+ "mitarbeiter.mitarbeitername = ?),"
+				+"(SELECT fachbereichid from fachbereich WHERE fachbereich.fachbereichname "
+				+ "= ?), (SELECT adminid from (administrator INNER JOIN mitarbeiter ON "
+				+ "administrator.mitarbeiterid = mitarbeiter.mitarbeiterid) "
+				+ "WHERE mitarbeiter.mitarbeitername = ?))"
 				+"ON CONFLICT (anwendungsid) DO UPDATE "
 				+"SET anwendungsname = excluded.anwendungsname,"
 				+"beschreibung = excluded.beschreibung,"

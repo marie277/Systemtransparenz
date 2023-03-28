@@ -94,13 +94,15 @@ public class ApplicationView extends ElementView {
         HBox hBoxAdmin = new HBox();
         hBoxAdmin.getChildren().addAll(adminLabel, this.admin);
         this.vbox = new VBox();
-        vbox.getChildren().addAll(hBoxId, hBoxDescription, hBoxCategory, hBoxProducer, hBoxManager, hBoxDepartment, hBoxAdmin);
+        vbox.getChildren().addAll(hBoxId, hBoxDescription, hBoxCategory,
+        		hBoxProducer, hBoxManager, hBoxDepartment, hBoxAdmin);
         this.titledPane = new TitledPane();
         this.titledPane.setContent(this.vbox);
         this.titledPane.setExpanded(false);
         this.applicationBorderPane.setCenter((Node)this.name);
         this.applicationBorderPane.setBottom(titledPane);
-        ModelControl.makeRegionMoveable((Region)this.applicationBorderPane, this.getModelView(), this);
+        ModelControl.makeRegionMoveable((Region)this.applicationBorderPane,
+        		this.getModelView(), this);
         this.applicationBorderPane.getStylesheets().add(this.getClass().getResource("/application/application.css").toExternalForm());
         this.applicationBorderPane.getSelectedProperty().bind(this.getSelectedProperty());
         this.applicationBorderPane.setOnMouseClicked(new EventHandler<MouseEvent>() {

@@ -70,10 +70,12 @@ public class EditApplicationFXMLControl implements Initializable {
     	String applicationAdminView = this.applicationView.getApplicationModel().getApplicationAdmin();
         try {
         	if(!this.applicationId.getText().equals(String.valueOf(applicationIdView))) {
-                this.applicationView.getModelView().getModelControl().changeApplicationId(this.applicationView, this.applicationId.getText());
+                this.applicationView.getModelView().getModelControl().changeApplicationId(this.applicationView,
+                		this.applicationId.getText());
             }
             if(!this.applicationName.getText().equals(applicationNameView)) {
-                this.applicationView.getModelView().getModelControl().changeApplicationName(this.applicationView, this.applicationName.getText());
+                this.applicationView.getModelView().getModelControl().changeApplicationName(this.applicationView, 
+                		this.applicationName.getText());
             }
             if(!this.applicationDescription.getText().equals(applicationDescriptionView)) {
                 this.applicationView.getModelView().getModelControl().changeApplicationDescription(this.applicationView, this.applicationDescription.getText());

@@ -245,17 +245,19 @@ public class RelationControl extends ElementControl {
 	
 	//Methode zur Erstellung einer Beziehung als XML-Element, welches in einer Datei exportiert werden kann
 	public Element createXMLElement(Document doc) {
+		Element element = super.createXMLElement(doc);
 		Element relation = doc.createElement("Beziehung");
+		relation.appendChild(element);
 		String relationType = this.relationView.getRelationModel().getRelationType();
 		relation.setAttribute("Beziehungstyp", relationType);
 		String relationDirection = "";
 		if(this.relationView.getRelationModel().getRelationDirection() == true) {
 			relationDirection = this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName();
 		}
-		relation.setAttribute("Beziehungsrichtung", relationDirection);
+		relation.setAttribute("EingehendeAnwendung", relationDirection);
 		Element applicationInRelation = doc.createElement("Beziehungsteilnehmer");
-		for(RelationNode relationLineView : this.relationView.getRelationNodes()) {
-			applicationInRelation.appendChild(relationLineView.createXMLElement(doc));
+		for(RelationNode relationNode : this.relationView.getRelationNodes()) {
+			applicationInRelation.appendChild(relationNode.createXMLElement(doc));
 		}
 		relation.appendChild(applicationInRelation);
 		return relation;
@@ -269,17 +271,21 @@ public class RelationControl extends ElementControl {
 			relationNodes.add(RelationNode.importFromXML((Element) nodes.item(i), modelView));
 		}
 		boolean relationDirection = false;
-		if(element.getAttribute("Beziehungsrichtung").equals(relationNodes.getFirst().getApplicationInRelation().getApplicationView().getApplicationModel().getApplicationName())){
+		if(element.getAttribute("EingehendeAnwendung").equals(relationNodes.getFirst()
+				.getApplicationInRelation().getApplicationView().getApplicationModel()
+				.getApplicationName())){
 			relationDirection = true;
 		}
-		RelationModel relationModel = new RelationModel(relationNodes.getFirst().getApplicationInRelation(), relationNodes.get(1).getApplicationInRelation(), element.getAttribute("Beziehungstyp"), relationDirection);
-		for(int i = 2; i < relationNodes.size(); i++) {
-			relationModel.getApplications().add(relationNodes.get(i).getApplicationInRelation());
-		}
+		RelationModel relationModel = new RelationModel(relationNodes.getFirst()
+				.getApplicationInRelation(), 
+				relationNodes.get(1).getApplicationInRelation(), 
+				element.getAttribute("Beziehungstyp"), relationDirection);
 		RelationView relationView = new RelationView(relationModel, modelView);
-		relationView.getRelationModel().setRelationType(element.getAttribute("Beziehungstyp"));
-		relationView.getRelationModel().setRelationDirection(relationDirection);
 		modelView.addElement(relationView);
+		NodeList nodeList = element.getElementsByTagName("XML-Element");
+		Element item = (Element)nodeList.item(0);
+		org.w3c.dom.Node node = item.getElementsByTagName("Element").item(0);
+		ElementControl.importXMLSettings((Element)node, relationView);
 	}
 	
 }

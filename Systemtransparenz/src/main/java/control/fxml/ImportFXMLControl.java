@@ -64,7 +64,8 @@ public class ImportFXMLControl implements Initializable {
 	@FXML
 	private void load(ActionEvent event) {
 		this.initializeDatabase();
-		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory<ApplicationModel, String>("applicationName"));
+		this.applicationsColumn.setCellValueFactory(new PropertyValueFactory
+				<ApplicationModel, String>("applicationName"));
         applicationsList = FXCollections.observableArrayList();
         for(ApplicationModel aM : this.importApplications()) {
             applicationsList.add(aM);
@@ -78,7 +79,12 @@ public class ImportFXMLControl implements Initializable {
 		try {
 	        if(this.importApplications().size() != 0) {
 	        	for(ApplicationModel aM : this.applicationsList) {
-	        		MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(aM.getApplicationId(), aM.getApplicationName(), aM.getApplicationDescription(), aM.getApplicationCategory(), aM.getApplicationProducer(), aM.getApplicationManager(), aM.getApplicationDepartment(), aM.getApplicationAdmin());
+	        		MainModel.modelFXMLControl.getModelView().getModelControl().addApplication(
+	        				aM.getApplicationId(), aM.getApplicationName(), 
+	        				aM.getApplicationDescription(), 
+	        				aM.getApplicationCategory(), aM.getApplicationProducer(), 
+	        				aM.getApplicationManager(), aM.getApplicationDepartment(),
+	        				aM.getApplicationAdmin());
 	        	}
 	        }
 		} catch(Exception e){
@@ -124,11 +130,21 @@ public class ImportFXMLControl implements Initializable {
     //Methode zum Import der Anwendungen aus der ausgewählten Tabelle
     public LinkedList<ApplicationModel> importApplications() {
 		try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid, a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = f.fachbereichid AND a.adminid = ad.adminid");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.anwendungsid,"
+            		+ "a.anwendungsname, a.beschreibung, k.kategoriename, h.herstellername, "
+            		+ "mb.mitarbeitername, f.fachbereichname, ma.mitarbeitername FROM anwendung a, "
+            		+ "kategorie k, hersteller h, (anwendungsmanager am INNER JOIN mitarbeiter mb ON "
+            		+ "am.mitarbeiterid = mb.mitarbeiterid), fachbereich f, (administrator ad "
+            		+ "INNER JOIN mitarbeiter ma ON ad.mitarbeiterid = ma.mitarbeiterid) WHERE "
+            		+ "a.kategoriename = k.kategoriename AND a.herstellerid = h.herstellerid "
+            		+ "AND a.anwendungsmanagerid = am.anwendungsmanagerid AND a.fachbereichid = "
+            		+ "f.fachbereichid AND a.adminid = ad.adminid");
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<ApplicationModel>();
             while(resultSet.next()){
-            	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
+            	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), 
+            			resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), 
+            			resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }
             return applications;
         } catch(Exception e) {

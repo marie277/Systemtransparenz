@@ -232,20 +232,29 @@ public class ConnectImportFXMLControl implements Initializable {
 			this.adminIdAttribute = this.adminId.getText();
 			this.managerEmployeeIdAttribute = this.managerEmployeeId.getText();
 			this.adminEmployeeIdAttribute = this.adminEmployeeId.getText();
-			this.sqlStatement = "SELECT a." + this.applicationIdAttribute + ", a." + this.applicationNameAttribute + ", a."
-			+ this.descriptionAttribute + ", k." + this.categoryNameAttribute + ", h." + this.producerNameAttribute 
-					+ ", mb." + this.employeeNameAttribute + ", f." + this.departmentNameAttribute + ", ma." + this.employeeNameAttribute + " FROM " + this.applicationTable
-					+ " a, " + this.categoryTable + " k, " + this.producerTable + " h, (" + this.managerTable
-					+ " am INNER JOIN " + this.employeeTable + " mb ON am." + this.managerEmployeeIdAttribute + " = mb." + this.employeeIdAttribute + "), "
-					+ this.departmentTable + " f, (" + this.adminTable + " ad INNER JOIN " + this.employeeTable + " ma ON ad."
-					+ this.adminEmployeeIdAttribute + " = ma." + this.managerEmployeeIdAttribute + ") WHERE a." + this.applicationCategoryNameAttribute + " = k." + this.categoryNameAttribute
-					+ " AND a." + this.applicationProducerIdAttribute + " = h." + this.producerIdAttribute + " AND a." + this.applicationManagerIdAttribute + " = am." + this.managerIdAttribute
-					+ " AND a." + this.applicationDepartmentIdAttribute + " = f." + this.departmentIdAttribute + " AND a." + this.applicationAdminIdAttribute + " = ad." + this.adminIdAttribute + ";";
+			this.sqlStatement = "SELECT a." + this.applicationIdAttribute + ", a." + 
+			this.applicationNameAttribute + ", a." + this.descriptionAttribute + ", k." + 
+					this.categoryNameAttribute + ", h." + this.producerNameAttribute 
+					+ ", mb." + this.employeeNameAttribute + ", f." + this.departmentNameAttribute 
+					+ ", ma." + this.employeeNameAttribute + " FROM " + this.applicationTable
+					+ " a, " + this.categoryTable + " k, " + this.producerTable + " h, (" + 
+					this.managerTable + " am INNER JOIN " + this.employeeTable + " mb ON am." + 
+					this.managerEmployeeIdAttribute + " = mb." + this.employeeIdAttribute + "), "
+					+ this.departmentTable + " f, (" + this.adminTable + " ad INNER JOIN " + 
+					this.employeeTable + " ma ON ad." + this.adminEmployeeIdAttribute + " = ma." + 
+					this.managerEmployeeIdAttribute + ") WHERE a." + this.applicationCategoryNameAttribute 
+					+ " = k." + this.categoryNameAttribute + " AND a." + this.applicationProducerIdAttribute 
+					+ " = h." + this.producerIdAttribute + " AND a." + this.applicationManagerIdAttribute + 
+					" = am." + this.managerIdAttribute + " AND a." + this.applicationDepartmentIdAttribute +
+					" = f." + this.departmentIdAttribute + " AND a." + this.applicationAdminIdAttribute + 
+					" = ad." + this.adminIdAttribute + ";";
             PreparedStatement preparedStatement = connection.prepareStatement(this.sqlStatement);
             ResultSet resultSet = preparedStatement.executeQuery();
             applications = new LinkedList<ApplicationModel>();
             while(resultSet.next()){
-            	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
+            	applications.add(new ApplicationModel(resultSet.getInt(1), resultSet.getString(2), 
+            			resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), 
+            			resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
             }
             return applications;
         } catch(Exception e) {

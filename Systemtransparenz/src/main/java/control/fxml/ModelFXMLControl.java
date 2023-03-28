@@ -441,6 +441,10 @@ public class ModelFXMLControl implements Initializable{
 		this.deleteApplication.setDisable(disabled);
 		this.zoomIn.setDisable(disabled);
 		this.zoomOut.setDisable(disabled);
+		this.createApplication.setDisable(disabled);
+		this.removeApplication.setDisable(disabled);
+		this.createRelation.setDisable(disabled);
+		this.removeRelation.setDisable(disabled);
 	}
 	
 	//Methode zur Initialisierung der Steuerung

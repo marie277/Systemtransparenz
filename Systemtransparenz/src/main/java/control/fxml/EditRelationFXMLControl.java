@@ -45,14 +45,20 @@ public class EditRelationFXMLControl implements Initializable {
         this.relationType.getItems().addAll("Verknüpft mit", "Hat", "Nutzt");
         String relationText = this.relationView.getRelationText().getText();
         this.relationType.getSelectionModel().select(relationText);
-        this.relationDirection.getItems().addAll("keine", this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName(), this.relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName());
+        this.relationDirection.getItems().addAll("keine", this.relationView.getRelationModel()
+        		.getApplications().get(0).getApplicationView().getApplicationModel().
+        		getApplicationName(), this.relationView.getRelationModel().getApplications().get(1)
+        		.getApplicationView().getApplicationModel().getApplicationName());
         String relationIncoming = "";
-        if(this.relationType.getSelectionModel().getSelectedItem().equals("Hat") || this.relationType.getSelectionModel().getSelectedItem().equals("Nutzt")) {
+        if(this.relationType.getSelectionModel().getSelectedItem().equals("Hat") || 
+        		this.relationType.getSelectionModel().getSelectedItem().equals("Nutzt")) {
 	        if(this.relationView.getRelationModel().getRelationDirection() == true) {
-	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(0).getApplicationView().getApplicationModel().getApplicationName();
+	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(0)
+	        			.getApplicationView().getApplicationModel().getApplicationName();
 	        }
 	        else {
-	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(1).getApplicationView().getApplicationModel().getApplicationName();
+	        	relationIncoming = this.relationView.getRelationModel().getApplications().get(1)
+	        			.getApplicationView().getApplicationModel().getApplicationName();
 	        }
         }
         else {

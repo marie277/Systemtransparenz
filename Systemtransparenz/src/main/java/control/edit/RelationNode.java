@@ -54,26 +54,30 @@ public class RelationNode {
 			-(length * Math.tan(angle)), -length,
 	        -(length * Math.tan(angle)), length,
 	    });
-		if((relationType.equals("Nutzt") || relationType.equals("Hat")) && ((relationDirection == true && this.getApplicationInRelation().getIdProperty().get() % 2 == 0) || (relationDirection == false && this.getApplicationInRelation().getIdProperty().get() % 2 == 1) )) {
+		if((relationType.equals("Nutzt") || relationType.equals("Hat")) && ((relationDirection == true 
+				&& this.getApplicationInRelation().getIdProperty().get() % 2 == 0) || 
+				(relationDirection == false 
+				&& this.getApplicationInRelation().getIdProperty().get() % 2 == 1) )) {
 			dx = this.relationLine.endXProperty().add(this.relationLine.startXProperty().negate());
 		    dy = this.relationLine.endYProperty().add(this.relationLine.startYProperty().negate());
 		    Rotate rotate = new Rotate(0,0,0,1,Rotate.Z_AXIS);
 		    this.relationArrow.getTransforms().add(rotate);
 		    dx.addListener(new ChangeListener<Object>() {
 				@Override
-				public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				public void changed(ObservableValue<? extends Object> observable, Object oldValue,
+						Object newValue) {
 					rotate.setAngle(Math.toDegrees(Math.atan2(dy.doubleValue(), (double) newValue)));
 				}
 		    });
 		    dy.addListener(new ChangeListener<Object>() {
 				@Override
-				public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				public void changed(ObservableValue<? extends Object> observable, Object oldValue, 
+						Object newValue) {
 					rotate.setAngle(Math.toDegrees(Math.atan2((double)newValue, dx.doubleValue())));
 				}
 		    });
 			this.relationArrow.getSelectedProperty().bind(this.getSelectedProperty());
 			this.relationArrow.getRelationDirectionProperty().bind(this.getRelationDirectionProperty());
-	        this.getRelationDirectionProperty().bind(this.applicationInRelation.getRelationDirectionProperty());
 	        this.getRelationDirectionProperty().bind(this.applicationInRelation.getRelationDirectionProperty());
 			this.getRelationHub();
 	        this.relationNodes.add((Node)this.relationArrow);
